@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>LA Spain - Top {{ limit }} Jugadores</title>
+    <link rel="icon" href="https://pbs.twimg.com/profile_images/1234206824125124610/VVfVRa2r_400x400.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% load static %}
+    {% load humanize %}
+    <style>
+        /* Estilos generales, header, rain effect */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .drop {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            width: 1px;
+            height: 10px;
+            animation: fall linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        header {
+            background-color: #1c2b3a;
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .header-left span {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            margin: 0 20px;
+            transform: translateY(0);
+        }
+
+        .header-center img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header-center span {
+            font-size: 2rem;
+            font-weight: bolder;
+        }
+
+        .header-link {
+            background-color: #1c2b3a;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            margin-left: auto;
+        }
+
+        header a img {
+            width: 28px;
+            height: 28px;
+            transition: transform 0.3s;
+        }
+
+        header a:hover img {
+            transform: scale(1.2);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            font-size: 0.8em;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .header-left, .header-center, .header-right {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+                padding: 5px 0;
+                transform: translateY(0);
+            }
+            .header-left span {
+                margin-left: 0;
+            }
+            .header-link {
+                font-size: 1rem;
+            }
+            .header-right {
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left span {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Contenedor principal de la tabla */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .container h1 {
+            color: #fdd835;
+            font-size: 2.2em;
+            margin-bottom: 0;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        .player-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+        }
+
+        /* ================================================= */
+        /* CAMBIOS DE COLORES Y ALINEACIÓN DE LA TABLA */
+        /* ================================================= */
+
+        /* Estilos para los CABECEROS (<th>) - FORZADOS */
+        .player-table th {
+            background-color: rgba(0, 0, 0, 0.2) !important; /* Fondo oscuro */
+            color: #fdd835;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: default;
+            padding: 12px 15px;
+            text-align: center; /* Alineación izquierda por defecto para cabeceros */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        /* Alineación específica para los encabezados de # y Copas */
+        .player-table th:nth-child(1) { /* Encabezado # */
+            text-align: center !important;
+        }
+        .player-table th:nth-child(6) { /* Encabezado Copas */
+            text-align: center !important;
+        }
+
+
+        /* Estilos para las CELDAS (<td>) del cuerpo de la tabla - FORZADOS */
+        .player-table tbody tr td {
+            color: #e0e0e0 !important; /* Color de texto general de las celdas */
+            padding: 12px 15px;
+            text-align: center; /* Alineación izquierda por defecto para las celdas de datos */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        /* Colores de fondo de filas alternos - FORZADOS */
+        .player-table tbody tr:nth-child(odd) td { /* Filas impares */
+            background-color: rgba(0, 0, 0, 0.1) !important;
+        }
+        .player-table tbody tr:nth-child(even) td { /* Filas pares */
+            background-color: rgba(0, 0, 0, 0.15) !important;
+        }
+        .player-table tbody tr:hover td { /* Hover en las filas */
+            background-color: rgba(0, 0, 0, 0.25) !important;
+        }
+
+        /* Columnas específicas con colores o alineaciones especiales */
+        .player-table td:nth-child(1) { /* Columna Top */
+            font-weight: bold;
+            color: #fdd835 !important;
+            width: 50px;
+            text-align: center !important; /* Top siempre centrado */
+        }
+
+        .player-table td:nth-child(2) { /* Columna Icono Jugador */
+            width: 60px;
+            text-align: center !important; /* Icono de jugador siempre centrado */
+        }
+        .player-table td:nth-child(2) img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .player-table td:nth-child(3) { /* Columna Nombre */
+            font-weight: bold;
+            color: #fff !important;
+        }
+
+        /* Estilo para el enlace del nombre del jugador */
+        .player-table td:nth-child(3) a {
+            color: inherit; /* Hereda el color de la celda */
+            text-decoration: none; /* Elimina el subrayado */
+            transition: color 0.2s ease-in-out;
+        }
+
+        .player-table td:nth-child(3) a:hover {
+            color: #fdd835; /* Cambia de color al pasar el ratón */
+            text-decoration: underline; /* Añade subrayado al pasar el ratón */
+        }
+
+
+        /* Columna Club - Alineación y Icono - CORREGIDO DEFINITIVAMENTE */
+        .player-table td:nth-child(4) { /* Aplica a la celda del club */
+            display: flex;
+            align-items: center; /* Alinea verticalmente el nombre y el icono */
+            justify-content: center !important; /* ¡FORZAR ALINEACIÓN A LA IZQUIERDA! */
+            white-space: nowrap;
+            padding-left: 15px; /* Ajusta según el padding general de tus celdas */
+        }
+        .player-table td:nth-child(4) .club-name {
+            margin-right: 8px; /* Espacio entre el nombre del club y el icono */
+            text-align: left !important; 
+        }
+        .player-table td:nth-child(4) img { /* Icono del club */
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-left: 0; 
+            margin-right: 0;
+        }
+
+        .player-table td:nth-child(5) { /* Columna Rol del Club */
+            font-style: italic;
+            color: #ccc !important;
+        }
+
+        .player-table td:nth-child(6) { /* Columna Copas */
+            font-weight: bold;
+            color: #fdd835 !important;
+            text-align: right !important; /* Copas siempre a la derecha */
+            width: 120px;
+        }
+
+        .player-table td:nth-child(6) img { /* Icono de trofeo */
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        /* ================================================= */
+        /* FIN CAMBIOS DE COLORES Y ALINEACIÓN DE LA TABLA */
+        /* ================================================= */
+
+        /* Mensaje de error o carga */
+        .message-box {
+            background-color: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #ffcccc;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Responsive adjustments for table */
+        @media (max-width: 900px) {
+            .player-table th, .player-table td {
+                padding: 10px 8px;
+                font-size: 0.9em;
+            }
+            .player-table td:nth-child(2) img {
+                width: 35px;
+                height: 35px;
+            }
+            .player-table td:nth-child(4) img {
+                width: 20px;
+                height: 20px;
+            }
+            .player-table td:nth-child(6) img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .container h1 {
+                font-size: 2em;
+            }
+            .player-table thead {
+                display: none; /* Oculta los encabezados de la tabla en móvil */
+            }
+            .player-table, .player-table tbody, .player-table tr, .player-table td {
+                display: block;
+                width: 100%;
+            }
+            .player-table tr {
+                margin-bottom: 15px;
+                background-color: rgba(255, 255, 255, 0.08); /* Fondo de la fila completa en móvil */
+                border-radius: 8px;
+                padding: 15px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            }
+            .player-table td {
+                text-align: right !important; /* Contenido de la celda a la derecha */
+                padding-left: 50% !important; /* Espacio para la etiqueta ::before */
+                position: relative;
+                border-bottom: none;
+                background-color: transparent !important; /* Importante para que el color de fondo de la fila sea visible */
+            }
+            .player-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #00bcd4;
+            }
+            /* Asignación de data-label a cada columna */
+            .player-table td:nth-child(1)::before { content: "Top:"; }
+            .player-table td:nth-child(2)::before { content: "Icono:"; }
+            .player-table td:nth-child(3)::before { content: "Nombre:"; }
+            .player-table td:nth-child(4)::before { content: "Club:"; }
+            .player-table td:nth-child(5)::before { content: "Rol:"; }
+            .player-table td:nth-child(6)::before { content: "Copas:"; }
+
+            /* Ajustes específicos de alineación para la columna Club en móvil */
+            .player-table td:nth-child(4) {
+                justify-content: flex-end !important; /* Alinea el contenido (nombre+icono) a la derecha en móvil */
+                padding-left: 50% !important; /* Ajusta este padding si el texto queda pegado */
+            }
+            .player-table td:nth-child(4) .club-name {
+                margin-left: 8px; /* Espacio entre icono y nombre en móvil (icono está a la derecha del texto) */
+                margin-right: 0;
+                text-align: right !important; /* El texto también se alinea a la derecha en móvil */
+            }
+            .player-table td:nth-child(4) img {
+                margin-right: 0; /* Elimina margen derecho en móvil */
+                margin-left: 8px; /* Mueve el icono a la derecha del texto en móvil */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="rain"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="{% url 'tops_home' %}" class="header-link"> < LA Tops</a>
+        </div>
+        <div class="header-center">
+            <img src="https://images-ext-1.discordapp.net/external/pdpNjlPivAbwCC28y5bG3Q2wFkhL9JStm1JbgkeUBVw/https/cdn.discordapp.com/icons/724202847822151680/ee9681b46db567f2723516d0f42dced8.png?format=webp&quality=lossless&width=160&height=160" alt="LA Spain Logo" />
+            <span>LA Spain</span>
+        </div>
+        <div class="header-right">
+            <a href="https://discord.gg/HA6qRz59rM" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/discord-logo.png" alt="Discord" />
+            </a>
+            <a href="https://twitter.com/LASpain_" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter.png" alt="Twitter" />
+            </a>
+            <a href="https://tiktok.com/@LASpain_" target="_blank">
+                <img src="https://img.icons8.com/ios-filled/50/ffffff/tiktok.png" alt="TikTok" />
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-weight: bolder;margin-top: -1%;">Top {{ limit }} Jugadores LA</h1>
+        
+        {% if message and not players %}
+            <div class="message-box">{{ message }}</div>
+        {% elif players %}
+            <div class="player-table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Icono</th>
+                            <th>Nombre</th>
+                            <th>Club</th>
+                            <th>Rol</th>
+                            <th>Copas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in players %}
+                            <tr>
+                                <td data-label="Top">{{ player.top }}.</td>
+                                <td data-label="Icono">
+                                    {% if player.icono %}
+                                        <img src="https://cdn.brawlify.com/profile-icons/regular/{{ player.icono }}.png" alt="Icono de {{ player.nombre }}" onerror="this.onerror=null;this.src='https://cdn.brawlify.com/profile-icons/regular/28000000.png';">
+                                    {% else %}
+                                        <img src="https://cdn-old.brawlify.com/profile-icon/28000000.png" alt="Icono por defecto">
+                                    {% endif %}
+                                </td>
+                                <td data-label="Nombre">
+                                    {# LINK AL PERFIL DEL JUGADOR #}
+                                    <a href="{% url 'member_detail' player.tag|cut:'#' %}">{{ player.nombre }}</a>
+                                </td>
+                                <td data-label="Club" style="height: 47px;">
+                                    {% if player.club %}
+                                        <a style="color: white; text-decoration: none; font-style: italic;" href="{% url 'club_detail' player.club_tag|cut:'#' %}"><span class="club-name">{{ player.club }}</span></a>
+                                        {# Verificar que player.icono_del_club tiene un valor que no sea None o cadena vacía #}
+                                        {% if player.icono_del_club and player.icono_del_club|stringformat:"s" != "None" and player.icono_del_club|stringformat:"s" != "" %}
+                                            <a style="color: white; text-decoration: none; font-style: italic;" href="{% url 'club_detail' player.club_tag|cut:'#' %}"><img src="https://raw.githubusercontent.com/DEV-DIBSTER/BrawlCDN/refs/heads/main/assets/Club-Icons/{{ player.icono_del_club }}.png" alt="Icono de {{ player.club }}" onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/DEV-DIBSTER/BrawlCDN/refs/heads/main/assets/Club-Icons/0.png';"></a>
+                                        {% else %}
+                                            {# Si el jugador tiene club pero el icono_del_club es None o vacío, mostramos el 0.png #}
+                                            <img src="https://raw.githubusercontent.com/DEV-DIBSTER/BrawlCDN/refs/heads/main/assets/Club-Icons/0.png" alt="Club sin icono específico">
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="no-club">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td data-label="Rol">
+                                    {# El rol ya viene traducido desde el backend #}
+                                    {{ player.rol_en_el_club }}
+                                </td>
+                                <td data-label="Copas">
+                                    {{ player.copas|intcomma }} 
+                                    <img src="https://brawlstats.com/dist/trophy.96ebb0874d0e7e7a7c235bfbb751f2cf.png" alt="Trofeos">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="message-box">No se encontraron jugadores para mostrar.</div>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>&copy; 2025 LA Spain. Todos los derechos reservados. Desarrollado por Vimen.</p>
+    </footer>
+
+    <script>
+        const rainContainer = document.querySelector('.rain');
+
+        function createDrop() {
+            const drop = document.createElement('div');
+            drop.classList.add('drop');
+            drop.style.left = Math.random() * 100 + 'vw';
+            drop.style.animationDuration = Math.random() * 2 + 3 + 's';
+            drop.style.opacity = Math.random() * 0.5 + 0.1;
+            rainContainer.appendChild(drop);
+
+            drop.addEventListener('animationend', () => {
+                drop.remove();
+            });
+        }
+
+        setInterval(createDrop, 100);
+    </script>
+</body>
+</html>

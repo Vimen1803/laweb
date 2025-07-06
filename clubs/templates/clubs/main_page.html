@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>LA Spain - Home</title>
+  <link rel="icon" href="https://pbs.twimg.com/profile_images/1234206824125124610/VVfVRa2r_400x400.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      min-height: 100vh; /* Usar min-height para asegurar el alto */
+      overflow-x: hidden; /* Evitar scroll horizontal */
+    }
+
+    /* Estilos para el efecto de lluvia */
+    .rain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0; /* Asegura que esté por debajo del contenido principal */
+    }
+
+    .drop {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.4);
+      width: 1px;
+      height: 10px;
+      animation: fall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    header {
+      background-color: #1c2b3a;
+      display: flex;
+      align-items: center; /* Centra verticalmente los items */
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      /* Removido margin-right: auto; para que el botón se pegue a la izquierda */
+    }
+
+    .header-left img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .header-left span {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .header-center {
+      display: flex; /* Añadido display flex para centrar contenido */
+      align-items: center; /* Centra verticalmente */
+      justify-content: center; /* Centra horizontalmente */
+      flex-grow: 1; /* Permite que ocupe el espacio central disponible */
+      margin: 0 20px; /* Pequeño margen horizontal para separación */
+      transform: translateY(0); /* Reseteado el transform */
+    }
+
+    /* Estilos para el logo y texto "LA Spain" en el centro del header */
+    .header-center img {
+      width: 40px; /* Icono más grande */
+      height: 40px; /* Icono más grande */
+      margin-right: 10px; /* Espacio entre icono y texto */
+    }
+
+    .header-center span {
+      font-size: 2rem; /* Texto "LA Spain" más grande */
+      font-weight: bolder; /* Más énfasis */
+    }
+
+    .header-link {
+        /* Estilos para que sea igual al botón del footer */
+        background-color: #1c2b3a; /* Fondo oscuro similar al encabezado */
+        color: #fff; /* Texto blanco */
+        text-decoration: none; /* Sin subrayado */
+        font-size: 1.1rem; /* Tamaño de fuente legible (ajustado para consistencia) */
+        font-weight: bold; /* Texto en negrita */
+        padding: 10px 15px; /* Relleno para apariencia de botón */
+        border-radius: 8px; /* Esquinas redondeadas */
+        transition: background-color 0.3s ease, transform 0.3s ease; /* Transiciones suaves */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra sutil */
+        /* margin-right: 20px; Removido, ya no es necesario aquí */
+    }
+
+    .header-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.05);
+    }
+
+    .header-right {
+      display: flex;
+      gap: 20px; /* Aumentado el espacio entre los iconos */
+      margin-left: auto; /* Empuja el contenido a la derecha */
+    }
+
+    header a img {
+      width: 28px; /* Iconos de redes sociales un poco más grandes */
+      height: 28px; /* Iconos de redes sociales un poco más grandes */
+      transition: transform 0.3s;
+    }
+
+    header a:hover img {
+      transform: scale(1.2);
+    }
+
+    .container {
+      display: flex;
+      align-items: center; /* Alinea verticalmente los items */
+      height: calc(100vh - 60px); /* Ocupa el alto restante de la pantalla */
+      padding: 20px; /* Margen para todo el contenido principal */
+      gap: 20px; /* Espacio entre el GIF y el texto */
+      box-sizing: border-box; /* Incluye padding en el alto y ancho */
+      overflow: hidden; /* Importante para el efecto de movimiento */
+    }
+
+    .gif-container {
+      flex-shrink: 0; /* Evita que se encoja automáticamente */
+      flex-grow: 0; /* Evita que crezca automáticamente */
+      width: 70%; /* Tamaño inicial para estar centrado */
+      margin: auto; /* Centra el GIF horizontalmente cuando está solo */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 12px;
+      transition: width 0.5s ease-in-out, margin 0.5s ease-in-out, height 0.5s ease-in-out; /* Añadido height a la transición */
+      height: auto; /* Asegura que la altura se ajuste inicialmente */
+      max-height: 70vh; /* Limita la altura máxima del contenedor del GIF en estado inicial */
+    }
+
+    .gif-image {
+      width: 100%; /* Ahora la imagen llena el 100% del ancho de su contenedor */
+      height: 100%; /* Ahora la imagen llena el 100% de la altura de su contenedor */
+      object-fit: contain; /* Mantiene el aspecto y lo contiene */
+      border-radius: 8px; /* Un poco menos de borde redondeado para el GIF */
+      transition: width 0.5s ease-in-out, height 0.5s ease-in-out, object-fit 0.5s ease-in-out; /* Añadido object-fit a la transición */
+    }
+
+    .about-us {
+      flex-shrink: 0; /* Evita que se encoja automáticamente */
+      flex-grow: 0; /* Evita que crezca automáticamente */
+      width: 0; /* Inicialmente oculto */
+      opacity: 0; /* Inicialmente transparente */
+      overflow: hidden; /* Oculta el contenido que se desborda mientras está en width: 0 */
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px 30px; /* Menos padding arriba (20px), más en los lados (30px) */
+      transition: width 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out, height 0.5s ease-in-out; /* Añadido height a la transición */
+      height: auto; /* Asegura que la altura se ajuste inicialmente */
+    }
+
+    /* Clase para el estado de hover del contenedor */
+    .container.active .gif-container {
+      width: 45%; /* Aumentado de 40% para reducir margen derecho total */
+      margin-left: 0; /* Elimina auto-margin para pegarse a la izquierda */
+      margin-right: 20px; /* Añade un margen entre GIF y texto */
+      height: 65vh; /* Altura del contenedor del GIF ajustada */
+    }
+
+    .container.active .gif-image {
+      width: 100%; /* Asegura que la imagen llene el ancho de su contenedor */
+      height: 100%; /* Asegura que la imagen llene la altura de su contenedor */
+      object-fit: cover; /* Esto hará que cubra el área, potencialmente recortando los lados */
+    }
+
+    .container.active .about-us {
+      width: 48%; /* Aumentado de 40% para reducir margen derecho total */
+      opacity: 1; /* Se vuelve visible */
+      padding: 20px 30px; /* Mantiene el padding cuando está visible */
+      height: 65vh; /* Hace el cuadro de texto tan alto como el GIF, ajustado */
+      overflow-y: auto; /* Permite el scroll si el contenido es demasiado largo */
+
+      /* ESTILOS PARA OCULTAR LA BARRA DE DESPLAZAMIENTO */
+      /* Para Chrome, Safari y Opera */
+      &::-webkit-scrollbar {
+          display: none;
+      }
+      /* Para Firefox */
+      scrollbar-width: none;
+      /* Para Internet Explorer y Edge (Legacy) */
+      -ms-overflow-style: none;
+    }
+
+    /* Estilo para el título h2 con gradiente */
+    .about-us h2 {
+      background: linear-gradient(to right, #ffbe0b, #fb5607, #ff006e); /* Gradiente de cálidos */
+      -webkit-background-clip: text; /* Para que el gradiente se aplique al texto */
+      -webkit-text-fill-color: transparent; /* Para que el texto sea transparente y muestre el gradiente */
+      color: transparent; /* Fallback para navegadores que no soporten -webkit-text-fill-color */
+      font-size: 2.5rem; /* Ajusta el tamaño si es necesario */
+      margin-bottom: 20px; /* Espacio debajo del título */
+      text-align: center; /* ¡Centrar el título! */
+      display: block; /* Asegura que el h2 sea un bloque y ocupe su propia línea */
+      margin-top: 0; /* Elimina el margen superior del título */
+    }
+    
+    .about-us p {
+      display: block; /* Asegura que el párrafo sea un bloque y comience en una nueva línea */
+      margin-bottom: 15px; /* Margen entre párrafos */
+    }
+    .about-us p:last-child {
+        margin-bottom: 0; /* Eliminar margen del último párrafo */
+    }
+
+    /* Clases para el efecto de escritura */
+    /* Estas clases ahora se aplican a los SPAN internos para no afectar el display de h2/p */
+    .typing-content {
+      display: inline; /* Por defecto, el contenido del span es inline */
+      white-space: pre-wrap; /* Mantiene saltos de línea y permite que el texto se ajuste */
+      word-break: break-word; /* Permite que palabras largas se rompan */
+    }
+
+    .typing-cursor {
+      display: inline-block; /* Permite que el cursor tenga dimensiones y siga el texto */
+      width: 0; /* Ancho inicial del cursor (solo para el borde) */
+      height: 1.1em; /* Altura del cursor, ajusta si es necesario para que coincida con la línea */
+      border-right: .15em solid orange; /* Cursor de escritura */
+      vertical-align: top; /* Alinea con la parte superior del texto */
+      box-sizing: border-box;
+      transition: border-color 0.1s ease, width 0.1s ease;
+    }
+
+    .typing-cursor.blink-animation {
+      animation: blink-caret .75s step-end infinite;
+    }
+
+    /* Keyframes para el cursor que parpadea */
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: orange; }
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+      body {
+        overflow-y: auto; /* Permitir scroll vertical en móviles si es necesario */
+        height: auto;
+      }
+      .container {
+        flex-direction: column; /* Apila los elementos en móvil */
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+      }
+
+      header {
+        flex-wrap: wrap; /* Permite que los elementos del header se envuelvan */
+        justify-content: center; /* Centra los items en dispositivos pequeños */
+      }
+      .header-left, .header-center, .header-right {
+        margin: 0; /* Elimina los auto-margins para el comportamiento móvil */
+        width: 100%; /* Ocupa el ancho completo */
+        text-align: center; /* Centra el texto y los iconos */
+        padding: 5px 0; /* Espaciado */
+        transform: translateY(0); /* Resetea la posición vertical para móvil */
+      }
+      .header-left span {
+        margin-left: 0; /* Ajuste para el texto junto al logo */
+      }
+      .header-link {
+        font-size: 1rem; /* Restaura el tamaño para móvil */
+      }
+      .header-right {
+        justify-content: center; /* Centra los iconos de redes sociales */
+        gap: 10px;
+      }
+
+
+      .gif-container {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        height: 50vh;
+        padding: 10px;
+        margin: 0; /* Elimina auto-margin en móvil */
+      }
+
+      .about-us {
+        opacity: 1; /* Siempre visible en móviles */
+        padding: 20px;
+        height: auto;
+        width: 100%; /* Ocupa todo el ancho en móvil */
+        overflow: visible; /* Permitir que el texto se desborde si es muy largo sin animar */
+        /* Para móviles, puedes decidir si quieres la barra visible o no.
+           Si quieres ocultarla también en móviles cuando se active el scroll por el media query,
+           mantén las reglas de ocultación de scrollbar aquí:
+        */
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .about-us h2 {
+          font-size: 2rem; /* Ajuste de tamaño para móviles */
+          -webkit-background-clip: unset; /* Deshacer clip para móviles */
+          -webkit-text-fill-color: unset; /* Deshacer color transparente para móviles */
+          color: #ffbe0b; /* Color sólido para móviles */
+          background: none; /* Eliminar gradiente de fondo en móviles */
+      }
+
+      /* Deshabilitar animaciones y cursores en móvil */
+      .typing-content, .typing-cursor {
+          animation: none !important;
+          border-right: none !important;
+          white-space: normal; /* Permitir que el texto se rompa normalmente */
+          width: auto !important; /* Asegura que el contenido se ajuste */
+          height: auto !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .about-us {
+        font-size: 0.9rem;
+        padding: 16px;
+      }
+
+      .header-left span {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Media query para asegurar que la página ocupe solo la pantalla en PC/portátil */
+    @media (min-width: 769px) {
+      body {
+        overflow: hidden; /* No scroll en PC/portátil */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rain"></div>
+
+  <header>
+    <div class="header-left">
+      <a href="/clubs" class="header-link">LA Clubs > </a>
+    </div>
+    <div class="header-left" style="margin-left: 20px;">
+      <a href="/tops" class="header-link">LA Tops > </a>
+    </div>
+    <div class="header-center" style="margin-right: 11%;">
+      <img src="https://images-ext-1.discordapp.net/external/pdpNjlPivAbwCC28y5bG3Q2wFkhL9JStm1JbgkeUBVw/https/cdn.discordapp.com/icons/724202847822151680/ee9681b46db567f2723516d0f42dced8.png?format=webp&quality=lossless&width=160&height=160" alt="LA Spain Logo" />
+      <span>LA Spain</span>
+    </div>
+    <div class="header-right">
+      <a href="https://discord.gg/HA6qRz59rM" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/discord-logo.png" alt="Discord" />
+      </a>
+      <a href="https://twitter.com/LASpain_" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter.png" alt="Twitter" />
+      </a>
+      <a href="https://tiktok.com/@LASpain_" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/tiktok.png" alt="TikTok" />
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="gif-container">
+      <img src="https://media.discordapp.net/attachments/1380671590890602496/1390999527858896916/pixverse_mp4_media_web_348a035d-6116-4497-9690-374c5112a0d7_seed0.gif?ex=686a4cc2&is=6868fb42&hm=f41f6e014524413753d17d414b63f763322b4a2c1ec9c49fe06ef2f39acd7b94&=&width=500&height=500" alt="gif" class="gif-image">
+    </div>
+
+    <div class="about-us">
+      <h2 class="typed-target">Nuestra Historia, LA Historia</h2>
+      <p class="typed-target">
+        LA Spain es la rama española de la organización principal "LA Gaming" (Legendary Alliance Gaming). LA Gaming fue y es una enorme comunidad de juegos, con el popular eslogan "por jugadores, para jugadores" que se refiere a la organización amigable y social en la que se ha convertido, no solo es familiar, sino que también es competitiva. LA Gaming alcanzó grandes finales, como un segundo puesto en la Gems League Europe en 2020, y un Top 32 en la Clash Royale League en 2019. Sin mencionar que el Campeón Mundial de la CRL en 2022 y 2024, "Mohamed Light", jugó para LA Gaming entre 2020 y 2021.
+      </p>
+      <p class="typed-target">
+        LA Spain (anteriormente conocida como Mystic Spain, que surgió gracias a la fusión de S7VEN y Sanctum) es una comunidad española de Brawl Stars nacida el 4 de mayo de 2019. Comenzó con 4 clubes (Spain, Gods, Legends, Stars) y rápidamente se hizo popular entre los jugadores españoles, alcanzando el puesto número 1 a nivel local en solo unos días. El 29 de mayo de 2019, la comunidad LA Spain se fusionó con sus principales rivales "x6tence". Lo que se esperaba que fuera un gran movimiento resultó ser un movimiento de promesas rotas y falsas. 
+      </p>
+      <p class="typed-target">
+        El 13 de julio de 2019, se produjo el paso de Mystic a Legendary Alliance (LA), lo que devolvió a la parte española a la familia original junto con Mystic Gaming (la parte inglesa). Así nació LA Spain. Solo dos semanas después del cambio, el 27 de julio de 2019, LA Spain alcanzó el puesto número 1 en la clasificación global y se impuso a clubes y organizaciones como Codemagic, Nova y Tribe. 
+      </p>
+      <p class="typed-target">
+        Después de eso, la organización LA Spain siguió creciendo y creciendo. La familia Exenze (una organización española más pequeña pero significativa) se unió a la familia y añadió aún más clubes. La organización también celebró torneos de Brawl Stars cada dos semanas gracias a una asociación con Bluestacks, así como una Liga LA con los mejores jugadores de cada club cada fin de semana.
+      </p>
+      <p class="typed-target">
+        Avanzando rápidamente al 5 de marzo de 2020, la organización DeRucula se unió a LA Spain, expandiendo la familia hacia América del Sur con clubes de todos los países de LATAM. LA Spain extendió la organización a otros juegos como Clash Royale, CoD Mobile, Pokémon Unite y League of Legends, y aunque estos tuvieron éxito, ninguno alcanzó el nivel de su contraparte de Brawl Stars. Nuestra asociación con Game.tv y Bluestacks finalizó en 2023, ya que ambas partes ya no estaban interesadas. 
+      </p>
+      <p class="typed-target">
+        La última organización en unirse a LA Spain fue "Gladius Legion", añadiendo tres nuevos clubes a la cima de las clasificaciones españolas. A día de hoy, LA Spain sigue siendo la organización española más grande dentro de Brawl Stars, con 25 clubes, casi todos dentro de la clasificación española y muchos de ellos dentro de la global.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript para el efecto de lluvia
+    const rainContainer = document.querySelector('.rain');
+
+    function createDrop() {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = Math.random() * 100 + 'vw';
+      drop.style.animationDuration = Math.random() * 2 + 3 + 's';
+      drop.style.opacity = Math.random() * 0.5 + 0.1;
+      rainContainer.appendChild(drop);
+
+      drop.addEventListener('animationend', () => {
+        drop.remove();
+      });
+    }
+
+    setInterval(createDrop, 100);
+
+    // JavaScript para el efecto de escritura y animación del contenedor
+    const container = document.querySelector('.container');
+    const gifContainer = document.querySelector('.gif-container');
+    const aboutUs = document.querySelector('.about-us');
+    // Seleccionamos los elementos H2 y P que queremos que tengan el efecto de escritura
+    const typedTargets = aboutUs.querySelectorAll('h2, p');
+
+    let currentTextIndex = 0;
+    let currentCharIndex = 0;
+    let currentTargetElement = null; // Referencia al h2 o p actual
+    let currentTypedContentSpan = null; // Span que contiene el texto que se está escribiendo
+    let currentTypingCursorSpan = null; // Span del cursor
+
+    let typingInterval = null;
+    let cursorInterval = null;
+    const typingSpeed = 30; // Texto aparecerá más rápido (antes 50)
+    const cursorBlinkSpeed = 750;
+
+    // Función para detener todos los intervalos de escritura y cursor
+    function stopTypingIntervals() {
+        clearInterval(typingInterval);
+        clearInterval(cursorInterval);
+        if (currentTypingCursorSpan) { // Asegura que el span del cursor existe antes de manipularlo
+            currentTypingCursorSpan.style.borderRight = 'none'; // Oculta el cursor
+            currentTypingCursorSpan.classList.remove('blink-animation');
+        }
+    }
+
+    // Función para borrar el contenido de todos los elementos con efecto de escritura
+    function clearAllTypedContent() {
+        typedTargets.forEach(el => {
+            el.innerHTML = '';
+        });
+    }
+
+    // Función para restaurar el contenido completo de todos los elementos
+    function restoreAllTypedContent() {
+        typedTargets.forEach(el => {
+            if (el.dataset.fullText) { // Asegura que el texto completo está guardado
+                el.innerHTML = el.dataset.fullText;
+            }
+        });
+    }
+
+    function startTypingForElement(element) {
+        currentTargetElement = element; // El h2 o p
+        currentCharIndex = 0;
+        const fullText = element.dataset.fullText; // Obtenemos el texto completo
+
+        // Limpiamos el contenido del elemento y creamos los spans para el efecto
+        element.innerHTML = `<span class="typing-content"></span><span class="typing-cursor"></span>`;
+        currentTypedContentSpan = element.querySelector('.typing-content');
+        currentTypingCursorSpan = element.querySelector('.typing-cursor');
+
+        // Iniciamos el parpadeo del cursor
+        clearInterval(cursorInterval);
+        currentTypingCursorSpan.classList.remove('blink-animation'); // Asegura que la animación se reinicie
+        currentTypingCursorSpan.style.borderRight = '.15em solid orange'; // Asegura que el cursor sea visible al inicio del typing
+        cursorInterval = setInterval(() => {
+            currentTypingCursorSpan.style.borderColor = currentTypingCursorSpan.style.borderColor === 'transparent' ? 'orange' : 'transparent';
+        }, cursorBlinkSpeed / 2);
+
+
+        // Iniciamos la escritura
+        clearInterval(typingInterval);
+        typingInterval = setInterval(() => {
+            if (currentCharIndex < fullText.length) {
+                currentTypedContentSpan.textContent += fullText.charAt(currentCharIndex);
+                currentCharIndex++;
+                // --- LÍNEA MODIFICADA PARA AUTO-SCROLL ---
+                aboutUs.scrollTop = aboutUs.scrollHeight;
+            } else {
+                // Escritura terminada para este elemento
+                stopTypingIntervals(); // Detiene los intervalos de este elemento
+
+                currentTextIndex++; // Pasa al siguiente elemento
+                if (currentTextIndex < typedTargets.length) {
+                    setTimeout(() => startTypingForElement(typedTargets[currentTextIndex]), 300); // Pequeña pausa antes de empezar el siguiente
+                } else {
+                    // Todos los elementos han sido escritos, el último cursor parpadea
+                    if (currentTypingCursorSpan) {
+                        currentTypingCursorSpan.style.borderRight = '.15em solid orange';
+                        currentTypingCursorSpan.classList.add('blink-animation');
+                    }
+                }
+            }
+        }, typingSpeed);
+    }
+
+    // Función para saltar el párrafo actual y pasar al siguiente
+    function skipCurrentParagraph() {
+        // Solo si hay un elemento siendo escrito actualmente
+        if (currentTargetElement && currentTypedContentSpan && currentCharIndex < currentTargetElement.dataset.fullText.length) {
+            // Completa instantáneamente el texto del párrafo actual
+            currentTypedContentSpan.textContent = currentTargetElement.dataset.fullText;
+            currentCharIndex = currentTargetElement.dataset.fullText.length; // Actualiza el índice para que se considere completo
+
+            // Detiene el intervalo de escritura actual
+            stopTypingIntervals();
+
+            // Pasa al siguiente elemento
+            currentTextIndex++;
+            if (currentTextIndex < typedTargets.length) {
+                // Inicia la escritura del siguiente elemento después de una pequeña pausa
+                setTimeout(() => startTypingForElement(typedTargets[currentTextIndex]), 100); 
+            } else {
+                // Si todos los elementos han sido escritos, asegura que el último cursor parpadea
+                if (currentTypingCursorSpan) {
+                    currentTypingCursorSpan.style.borderRight = '.15em solid orange';
+                    currentTypingCursorSpan.classList.add('blink-animation');
+                }
+            }
+        }
+    }
+
+    // Listener para el hover en el CONTENEDOR principal
+    container.addEventListener('mouseenter', () => {
+      container.classList.add('active'); // Activa la clase para la animación del contenedor
+      
+      stopTypingIntervals(); // Detiene cualquier animación previa
+      currentTextIndex = 0; // Reinicia el índice del texto a escribir
+      currentCharIndex = 0; // Reinicia el índice del carácter
+      currentTypedContentSpan = null; 
+      currentTypingCursorSpan = null;
+      currentTargetElement = null;
+
+      clearAllTypedContent(); // Borra todo el texto visible
+
+      setTimeout(() => {
+        if (typedTargets.length > 0) {
+          startTypingForElement(typedTargets[0]); // Empieza a escribir el primer elemento (título)
+        }
+      }, 500); // Pequeño retraso para que la animación del layout comience primero
+    });
+
+    container.addEventListener('mouseleave', () => {
+      container.classList.remove('active'); // Desactiva la clase del contenedor
+      stopTypingIntervals(); // Detiene la escritura actual
+      restoreAllTypedContent(); // Muestra el texto completo
+    });
+
+    // Añadir listener de click al contenedor `about-us` para saltar el typing
+    aboutUs.addEventListener('click', skipCurrentParagraph);
+
+    // Añadir listener de click al contenedor `gif-container` para saltar el typing
+    gifContainer.addEventListener('click', skipCurrentParagraph);
+
+
+    // Inicializar el estado al cargar la página: solo almacenar el texto y dejar vacío
+    document.addEventListener('DOMContentLoaded', () => {
+        typedTargets.forEach(el => {
+            // Almacenar el texto completo la primera vez que se carga la página
+            if (!el.dataset.fullText) {
+                el.dataset.fullText = el.innerText;
+            }
+        });
+        clearAllTypedContent(); // Asegura que nada se muestre al principio
+    });
+
+  </script>
+
+</body>
+</html>
