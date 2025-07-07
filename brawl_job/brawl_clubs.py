@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from pathlib import Path
 import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from playwright.sync_api import sync_playwright
+import re
 
 def argb_to_hex(argb: str) -> str:
     """Convierte un color ARGB tipo '0xFFFFFFFF' en hexadecimal '#ffffff'."""
@@ -15,10 +17,12 @@ def argb_to_hex(argb: str) -> str:
     hex_value = argb.lower().replace("0x", "")[-6:]
     return f"#{hex_value}"
 
-load_dotenv()
+load_dotenv(override=True)
 API_TOKEN = os.getenv("BRAWL_API_TOKEN")
 BASE_URL = "https://api.brawlstars.com/v1"
 OUTPUT_DIR = Path("brawl_job/club_data")
+USUARIO = "laspain_"
+CODIGO = "HA6qRz59rM"
 
 CLUBS = {
     "hydra": "#2GQUUQQC8",
@@ -63,6 +67,82 @@ if not API_TOKEN:
     exit(1)
 
 OUTPUT_DIR.mkdir(exist_ok=True)
+
+def obtener_seguidores_tiktok(USUARIO):
+    url = f"https://www.tiktok.com/@{USUARIO}"
+    print(f"📡 Procesando tiktok: {USUARIO}...")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)  # headless=False si quieres ver el navegador
+        page = browser.new_page()
+        page.goto(url, timeout=60000)
+
+        # Aceptar cookies si aparece el botón
+        try:
+            page.click('button:has-text("Accept all")', timeout=5000)
+        except:
+            pass
+
+        page.wait_for_selector('strong[data-e2e="followers-count"]', timeout=10000)
+        seguidores = page.query_selector('strong[data-e2e="followers-count"]').inner_text()
+
+        browser.close()
+        print(f"✅ Tiktok followers: {seguidores}")
+        return seguidores
+
+def obtener_seguidores_twitter_playwright(USUARIO):
+    print(f"📡 Procesando twitter: {USUARIO}...")
+    with sync_playwright() as p:
+        print()
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        url = f"https://mobile.twitter.com/{USUARIO}"
+        page.goto(url)
+        page.wait_for_selector('a[href*="followers"]', timeout=15000)
+        enlaces = page.query_selector_all('a[href*="followers"]')
+        for enlace in enlaces:
+            texto = enlace.inner_text().strip()
+            if texto:
+                numero = texto.split()[0]
+                browser.close()
+                print(f"✅ Twitter followers: {numero}")
+                return numero
+        browser.close()
+
+def obtener_miembros_discord(CODIGO):
+    url = f"https://discord.com/invite/{CODIGO}"
+
+    with sync_playwright() as p:
+        print(f"📡 Procesando discord: {CODIGO}...")
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+        page.goto(url)
+
+        # Esperamos que cargue algún texto que contenga "miembros"
+        page.wait_for_selector("text=miembros", timeout=15000)
+
+        html = page.content()
+        browser.close()
+
+        # Buscar "xxx en línea, yyy miembros"
+        match = re.search(r'([\d.,]+)\s+en línea,\s+([\d.,]+)\s+miembros', html, re.IGNORECASE)
+        if match:
+            online = match.group(1).replace(',', '').strip()
+            discord = match.group(2).replace(',', '').strip()
+            return int(online), int(discord)
+
+        # Si no se encuentra ambos, buscar individualmente
+        online_match = re.search(r'([\d.,]+)\s+en línea', html, re.IGNORECASE)
+        total_match = re.search(r'([\d.,]+)\s+miembros', html, re.IGNORECASE)
+
+        online = int(online_match.group(1).replace(',', '')) if online_match else None
+        discord = int(total_match.group(1).replace(',', '')) if total_match else None
+
+        if discord is None:
+            raise Exception("No se pudo encontrar el número de miembros.")
+
+        print(f"✅ Miembros totales: {discord}")
+        print(f"✅ Miembros en línea: {online}")
+        return online, discord
 
 def _make_api_request(url: str) -> dict | None:
     headers = {"Authorization": f"Bearer {API_TOKEN}"}
@@ -165,26 +245,6 @@ def process_single_club(name: str, tag: str, global_rankings: list, local_rankin
     print(f"✅ Club '{name}' procesado correctamente. Hora: {datetime.datetime.now().strftime('%H:%M:%S')}")
     return club_info
 
-def generate_and_save_general_stats(all_clubs_data: list):
-    if not all_clubs_data:
-        print("⚠️ No hay datos para generar estadísticas generales.")
-        return
-    num_clubs = len(all_clubs_data)
-    total_copas = sum(club.get("copas_totales", 0) for club in all_clubs_data)
-    total_miembros = sum(club.get("n_miembros", 0) for club in all_clubs_data)
-    media_copas = total_copas / num_clubs if num_clubs else 0
-    general_stats = {
-        "numero_de_clubs": num_clubs,
-        "total_de_copas": total_copas,
-        "total_de_miembros": total_miembros,
-        "media_de_copas": round(media_copas, 0),
-        "discord": 6956,
-        "online": 321,
-        "tiktok": 75,
-        "twitter": 1362,
-    }
-    save_json(general_stats, "lageneral.json")
-
 def generate_and_save_all_members_data(all_clubs_data: list):
     if not all_clubs_data:
         print("⚠️ No hay datos de clubes para 'members.json'.")
@@ -217,6 +277,27 @@ def generate_and_save_all_members_data(all_clubs_data: list):
         member["top"] = idx + 1
     save_json(all_members, "members.json")
 
+def generate_and_save_general_stats(all_clubs_data: list):
+    if not all_clubs_data:
+        print("⚠️ No hay datos para generar estadísticas generales.")
+        return
+    num_clubs = len(all_clubs_data)
+    total_copas = sum(club.get("copas_totales", 0) for club in all_clubs_data)
+    total_miembros = sum(club.get("n_miembros", 0) for club in all_clubs_data)
+    media_copas = total_copas / num_clubs if num_clubs else 0
+    online, discord = obtener_miembros_discord(CODIGO)
+    general_stats = {
+        "numero_de_clubs": num_clubs,
+        "total_de_copas": total_copas,
+        "total_de_miembros": total_miembros,
+        "media_de_copas": round(media_copas, 0),
+        "discord": discord,
+        "online": online,
+        "tiktok": obtener_seguidores_tiktok(USUARIO),
+        "twitter": obtener_seguidores_twitter_playwright(USUARIO),
+    }
+    save_json(general_stats, "lageneral.json")
+
 def monitor_clubs_loop():
     time.sleep(2)
     print("🔁 Monitor de clubes iniciado.")
@@ -234,8 +315,8 @@ def monitor_clubs_loop():
         if all_clubs_data:
             all_clubs_data.sort(key=lambda c: c.get("copas_totales", 0), reverse=True)
             save_json(all_clubs_data, "laclubs.json")
-            generate_and_save_general_stats(all_clubs_data)
             generate_and_save_all_members_data(all_clubs_data)
+            generate_and_save_general_stats(all_clubs_data)
         else:
             print("⚠️ No se pudieron recuperar datos de ningún club.")
         print("\n⏱️ Esperando 10 minutos para el siguiente ciclo...\n")
