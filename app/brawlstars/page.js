@@ -330,7 +330,7 @@ export default function BrawlStarsPage() {
                 </div>
                 <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://brawlinsights.com/static//images/ui/win_streak.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number">{result.brawlers ? Math.max(...result.brawlers.map(b => b.maxWinStreak || 0)) : 0}</div>
+                  <div className="bs-stat-number">{result.maxWinStreak || 0}</div>
                   <div className="bs-stat-label">Racha Máx. Victorias</div>
                 </div>
                 <div className="bs-stat-card">
@@ -404,7 +404,7 @@ export default function BrawlStarsPage() {
                 </div>
                 <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://cdn.brawlify.com/icon/Club-League.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number" style={{ fontSize: '1rem' }}>{result.type === 'open' ? 'Abierto' : result.type === 'closed' ? 'Cerrado' : 'Con invitación'}</div>
+                  <div className="bs-stat-number" style={{ fontSize: '1rem' }}>{result.type}</div>
                   <div className="bs-stat-label">Estado</div>
                 </div>
                 {result.rankingES && (
