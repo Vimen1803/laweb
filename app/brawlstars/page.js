@@ -113,22 +113,30 @@ export default function BrawlStarsPage() {
         }
 
         if (type === 'club') {
-          Promise.all([
-            fetch('/api/brawl?type=clubRanking&country=ES'),
-            fetch('/api/brawl?type=clubRanking&country=global')
-          ]).then(async ([esRes, glRes]) => {
-            const esR = esRes.ok ? await esRes.json() : {};
-            const glR = glRes.ok ? await glRes.json() : {};
-            const esIdx = (esR.items || []).findIndex(c => c.tag === data.tag);
-            const glIdx = (glR.items || []).findIndex(c => c.tag === data.tag);
-            if (esIdx !== -1 || glIdx !== -1) {
-              setResult(prev => ({
-                ...prev,
-                rankingES: esIdx !== -1 ? esIdx + 1 : null,
-                rankingGlobal: glIdx !== -1 ? glIdx + 1 : null
-              }));
-            }
-          }).catch(() => {});
+          // Use in-memory rankings first (loaded when browsing LA Spain clubs tab)
+          const memES = rankings.es[data.tag] || null;
+          const memGL = rankings.global[data.tag] || null;
+          if (memES || memGL) {
+            setResult(prev => ({ ...prev, rankingES: memES, rankingGlobal: memGL }));
+          } else {
+            // Fallback: try fetching from official API (may fail if token/IP mismatch)
+            Promise.all([
+              fetch('/api/brawl?type=clubRanking&country=ES'),
+              fetch('/api/brawl?type=clubRanking&country=global')
+            ]).then(async ([esRes, glRes]) => {
+              const esR = esRes.ok ? await esRes.json() : {};
+              const glR = glRes.ok ? await glRes.json() : {};
+              const esIdx = (esR.items || []).findIndex(c => c.tag === data.tag);
+              const glIdx = (glR.items || []).findIndex(c => c.tag === data.tag);
+              if (esIdx !== -1 || glIdx !== -1) {
+                setResult(prev => ({
+                  ...prev,
+                  rankingES: esIdx !== -1 ? esIdx + 1 : null,
+                  rankingGlobal: glIdx !== -1 ? glIdx + 1 : null
+                }));
+              }
+            }).catch(() => {});
+          }
         }
       }
     } catch { setError('Error al buscar. Verifica el tag.'); }
@@ -408,7 +416,7 @@ export default function BrawlStarsPage() {
                 </div>
                 <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://cdn.brawlify.com/icon/Club-League.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number" style={{ fontSize: '1rem' }}>{result.type}</div>
+                  <div className="bs-stat-number">{result.type}</div>
                   <div className="bs-stat-label">Estado</div>
                 </div>
                 {result.rankingES && (
@@ -469,14 +477,10 @@ export default function BrawlStarsPage() {
             <div className="bs-clubs-grid">
               {clubsData.map((c, i) => (
                 <div key={i} className="bs-club-card" style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', padding: '15px' }}
-                  onClick={() => { 
-                    setTab('club'); 
-                    setTag(c.tag); 
-                    setResult({
-                      ...c,
-                      rankingES: rankings.es[c.tag] || null,
-                      rankingGlobal: rankings.global[c.tag] || null
-                    }); 
+                  onClick={() => {
+                    setTab('club');
+                    setTag(c.tag);
+                    performSearch('club', c.tag);
                   }}>
                   <div className="bs-club-rank" style={{ marginRight: '10px' }}>#{i + 1}</div>
                   {c.badgeId && (
