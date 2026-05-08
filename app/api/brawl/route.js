@@ -36,11 +36,8 @@ function mapPlayer(r, brawlerNames = {}) {
   if (!r) return null;
   const getStat = (name) => r.stats?.find(s => s.name === name)?.value || 0;
 
-  // ExpPoints from the API - approximate XP level (officially each level ~1000 xp avg)
-  const famePoints = getStat('FamePoints');
-  const legacyExp = getStat('LegacyExpPoints');
-  const expLevel = Math.max(1, Math.floor((famePoints + legacyExp) / 1000));
-
+  const expLevel = getStat('ExpLevel') || Math.max(1, Math.floor((getStat('FamePoints') + getStat('LegacyExpPoints') + getStat('ExpPoints')) / 1000));
+  const wins3v3 = getStat('3v3Victories') || getStat('3vs3Victories');
   const currentRanked = getStat('CurrentRanked');
   const highestRanked = getStat('HighestRanked');
 
@@ -52,11 +49,11 @@ function mapPlayer(r, brawlerNames = {}) {
     trophies: getStat('Trophies'),
     highestTrophies: getStat('HighestTrophies'),
     expLevel,
-    '3vs3Victories': getStat('3v3Victories'),
+    '3vs3Victories': wins3v3,
     soloVictories: getStat('SoloVictories'),
     duoVictories: getStat('DuoVictories'),
     accountCreationYear: getStat('AccountCreationYear') || null,
-    totalPrestigeLevel: (r.brawlers || []).reduce((sum, b) => sum + Math.floor(b.trophies / 1000), 0),
+    totalPrestigeLevel: (r.brawlers || []).reduce((sum, b) => sum + Math.floor((b.trophies || 0) / 1000), 0),
     maxWinStreak: r.max_winstreak || 0,
     rankedRank: currentRanked || null,
     rankedRankName: rankedTierName(currentRanked),
