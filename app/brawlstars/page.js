@@ -295,11 +295,6 @@ export default function BrawlStarsPage() {
               <div className="bs-stats-grid">
                 <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://beta.brawlstats.com/dist/trophy.96ebb0874d0e7e7a7c235bfbb751f2cf.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number">{result.trophies?.toLocaleString()}</div>
-                  <div className="bs-stat-label">Trofeos</div>
-                </div>
-                <div className="bs-stat-card">
-                  <div className="bs-stat-icon"><img src="https://beta.brawlstats.com/dist/trophy.96ebb0874d0e7e7a7c235bfbb751f2cf.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
                   <div className="bs-stat-number">{result.highestTrophies?.toLocaleString()}</div>
                   <div className="bs-stat-label">Máx. Trofeos</div>
                 </div>
@@ -342,6 +337,15 @@ export default function BrawlStarsPage() {
                   <div className="bs-stat-icon"><img src={`https://cdn.brawlify.com/ranked/tiered/${result.highestAllTimeRankedRank ? 58000000 + result.highestAllTimeRankedRank - 1 : 58000000}.png`} alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
                   <div className="bs-stat-number">{result.highestAllTimeRankedRankName ? result.highestAllTimeRankedRankName.replace(' ', ' ') : 'Ninguno'}</div>
                   <div className="bs-stat-label">Ranked Máximo</div>
+                </div>
+                <div className="bs-stat-card">
+                  <div className="bs-stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{ width: '32px', height: '32px', color: 'var(--gold)' }}>
+                      <path fillRule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="bs-stat-number">{result.accountCreationYear || '—'}</div>
+                  <div className="bs-stat-label">Año de Creación</div>
                 </div>
               </div>
 

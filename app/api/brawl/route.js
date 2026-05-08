@@ -69,6 +69,7 @@ function mapPlayer(r) {
     '3vs3Victories': getStat('3v3Victories'),
     soloVictories: getStat('SoloVictories'),
     duoVictories: getStat('DuoVictories'),
+    accountCreationYear: getStat('AccountCreationYear') || null,
     totalPrestigeLevel: (r.brawlers || []).reduce((sum, b) => sum + Math.floor(b.trophies / 1000), 0),
     maxWinStreak: r.max_winstreak || 0,
     rankedRank: currentRanked || null,
