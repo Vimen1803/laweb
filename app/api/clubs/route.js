@@ -32,33 +32,39 @@ export async function GET() {
       return NextResponse.json([]);
     }
 
-    // Fetch live data from BS API for each club
-    const bsToken = process.env.BRAWL_API_TOKEN;
-    if (bsToken) {
-      const results = await Promise.allSettled(
-        clubs.map(async (c) => {
-          const formattedTag = c.tag.startsWith('#') ? c.tag : `#${c.tag}`;
-          const encodedTag = encodeURIComponent(formattedTag);
-          const res = await fetch(`https://api.brawlstars.com/v1/clubs/${encodedTag}`, {
-            headers: { Authorization: `Bearer ${bsToken}` },
+    // Fetch live data from BS API for each club using rnt.dev
+    const results = await Promise.allSettled(
+      clubs.map(async (c) => {
+        const cleanTag = c.tag.replace('#', '').toUpperCase();
+        try {
+          const res = await fetch(`https://api.rnt.dev/alliances/get?tag=${cleanTag}`, {
             next: { revalidate: 300 } // Cache for 5 minutes
           });
-          if (res.ok) {
-            const data = await res.json();
-            return { ...data, key: c.key };
+          const data = await res.json();
+          if (res.ok && data.ok && data.result) {
+            const r = data.result;
+            return {
+              tag: r.id?.tag,
+              name: r.name,
+              badgeId: r.badge,
+              trophies: r.trophies,
+              requiredTrophies: r.minimum_trophies,
+              members: r.members?.map(m => ({ tag: m.tag.tag, name: m.name })) || [],
+              key: c.key
+            };
           }
-          return null;
-        })
-      );
+        } catch (e) {}
+        return null;
+      })
+    );
 
-      const liveClubs = results
-        .filter(r => r.status === 'fulfilled' && r.value)
-        .map(r => r.value)
-        .sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
+    const liveClubs = results
+      .filter(r => r.status === 'fulfilled' && r.value)
+      .map(r => r.value)
+      .sort((a, b) => (b.trophies || 0) - (a.trophies || 0));
 
-      if (liveClubs.length > 0) {
-        return NextResponse.json(liveClubs);
-      }
+    if (liveClubs.length > 0) {
+      return NextResponse.json(liveClubs);
     }
 
     return NextResponse.json(clubs);

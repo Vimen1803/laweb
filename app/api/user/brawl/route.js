@@ -32,25 +32,23 @@ export async function GET() {
     }
 
     const tag = userDoc.bs_tag.startsWith('#') ? userDoc.bs_tag : `#${userDoc.bs_tag}`;
-    const encodedTag = encodeURIComponent(tag);
+    const cleanTag = tag.replace('#', '').toUpperCase();
     
-    // Fetch BS profile to get club info
-    const bsToken = process.env.BRAWL_API_TOKEN;
-    if (bsToken) {
-      const res = await fetch(`https://api.brawlstars.com/v1/players/${encodedTag}`, {
-        headers: { Authorization: `Bearer ${bsToken}` },
+    // Fetch BS profile to get club info using rnt.dev
+    try {
+      const res = await fetch(`https://api.rnt.dev/profile?tag=${cleanTag}`, {
         next: { revalidate: 60 }
       });
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+      if (res.ok && data.ok && data.result) {
         return NextResponse.json({
           loggedIn: true,
-          tag: data.tag,
-          name: data.name,
-          club: data.club?.tag ? { tag: data.club.tag, name: data.club.name } : null
+          tag: data.result.account_tag?.tag || tag,
+          name: data.result.name,
+          club: data.result.is_in_alliance && data.result.alliance ? { tag: data.result.alliance.id.tag, name: data.result.alliance.name } : null
         });
       }
-    }
+    } catch (e) {}
 
     return NextResponse.json({ loggedIn: true, tag, name: 'Mi Perfil', club: null });
   } catch (err) {
