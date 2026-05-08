@@ -62,7 +62,7 @@ const minigames = [
 ];
 
 const social = [
-  { name: 'Discord', url: 'https://discord.gg/dBruKer', Icon: DiscordIcon, desc: 'Únete a nuestro servidor principal' },
+  { name: 'Discord', url: 'https://discord.gg/DbRUker', Icon: DiscordIcon, desc: 'Únete a nuestro servidor principal' },
   { name: 'Twitter / X', url: 'https://x.com/LASpain_', Icon: XIcon, desc: 'Síguenos en X para novedades' },
   { name: 'TikTok', url: 'https://www.tiktok.com/@laspain_', Icon: TikTokIcon, desc: 'Contenido y clips de la comunidad' },
   { name: 'Wiki', url: 'https://brawl-stars-club.fandom.com/wiki/LA_Spain_(Club_Family)', Icon: WikiIcon, desc: 'Nuestra página en Fandom' },

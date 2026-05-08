@@ -28,7 +28,7 @@ export default function Home() {
           La comunidad hispana de clubes más grande de Brawl Stars. Competitividad, pasión y una red de más de {stats.clubs ? stats.clubs : '15'} clubes que dominan los rankings.
         </p>
         <div className="hero-buttons">
-          <a href="https://discord.gg/dBruKer" target="_blank" rel="noopener" className="btn btn-primary">
+          <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener" className="btn btn-primary">
             Únete al Discord
           </a>
           <Link href="/comandos" className="btn btn-outline">

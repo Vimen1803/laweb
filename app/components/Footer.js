@@ -36,7 +36,7 @@ export default function Footer() {
         <div>
           <div className="footer-title">Redes</div>
           <ul className="footer-links">
-            <li><a href="https://discord.gg/laspain" target="_blank" rel="noopener">Discord</a></li>
+            <li><a href="https://discord.gg/DbRUker" target="_blank" rel="noopener">Discord</a></li>
             <li><a href="https://x.com/LASpain_" target="_blank" rel="noopener">Twitter / X</a></li>
             <li><a href="https://www.tiktok.com/@laspain_" target="_blank" rel="noopener">TikTok</a></li>
             <li><a href="https://brawl-stars-club.fandom.com/wiki/LA_Spain_(Club_Family)" target="_blank" rel="noopener">Wiki</a></li>
