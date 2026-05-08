@@ -26,7 +26,7 @@ const minigames = [
   {
     name: 'Werewolf',
     emoji: <MoonIcon style={{ width: 24, height: 24 }} />,
-    desc: 'El clásico juego del Hombre Lobo adaptado a Discord. Partidas de 8 a 18 jugadores con más de 20 roles únicos, fases de noche y día, votaciones y habilidades especiales. ¡Engaña, deduce y sobrevive!',
+    desc: 'El clásico juego del Hombre Lobo adaptado a Discord. Partidas de 5 a 20 jugadores con más de 20 roles únicos, fases de noche y día, votaciones y habilidades especiales. ¡Engaña, deduce y sobrevive!',
     color: '#e74c3c',
   },
   {
@@ -38,19 +38,19 @@ const minigames = [
   {
     name: 'Economía & Eventos',
     emoji: <BanknotesIcon style={{ width: 24, height: 24 }} />,
-    desc: 'Participa en eventos de recolección de objetos mágicos, reclama recompensas con el sistema de caramelos, gana experiencia y sube de nivel para desbloquear perks exclusivos.',
+    desc: 'Participa en eventos de UnbelievaBoat, reclama recompensas con el sistema de caramelos, gana experiencia y sube de nivel para desbloquear perks exclusivos.',
     color: '#f1c40f',
   },
   {
     name: 'Monopoly',
     emoji: <CurrencyDollarIcon style={{ width: 24, height: 24 }} />,
-    desc: 'Partidas de Monopoly completas para 2-8 jugadores directamente en Discord. Compra propiedades, construye, y arruina a tus amigos — ¡o juega contra la IA!',
+    desc: 'Partidas de Monopoly completas para 2-8 jugadores directamente en Discord. Compra propiedades, construye, y arruina a tus amigos.',
     color: '#3498db',
   },
   {
     name: 'Battleship',
     emoji: <PaperAirplaneIcon style={{ width: 24, height: 24 }} />,
-    desc: 'Hundir la Flota contra otro jugador o la inteligencia artificial del bot. Estrategia pura en tableros generados por imagen.',
+    desc: 'Hundir la Flota contra otro jugador. Estrategia pura en tableros generados por imagen.',
     color: '#9b59b6',
   },
   {
@@ -62,7 +62,7 @@ const minigames = [
 ];
 
 const social = [
-  { name: 'Discord', url: 'https://discord.gg/laspain', Icon: DiscordIcon, desc: 'Únete a nuestro servidor principal' },
+  { name: 'Discord', url: 'https://discord.gg/dBruKer', Icon: DiscordIcon, desc: 'Únete a nuestro servidor principal' },
   { name: 'Twitter / X', url: 'https://x.com/LASpain_', Icon: XIcon, desc: 'Síguenos en X para novedades' },
   { name: 'TikTok', url: 'https://www.tiktok.com/@laspain_', Icon: TikTokIcon, desc: 'Contenido y clips de la comunidad' },
   { name: 'Wiki', url: 'https://brawl-stars-club.fandom.com/wiki/LA_Spain_(Club_Family)', Icon: WikiIcon, desc: 'Nuestra página en Fandom' },
