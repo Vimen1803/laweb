@@ -41,7 +41,7 @@ export async function GET() {
             next: { revalidate: 300 } // Cache for 5 minutes
           });
           const data = await res.json();
-          if (res.ok && data.ok && data.result) {
+          if (res.ok && data.result) {
             const r = data.result;
             return {
               tag: r.id?.tag,

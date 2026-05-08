@@ -41,19 +41,17 @@ export async function GET(request) {
         .find({ server_id: Long.fromString('724202847822151680') })
         .toArray();
       
-      const BRAWL_TOKEN = process.env.BRAWL_API_TOKEN;
-      if (BRAWL_TOKEN) {
-        for (let i = 0; i < bl.length; i += 10) {
+      for (let i = 0; i < bl.length; i += 10) {
           const chunk = bl.slice(i, i + 10);
           await Promise.all(chunk.map(async (b) => {
             try {
-              const res = await fetch(`https://api.brawlstars.com/v1/players/${encodeURIComponent(b.tag)}`, {
-                headers: { Authorization: `Bearer ${BRAWL_TOKEN}` },
+              const cleanTag = b.tag.replace('#', '').toUpperCase();
+              const res = await fetch(`https://api.rnt.dev/profile?tag=${cleanTag}`, {
                 next: { revalidate: 3600 }
               });
-              if (res.ok) {
-                const data = await res.json();
-                b.name = data.name;
+              const data = await res.json();
+              if (res.ok && data.result && data.result.name) {
+                b.name = data.result.name;
               } else {
                 b.name = 'Desconocido';
               }
@@ -62,7 +60,6 @@ export async function GET(request) {
             }
           }));
         }
-      }
 
       return NextResponse.json(bl);
     }
