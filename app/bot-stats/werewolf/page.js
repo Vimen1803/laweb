@@ -96,7 +96,7 @@ export default function WerewolfStatsPage() {
       </div>
 
       <div className="card" style={{ 
-        padding: '3rem 5rem', 
+        padding: 'clamp(1rem, 3vw, 3rem) clamp(1rem, 4vw, 5rem)', 
         width: '100%', 
         background: 'rgba(255,255,255,0.02)',
         boxSizing: 'border-box'

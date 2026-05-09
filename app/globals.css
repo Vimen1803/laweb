@@ -727,3 +727,103 @@ a:hover { color: var(--gold-light); }
   .history-section { padding: 4rem 1.5rem; }
   .history-content { padding-left: 1.5rem; }
 }
+
+/* ============================
+   MOBILE-ONLY RESPONSIVE FIXES
+   ============================ */
+@media (max-width: 768px) {
+  /* 1. Hero Buttons: FAQ + About Us first row, Discord full-width below */
+  .hero-buttons {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+  }
+  .hero-buttons .btn-primary {
+    order: 3 !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .hero-buttons .btn:not(.btn-primary) {
+    order: 1 !important;
+    flex: 1 1 calc(50% - 0.375rem) !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+  }
+
+  /* 2. Navbar: Auth inside hamburger menu */
+  .nav-auth {
+    display: none !important;
+  }
+  .nav-links .nav-auth-mobile {
+    display: flex !important;
+    padding: 0.75rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+    justify-content: center;
+  }
+
+  /* 3. Brawl Stars: Clubes button full-width, search form adjustments */
+  .brawl-tabs {
+    flex-direction: column !important;
+  }
+  .brawl-tab {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+  .search-box {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .search-box input {
+    width: 100% !important;
+  }
+  .search-box button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* 4. Werewolf: Roles grid responsive - prevent overflow */
+  .section .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem 1rem !important;
+    padding: 0 !important;
+  }
+
+  /* 5. Lottery: Center containers */
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 6. Commands: Sidebar becomes dropdown */
+  .commands-sidebar {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  .commands-sidebar .sidebar-title {
+    cursor: pointer;
+  }
+  .commands-sidebar.collapsed .sidebar-item {
+    display: none !important;
+  }
+  .commands-sidebar.collapsed .sidebar-item.active {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-auth {
+    display: none !important;
+  }
+}
+
+/* Desktop: ensure commands sidebar is always fully visible */
+@media (min-width: 901px) {
+  .sidebar-toggle-icon {
+    display: none !important;
+  }
+  .commands-sidebar.collapsed .sidebar-item {
+    display: flex !important;
+  }
+}

@@ -6,6 +6,7 @@ export default function ComandosPage() {
   const [activeCog, setActiveCog] = useState(null);
   const [search, setSearch] = useState('');
   const [selectedCmd, setSelectedCmd] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const cogs = Object.keys(commandsData);
   const totalCommands = useMemo(() => Object.values(commandsData).reduce((s, c) => s + c.commands.length, 0), []);
@@ -33,11 +34,14 @@ export default function ComandosPage() {
     <div style={{ paddingTop: '1rem' }}>
       <div className="commands-layout">
         {/* Sidebar */}
-        <aside className="commands-sidebar">
-          <div className="sidebar-title">CATEGORÍAS</div>
+        <aside className={`commands-sidebar ${!sidebarOpen ? 'collapsed' : ''}`}>
+          <div className="sidebar-title" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>CATEGORÍAS</span>
+            <span className="sidebar-toggle-icon" style={{ fontSize: '0.8rem', transition: 'transform 0.3s', transform: sidebarOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+          </div>
           <button
             className={`sidebar-item ${activeCog === null ? 'active' : ''}`}
-            onClick={() => setActiveCog(null)}
+            onClick={() => { setActiveCog(null); setSidebarOpen(false); }}
           >
             <span><span className="sidebar-icon">🌐</span> Ver Todos</span>
             <span className="sidebar-count">{totalCommands}</span>
@@ -46,7 +50,7 @@ export default function ComandosPage() {
             <button
               key={cog}
               className={`sidebar-item ${activeCog === cog ? 'active' : ''}`}
-              onClick={() => setActiveCog(cog)}
+              onClick={() => { setActiveCog(cog); setSidebarOpen(false); }}
             >
               <span><span className="sidebar-icon">{commandsData[cog].icon}</span> {cog}</span>
               <span className="sidebar-count">{commandsData[cog].commands.length}</span>

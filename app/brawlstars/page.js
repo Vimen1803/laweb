@@ -231,10 +231,10 @@ export default function BrawlStarsPage() {
               <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
                 Guarda tu Player Tag para acceder rápidamente a tu perfil y club en el futuro.
               </p>
-              <form onSubmit={handleSaveAccount} style={{ display: 'flex', gap: '10px', justifyContent: 'center', maxWidth: '400px', margin: '0 auto', alignItems: 'stretch' }}>
+              <form onSubmit={handleSaveAccount} className="search-box" style={{ display: 'flex', gap: '10px', justifyContent: 'center', maxWidth: '400px', margin: '0 auto', alignItems: 'stretch' }}>
                 <input type="text" value={saveTagInput} onChange={e => setSaveTagInput(e.target.value)}
-                  placeholder="Tu Tag (ej: #8GRCQK)" className="search-box" style={{ flex: 1, padding: '12px', borderRadius: '12px', margin: 0 }} />
-                <button type="submit" className="btn-primary" disabled={savingAccount} style={{ padding: '0 30px', borderRadius: '12px', minWidth: '150px', margin: 0 }}>
+                  placeholder="Tu Tag (ej: #8GRCQK)" style={{ flex: 1, padding: '12px', borderRadius: '12px', margin: 0 }} />
+                <button type="submit" className="btn-primary" disabled={savingAccount} style={{ padding: '12px 30px', borderRadius: '12px', minWidth: '150px', margin: 0 }}>
                   {savingAccount ? 'Guardando...' : 'Guardar'}
                 </button>
               </form>

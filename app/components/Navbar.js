@@ -56,6 +56,26 @@ export default function Navbar() {
             Admin
           </Link>
         )}
+        {/* Mobile-only auth inside hamburger */}
+        <div className="nav-auth-mobile" style={{ display: 'none' }}>
+          {session?.user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', justifyContent: 'center' }}>
+              {session.user.image && (
+                <img src={session.user.image} alt="" className="nav-avatar" />
+              )}
+              <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                {session.user.name}
+              </span>
+              <a href="/api/auth/signout?callbackUrl=/" className="btn-logout" onClick={() => setOpen(false)}>
+                Salir
+              </a>
+            </div>
+          ) : (
+            <a href="/api/auth/signin" className="btn-login" onClick={() => setOpen(false)}>
+              Iniciar Sesión
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="nav-auth">
@@ -64,9 +84,6 @@ export default function Navbar() {
             {session.user.image && (
               <img src={session.user.image} alt="" className="nav-avatar" />
             )}
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              {session.user.name}
-            </span>
             <a href="/api/auth/signout?callbackUrl=/" className="btn-logout">
               Salir
             </a>
