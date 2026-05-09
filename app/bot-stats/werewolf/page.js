@@ -66,7 +66,7 @@ export default function WerewolfStatsPage() {
   );
 
   return (
-    <section className="section" style={{ maxWidth: '100%', paddingLeft: '1rem', paddingRight: '1rem' }}>
+    <section className="section" style={{ maxWidth: 1200 }}>
       <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
         <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
       </Link>
@@ -79,8 +79,8 @@ export default function WerewolfStatsPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.5rem 0.75rem', width: '100%' }}>
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.75rem', width: '100%' }}>
+      <div className="card" style={{ padding: '1.5rem 0.5rem', width: '100%' }}>
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.5rem', width: '100%' }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
             .map(([role, played]) => {
