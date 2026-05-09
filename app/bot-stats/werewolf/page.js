@@ -66,7 +66,7 @@ export default function WerewolfStatsPage() {
   );
 
   return (
-    <section className="section" style={{ maxWidth: 1200 }}>
+    <section className="section" style={{ maxWidth: 1400, paddingLeft: '1rem', paddingRight: '1rem' }}>
       <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
         <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
       </Link>
@@ -79,8 +79,14 @@ export default function WerewolfStatsPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '2rem 1rem', width: '100%' }}>
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: '1rem', width: '100%' }}>
+      <div className="card" style={{ padding: '2rem 0.5rem', width: '100%', border: 'none', background: 'rgba(255,255,255,0.02)' }}>
+        <div className="stat-grid" style={{ 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(8, 1fr)', 
+          gap: '0.75rem', 
+          width: '100%',
+          margin: 0
+        }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
             .map(([role, played]) => {
@@ -89,16 +95,17 @@ export default function WerewolfStatsPage() {
               return (
                 <div key={role} style={{ 
                   background: 'rgba(255, 255, 255, 0.03)', 
-                  padding: '20px 10px', 
+                  padding: '20px 5px', 
                   borderRadius: '12px', 
-                  border: '1px solid rgba(201, 168, 76, 0.3)',
+                  border: '1px solid rgba(201, 168, 76, 0.25)',
                   textAlign: 'center',
                   position: 'relative',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  minHeight: '120px'
+                  minHeight: '130px',
+                  width: '100%'
                 }}>
                   <div style={{ 
                     position: 'absolute', 
@@ -107,22 +114,22 @@ export default function WerewolfStatsPage() {
                     background: 'var(--gold)', 
                     color: '#000', 
                     padding: '2px 6px', 
-                    fontSize: '0.7rem', 
+                    fontSize: '0.65rem', 
                     fontWeight: 800,
                     borderBottomLeftRadius: '8px'
                   }}>
                     {wr}%
                   </div>
-                  <h4 style={{ fontSize: '0.95rem', marginBottom: '15px', fontWeight: 700, color: '#fff' }}>{role}</h4>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
-                    <div style={{ textAlign: 'center' }}>
+                  <h4 style={{ fontSize: '0.9rem', marginBottom: '15px', fontWeight: 700, color: '#fff', padding: '0 5px' }}>{role}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center', width: '100%' }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>
                       <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: 'var(--gold)' }}>{wins}</p>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>W</p>
+                      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>WIN</p>
                     </div>
                     <div style={{ width: '1px', height: '25px', background: 'rgba(255,255,255,0.1)' }} />
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ flex: 1, textAlign: 'center' }}>
                       <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: '#fff' }}>{played}</p>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>P</p>
+                      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>PLAYED</p>
                     </div>
                   </div>
                 </div>
