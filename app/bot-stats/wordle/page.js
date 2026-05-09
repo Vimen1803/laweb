@@ -99,7 +99,7 @@ export default function WordleStatsPage() {
           </div>
         </div>
         
-        <div className="hero-buttons" style={{ display: 'flex', gap: '10px' }}>
+        <div className="wordle-mode-buttons" style={{ display: 'flex', gap: '10px' }}>
           {['normal', 'double', 'triple', 'ladder'].map(m => (
             <button 
               key={m}
