@@ -78,8 +78,16 @@ export default function BotStatsPage() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Wordle</h2>
           </div>
 
-          {!wordle ? (
-            <div style={{ flexGrow: 1 }}><p className="text-muted" style={{ padding: '20px 0' }}>Aún no has jugado ninguna partida de Wordle.</p></div>
+          {!wordle || wordle.normal.played === 0 ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <div style={{ background: 'rgba(83,141,78,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <PuzzlePieceIcon style={{ width: 30, height: 30, color: '#538d4e' }} />
+              </div>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has jugado ninguna partida de Wordle.</p>
+              <a href="https://discord.gg/laspain" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                ¡Empieza a jugar en Discord!
+              </a>
+            </div>
           ) : (
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
               <div style={{ flexGrow: 1 }}>
@@ -169,8 +177,16 @@ export default function BotStatsPage() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
           </div>
 
-          {!werewolf ? (
-            <div style={{ flexGrow: 1 }}><p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p></div>
+          {!werewolf || werewolf.games_played === 0 ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <div style={{ background: 'rgba(139,0,0,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <UserGroupIcon style={{ width: 30, height: 30, color: '#8b0000' }} />
+              </div>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has participado en ninguna partida de Werewolf.</p>
+              <a href="https://discord.gg/laspain" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                ¡Únete a una partida en Discord!
+              </a>
+            </div>
           ) : (
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
               <div style={{ flexGrow: 1 }}>
