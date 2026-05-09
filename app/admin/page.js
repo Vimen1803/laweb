@@ -7,7 +7,7 @@ import {
   SpeakerXMarkIcon, ExclamationTriangleIcon, FlagIcon, 
   NoSymbolIcon, WrenchScrewdriverIcon, QuestionMarkCircleIcon, 
   IdentificationIcon, ScaleIcon, ClockIcon, LockClosedIcon, DocumentTextIcon,
-  BuildingLibraryIcon
+  BuildingLibraryIcon, TrashIcon
 } from '@heroicons/react/24/solid';
 
 const iconMap = { 
@@ -289,7 +289,7 @@ export default function AdminPage() {
                 <form onSubmit={handleAddBlacklist} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'stretch' }}>
                   <input type="text" id="newBlTag" placeholder="#Tag" className="search-box" style={{ flex: 1, padding: '10px', borderRadius: '8px', margin: 0 }} required />
                   <input type="text" id="newBlReason" placeholder="Razón" className="search-box" style={{ flex: 2, padding: '10px', borderRadius: '8px', margin: 0 }} required />
-                  <button type="submit" className="btn-primary" disabled={isAddingBlacklist} style={{ padding: '0 24px', borderRadius: '8px', margin: 0 }}>
+                  <button type="submit" className="btn-primary" disabled={isAddingBlacklist} style={{ padding: '12px 24px', borderRadius: '8px', margin: 0 }}>
                     {isAddingBlacklist ? 'Añadiendo...' : 'Añadir'}
                   </button>
                 </form>
@@ -299,7 +299,8 @@ export default function AdminPage() {
                 <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Blacklist ({Array.isArray(data) ? data.length : 0})
                 </div>
-                <table className="admin-table">
+                {/* Desktop table */}
+                <table className="admin-table admin-table-desktop">
                   <thead><tr><th>Tag</th><th>Nombre</th><th>Razón</th><th>Acciones</th></tr></thead>
                   <tbody>
                     {(Array.isArray(data) ? data : []).map((b, i) => (
@@ -316,6 +317,23 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+                {/* Mobile cards */}
+                <div className="admin-cards-mobile">
+                  {(Array.isArray(data) ? data : []).map((b, i) => (
+                    <div key={i} className="admin-entry-card">
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', gap: '12px', marginBottom: '6px' }}>
+                          <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.85rem' }}>{b.tag}</span>
+                          <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{b.name || '—'}</span>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', wordBreak: 'break-word' }}>{b.razon || '—'}</div>
+                      </div>
+                      <button onClick={() => handleRemoveBlacklist(b.tag)} className="btn-danger" style={{ padding: '8px', borderRadius: '8px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <TrashIcon style={{ width: 16, height: 16 }} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
           )}
@@ -402,7 +420,7 @@ export default function AdminPage() {
                 <form onSubmit={handleAddClub} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'stretch' }}>
                   <input type="text" id="newClubTag" placeholder="Tag del Club (ej: #2YGR8C9)" className="search-box" style={{ flex: 1, padding: '10px', borderRadius: '8px', margin: 0 }} required />
                   <input type="text" id="newClubKey" placeholder="Abreviatura/Nombre" className="search-box" style={{ flex: 1, padding: '10px', borderRadius: '8px', margin: 0 }} required />
-                  <button type="submit" className="btn-primary" disabled={isAddingClub} style={{ padding: '0 24px', borderRadius: '8px', margin: 0 }}>
+                  <button type="submit" className="btn-primary" disabled={isAddingClub} style={{ padding: '12px 24px', borderRadius: '8px', margin: 0 }}>
                     {isAddingClub ? 'Añadiendo...' : 'Añadir'}
                   </button>
                 </form>
@@ -412,7 +430,8 @@ export default function AdminPage() {
                 <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Clubes en Base de Datos ({clubesLaData?.length || 0})
                 </div>
-                <table className="admin-table">
+                {/* Desktop table */}
+                <table className="admin-table admin-table-desktop">
                   <thead><tr><th>Tag</th><th>Abreviatura</th><th>Nombre Ingame</th><th>Trofeos</th><th>Acciones</th></tr></thead>
                   <tbody>
                     {(clubesLaData || []).map((c, i) => (
@@ -430,6 +449,26 @@ export default function AdminPage() {
                     ))}
                   </tbody>
                 </table>
+                {/* Mobile cards */}
+                <div className="admin-cards-mobile">
+                  {(clubesLaData || []).map((c, i) => (
+                    <div key={i} className="admin-entry-card">
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', gap: '12px', marginBottom: '6px' }}>
+                          <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.85rem' }}>{c.tag}</span>
+                          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>{c.key || '—'}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem' }}>
+                          <span style={{ fontWeight: 600 }}>{c.name || '—'}</span>
+                          <span style={{ color: 'var(--gold)' }}>🏆 {c.trophies?.toLocaleString() || '—'}</span>
+                        </div>
+                      </div>
+                      <button onClick={() => handleRemoveClub(c.tag)} className="btn-danger" style={{ padding: '8px', borderRadius: '8px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <TrashIcon style={{ width: 16, height: 16 }} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
           )}

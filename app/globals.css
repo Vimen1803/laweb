@@ -424,6 +424,7 @@ a:hover { color: var(--gold-light); }
   color: var(--text-secondary); font-size: 0.9rem;
 }
 .admin-table tr:hover td { background: rgba(201,168,76,0.03); }
+.admin-cards-mobile { display: none; }
 
 /* FAQ */
 .faq-item {
@@ -852,27 +853,25 @@ a:hover { color: var(--gold-light); }
     padding: 1rem 0.5rem !important;
   }
 
-  /* Admin tables: fit within screen */
-  .admin-card {
-    padding: 0.75rem !important;
-    overflow: hidden !important;
+  /* Hide desktop tables, show mobile cards */
+  .admin-table-desktop {
+    display: none !important;
   }
-  .admin-table {
-    width: 100% !important;
-    min-width: 0 !important;
-    font-size: 0.7rem !important;
-    table-layout: fixed !important;
+  .admin-cards-mobile {
+    display: flex !important;
+    flex-direction: column;
+    gap: 8px;
   }
-  .admin-table th,
-  .admin-table td {
-    padding: 6px 4px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-  }
-  .admin-table th {
-    font-size: 0.6rem !important;
-    letter-spacing: 0 !important;
+
+  /* Admin entry cards */
+  .admin-entry-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
   }
 
   /* Admin forms: stack vertically */
@@ -890,17 +889,6 @@ a:hover { color: var(--gold-light); }
   /* Section title responsive */
   .admin-layout .section-title {
     font-size: 1.3rem !important;
-  }
-
-  /* Admin card title */
-  .admin-card-title {
-    font-size: 0.9rem !important;
-  }
-
-  /* Prevent any horizontal overflow */
-  .admin-layout > div {
-    overflow: hidden !important;
-    max-width: 100% !important;
   }
 }
 
