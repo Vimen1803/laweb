@@ -95,13 +95,20 @@ export default function WerewolfStatsPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '3rem 4rem', width: '100%', background: 'rgba(255,255,255,0.02)' }}>
+      <div className="card" style={{ 
+        padding: '3rem 5rem', 
+        width: '100%', 
+        background: 'rgba(255,255,255,0.02)',
+        boxSizing: 'border-box'
+      }}>
         <div className="stat-grid" style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(8, 1fr)', 
-          gap: '3rem 1.5rem', 
+          gridTemplateColumns: 'repeat(7, 1fr)', 
+          gap: '3.5rem 2rem', 
           width: '100%',
-          justifyItems: 'center'
+          justifyContent: 'center',
+          justifyItems: 'center',
+          margin: '0 auto'
         }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
