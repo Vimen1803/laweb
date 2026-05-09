@@ -213,22 +213,22 @@ export default function BotStatsPage() {
               </div>
 
               <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento por Bando</h4>
-              <div className="grid-2" style={{ gap: '0.75rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: 'rgba(46,204,113,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(46,204,113,0.2)' }}>
-                  <p style={{ fontSize: '0.6rem', color: '#2ecc71', textTransform: 'uppercase', marginBottom: '2px' }}>Aldea</p>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.village_won} / {werewolf.village_played}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <div style={{ background: 'rgba(46,204,113,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(46,204,113,0.2)', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#2ecc71', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Aldea</p>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.village_won} / {werewolf.village_played}</p>
                 </div>
-                <div style={{ background: 'rgba(231,76,60,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(231,76,60,0.2)' }}>
-                  <p style={{ fontSize: '0.6rem', color: '#e74c3c', textTransform: 'uppercase', marginBottom: '2px' }}>Lobos</p>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.wolf_won} / {werewolf.wolf_played}</p>
+                <div style={{ background: 'rgba(231,76,60,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(231,76,60,0.2)', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#e74c3c', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Lobos</p>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.wolf_won} / {werewolf.wolf_played}</p>
                 </div>
-                <div style={{ background: 'rgba(241,196,15,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(241,196,15,0.2)' }}>
-                  <p style={{ fontSize: '0.6rem', color: '#f1c40f', textTransform: 'uppercase', marginBottom: '2px' }}>Solitario</p>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} / {(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)}</p>
+                <div style={{ background: 'rgba(241,196,15,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(241,196,15,0.2)', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#f1c40f', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Solitario</p>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} / {(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)}</p>
                 </div>
-                <div style={{ background: 'rgba(233,30,99,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(233,30,99,0.2)' }}>
-                  <p style={{ fontSize: '0.6rem', color: '#e91e63', textTransform: 'uppercase', marginBottom: '2px' }}>Amantes</p>
-                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.lovers_won} / {werewolf.lovers_played}</p>
+                <div style={{ background: 'rgba(233,30,99,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(233,30,99,0.2)', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.65rem', color: '#e91e63', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Amantes</p>
+                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.lovers_won} / {werewolf.lovers_played}</p>
                 </div>
               </div>
 
