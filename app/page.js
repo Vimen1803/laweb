@@ -27,13 +27,36 @@ export default function Home() {
         <p className="hero-desc">
           La comunidad hispana de clubes más grande de Brawl Stars. Competitividad, pasión y una red de más de {stats.clubs ? stats.clubs : '15'} clubes que dominan los rankings.
         </p>
+        <div className="card" style={{ marginBottom: '2.5rem' }}>
+        <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.5rem', fontWeight: 700, color: 'var(--gold)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <BookOpenIcon style={{ width: 24, height: 24 }} /> Nuestra Historia
+        </h2>
+        <div style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '0.95rem' }}>
+          <p style={{ marginBottom: '1rem' }}>
+            <strong style={{ color: 'var(--text-primary)' }}>LA Spain</strong> nació el <strong style={{ color: 'var(--gold)' }}>4 de mayo de 2019</strong> de la mano 
+            de dos clubes pioneros: <strong style={{ color: 'var(--text-primary)' }}>S7VEN</strong> y <strong style={{ color: 'var(--text-primary)' }}>Sanctum</strong>, y 
+            rápidamente alcanzó la cima del ranking local y mundial.
+          </p>
+          <p style={{ marginBottom: '1rem' }}>
+            A lo largo del tiempo, grandes organizaciones como <strong style={{ color: 'var(--text-primary)' }}>Exenze</strong>, <strong style={{ color: 'var(--text-primary)' }}>DeRucula</strong> y <strong style={{ color: 'var(--text-primary)' }}>Gladius Legion</strong> se 
+            han unido a la familia, consolidando a LA Spain como la <strong style={{ color: 'var(--gold)' }}>comunidad hispana de clubes más grande de Brawl Stars</strong>, 
+            con más de {stats.members ? stats.members.toLocaleString() : '6500'} miembros en Discord y una red de más de {stats.clubs ? stats.clubs : '15'} clubes activos que compiten al más alto nivel.
+          </p>
+          <p style={{ marginBottom: '1rem' }}>
+            LA Spain ha dejado huella en torneos como la <strong style={{ color: 'var(--text-primary)' }}>Gems League Europe</strong> o la <strong style={{ color: 'var(--text-primary)' }}>Clash Royale League</strong>, 
+            y ha contado entre sus filas a campeones mundiales como <strong style={{ color: 'var(--gold)' }}>Mohamed Light</strong>.
+          </p>
+          <p>
+            Hoy, LA Spain cuenta con un <strong style={{ color: 'var(--text-primary)' }}>bot propio (LA Bot)</strong> con más de 100 comandos, 
+            un sistema de economía interactivo, minijuegos exclusivos, un sistema de niveles con recompensas, y un equipo de staff comprometido 
+            que trabaja día a día para mantener esta comunidad viva.
+          </p>
+        </div>
+      </div>
         <div className="hero-buttons">
           <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener" className="btn btn-primary">
             Únete al Discord
           </a>
-          <Link href="/comandos" className="btn btn-outline">
-            Ver Comandos
-          </Link>
         </div>
 
         {/* Dynamic stats */}
@@ -54,44 +77,6 @@ export default function Home() {
             <span className="stat-value">2019</span>
             <span className="stat-label">Fundación</span>
           </div>
-        </div>
-      </section>
-
-      {/* Features grid */}
-      <section className="section">
-        <h2 className="section-title">Qué encontrarás aquí</h2>
-        <p className="section-subtitle">Tu portal completo para la comunidad LA Spain</p>
-        <div className="grid-3">
-          <Link href="/comandos" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><CommandLineIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Comandos</h3>
-            <p>Todos los comandos del bot categorizados</p>
-          </Link>
-          <Link href="/brawlstars" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><SparklesIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Brawl Stars</h3>
-            <p>Perfiles, clubes y estadísticas en vivo</p>
-          </Link>
-          <Link href="/about" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><BookOpenIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Nuestra Historia</h3>
-            <p>Conoce la historia de LA Spain</p>
-          </Link>
-          <Link href="/roles" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><StarIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Roles</h3>
-            <p>Sistema de niveles y recompensas</p>
-          </Link>
-          <Link href="/normas" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><DocumentTextIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Normas</h3>
-            <p>Reglas de convivencia del servidor</p>
-          </Link>
-          <Link href="/staff" className="feature-card">
-            <div className="feature-icon" style={{ display: 'flex', justifyContent: 'center' }}><ShieldCheckIcon style={{ width: 40, height: 40 }} /></div>
-            <h3>Staff</h3>
-            <p>Conoce al equipo que nos cuida</p>
-          </Link>
         </div>
       </section>
     </>
