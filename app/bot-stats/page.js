@@ -35,9 +35,11 @@ export default function BotStatsPage() {
   }, []);
 
   if (loading) return <div className="section"><p className="text-muted text-center">Cargando tus estadísticas...</p></div>;
-  if (error) return <div className="section"><p className="text-center text-danger">⚠️ {error}. Debes iniciar sesión.</p></div>;
+  if (error || !data) return <div className="section"><p className="text-center text-danger">⚠️ {error || 'Error desconocido'}. Debes iniciar sesión.</p></div>;
 
-  const { wordle, werewolf } = data;
+  const wordle = data.wordle || null;
+  const werewolf = data.werewolf || null;
+  
   const [wordleMode, setWordleMode] = useState('normal');
 
   const renderWordleStats = (mode, stats) => {

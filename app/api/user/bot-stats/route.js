@@ -44,18 +44,17 @@ export async function GET() {
       const played = data[`${p}played`] || (prefix === '' ? data.played : 0) || 0;
       let wins = data[`${p}total_wins`] || 0;
       
-      // Special logic for Normal wins if prefix is empty
       if (prefix === '') {
         wins = Math.max(0, (data.total_wins || 0) - ((data.double_total_wins || 0) * 2) - ((data.triple_total_wins || 0) * 3));
       }
 
       return {
-        played,
-        wins,
-        winrate: played > 0 ? ((wins / played) * 100).toFixed(1) : '0.0',
-        streak: data[`${p}streak`] || 0,
-        max_streak: data[`${p}max_streak`] || 0,
-        earnings: data[`${p}total_earnings`] || (prefix === '' ? data.total_earnings : 0) || 0,
+        played: Number(played),
+        wins: Number(wins),
+        winrate: Number(played) > 0 ? ((Number(wins) / Number(played)) * 100).toFixed(1) : '0.0',
+        streak: Number(data[`${p}streak`] || 0),
+        max_streak: Number(data[`${p}max_streak`] || 0),
+        earnings: Number(data[`${p}total_earnings`] || (prefix === '' ? data.total_earnings : 0) || 0),
         distribution: data[`${p}guess_distribution`] || {}
       };
     };
@@ -65,16 +64,32 @@ export async function GET() {
       double: processMode('double', wordle),
       triple: processMode('triple', wordle),
       ladder: {
-        played: wordle.ladder_played || 0,
-        total_words: wordle.ladder_total_words || 0,
-        max_words: wordle.ladder_max_words || 0,
-        earnings: wordle.ladder_total_earnings || 0
+        played: Number(wordle.ladder_played || 0),
+        total_words: Number(wordle.ladder_total_words || 0),
+        max_words: Number(wordle.ladder_max_words || 0),
+        earnings: Number(wordle.ladder_total_earnings || 0)
       }
     } : null;
 
+    // Sanitize Werewolf data
+    let werewolfStats = null;
+    if (werewolf) {
+      werewolfStats = {
+        ...werewolf,
+        _id: werewolf._id.toString(),
+        games_played: Number(werewolf.games_played || 0),
+        games_won: Number(werewolf.games_won || 0),
+        village_played: Number(werewolf.village_played || 0),
+        village_won: Number(werewolf.village_won || 0),
+        wolf_played: Number(werewolf.wolf_played || 0),
+        wolf_won: Number(werewolf.wolf_won || 0),
+        roles_played: werewolf.roles_played || {}
+      };
+    }
+
     return NextResponse.json({
       wordle: wordleStats,
-      werewolf: werewolf || null,
+      werewolf: werewolfStats,
       trivial: null // Próximamente
     });
   } catch (err) {
