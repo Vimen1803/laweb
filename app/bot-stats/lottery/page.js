@@ -91,13 +91,13 @@ export default function LotteryStatsPage() {
           </div>
         </div>
 
-        <div className="grid-2" style={{ gap: '2rem', marginBottom: '3rem' }}>
-          {/* Main Info */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="grid-2" style={{ gap: '2rem', marginBottom: '3rem', alignItems: 'stretch' }}>
+          {/* Left: Main Info */}
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
             <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <HashtagIcon style={{ width: 18, height: 18 }} /> Parámetros del Juego
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flexGrow: 1, justifyContent: 'center' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <span className="text-muted">Rango Mínimo</span>
                 <span style={{ fontSize: '1.2rem', fontWeight: 800 }}>{data.min}</span>
@@ -119,83 +119,70 @@ export default function LotteryStatsPage() {
             </div>
           </div>
 
-          {/* Reward Info */}
-          <div style={{ background: 'rgba(201,168,76,0.05)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(201,168,76,0.1)', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
-            <div style={{ background: 'var(--gold)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-              <TrophyIcon style={{ width: 30, height: 30, color: '#000' }} />
-            </div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.5rem' }}>Recompensa de Victoria</h3>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>El primer usuario en adivinar el número secreto recibirá:</p>
-            <div style={{ background: '#000', padding: '15px', borderRadius: '10px', border: '1px solid var(--gold)' }}>
-              <span style={{ color: 'var(--gold)', fontSize: '1.1rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>Portador de la Fortuna</span>
-            </div>
-            <p style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>ID del Rol: {data.role}</p>
-          </div>
-        </div>
-
-        {/* Searcher Section */}
-        <div style={{ marginBottom: '3rem' }}>
-          <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <MagnifyingGlassIcon style={{ width: 18, height: 18 }} /> Buscador de Números
-          </h3>
-          <div className="card" style={{ background: 'rgba(255,255,255,0.01)', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>Escribe un número para comprobar si ya ha sido intentado por otro jugador.</p>
-            <div style={{ position: 'relative', maxWidth: '400px' }}>
-              <input 
-                type="number"
-                placeholder="Ej: 972"
-                value={searchQuery}
-                onChange={handleSearch}
-                style={{ 
-                  width: '100%', 
-                  padding: '15px 15px 15px 45px', 
-                  borderRadius: '12px', 
-                  background: 'rgba(0,0,0,0.3)', 
-                  border: '1px solid rgba(255,255,255,0.1)', 
-                  color: '#fff',
-                  fontSize: '1.1rem',
-                  outline: 'none'
-                }}
-              />
-              <MagnifyingGlassIcon style={{ width: 20, height: 20, color: 'rgba(255,255,255,0.3)', position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-            </div>
-
-            {searchResult && (
-              <div className="fade-in" style={{ marginTop: '1.5rem', padding: '15px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', 
-                background: searchResult === 'available' ? 'rgba(46,204,113,0.1)' : 'rgba(231,76,60,0.1)',
-                border: `1px solid ${searchResult === 'available' ? 'rgba(46,204,113,0.2)' : 'rgba(231,76,60,0.2)'}`
-              }}>
-                {searchResult === 'available' ? (
-                  <>
-                    <CheckCircleIcon style={{ width: 24, height: 24, color: '#2ecc71' }} />
-                    <div>
-                      <p style={{ color: '#2ecc71', fontWeight: 800 }}>¡Número disponible!</p>
-                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Este número aún no ha sido dicho. ¡Pruébalo en Discord!</p>
-                    </div>
-                  </>
-                ) : searchResult === 'guessed' ? (
-                  <>
-                    <XCircleIcon style={{ width: 24, height: 24, color: '#e74c3c' }} />
-                    <div>
-                      <p style={{ color: '#e74c3c', fontWeight: 800 }}>Número ya intentado</p>
-                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Alguien ya ha dicho el {searchQuery}. Prueba con otro diferente.</p>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <XCircleIcon style={{ width: 24, height: 24, color: '#f39c12' }} />
-                    <div>
-                      <p style={{ color: '#f39c12', fontWeight: 800 }}>Fuera de rango</p>
-                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>El número debe estar entre {data.min} y {data.max}.</p>
-                    </div>
-                  </>
-                )}
+          {/* Right: Searcher */}
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
+            <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <MagnifyingGlassIcon style={{ width: 18, height: 18 }} /> Buscador de Números
+            </h3>
+            
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '1.2rem' }}>Comprueba si un número ya ha sido intentado:</p>
+              <div style={{ position: 'relative' }}>
+                <input 
+                  type="number"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  style={{ 
+                    width: '100%', 
+                    padding: '12px 15px 12px 40px', 
+                    borderRadius: '10px', 
+                    background: 'rgba(0,0,0,0.3)', 
+                    border: '1px solid rgba(255,255,255,0.1)', 
+                    color: '#fff',
+                    fontSize: '1rem',
+                    outline: 'none'
+                  }}
+                />
+                <MagnifyingGlassIcon style={{ width: 18, height: 18, color: 'rgba(255,255,255,0.3)', position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
               </div>
-            )}
+
+              {searchResult && (
+                <div className="fade-in" style={{ marginTop: '1.2rem', padding: '12px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', 
+                  background: searchResult === 'available' ? 'rgba(46,204,113,0.1)' : 'rgba(231,76,60,0.1)',
+                  border: `1px solid ${searchResult === 'available' ? 'rgba(46,204,113,0.2)' : 'rgba(231,76,60,0.2)'}`
+                }}>
+                  {searchResult === 'available' ? (
+                    <CheckCircleIcon style={{ width: 20, height: 20, color: '#2ecc71', flexShrink: 0 }} />
+                  ) : (
+                    <XCircleIcon style={{ width: 20, height: 20, color: '#e74c3c', flexShrink: 0 }} />
+                  )}
+                  <p style={{ fontSize: '0.85rem', fontWeight: 700, color: searchResult === 'available' ? '#2ecc71' : '#e74c3c' }}>
+                    {searchResult === 'available' ? '¡Número libre!' : searchResult === 'guessed' ? 'Ya intentado' : 'Fuera de rango'}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', padding: '2rem' }}>
+        {/* Reward & Info Footer */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginTop: '2rem' }}>
+          <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ background: 'var(--gold)', width: '45px', height: '45px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <TrophyIcon style={{ width: 22, height: 22, color: '#000' }} />
+            </div>
+            <div>
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.25rem' }}>Premio: Portador de la Fortuna</h4>
+              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Adivina el número en Discord para ganar este rol exclusivo automáticamente.</p>
+            </div>
+          </div>
+          <div className="card" style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.1)', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
+             <p style={{ fontSize: '0.7rem', color: 'var(--gold)', textTransform: 'uppercase', fontWeight: 800, marginBottom: '4px' }}>Rol ID</p>
+             <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>{data.role}</p>
+          </div>
+        </div>
+
+        <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', padding: '2rem', marginTop: '2rem' }}>
           <SparklesIcon style={{ width: 30, height: 30, color: 'var(--gold)', margin: '0 auto 1rem' }} />
           <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>¿Cómo Participar?</h4>
           <p className="text-muted" style={{ fontSize: '0.9rem' }}>
