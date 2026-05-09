@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import clientPromise from '@/lib/mongodb';
+import clientPromise, { werewolfClientPromise } from '@/lib/mongodb';
 import { Long } from 'mongodb';
 
 export async function GET() {
@@ -12,8 +12,10 @@ export async function GET() {
     }
 
     const client = await clientPromise;
+    const werewolfClient = await werewolfClientPromise;
+    
     const labotDb = client.db('labot');
-    const werewolfDb = client.db('werewolf');
+    const werewolfDb = werewolfClient.db('werewolf');
 
     const memberIdLong = Long.fromString(discordId);
     const GUILD_ID = "460550486257565697"; // LA Spain
