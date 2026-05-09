@@ -208,25 +208,30 @@ export default function BotStatsPage() {
                 </div>
               </div>
 
-              <h4 style={{ marginBottom: '1rem', color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Roles más Jugados</h4>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Estadísticas por Rol</h4>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {Object.entries(werewolf.roles_played || {})
                   .sort(([, a], [, b]) => b - a)
-                  .slice(0, 10)
-                  .map(([role, count]) => (
-                  <span key={role} style={{ 
-                    background: 'var(--bg-body)', 
-                    padding: '5px 12px', 
-                    borderRadius: '6px', 
-                    fontSize: '0.75rem',
-                    border: '1px solid var(--gold-darker)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}>
-                    <span style={{ color: 'var(--gold)' }}>{count}</span> {role}
-                  </span>
-                ))}
+                  .slice(0, 12)
+                  .map(([role, played]) => {
+                    const wins = (werewolf.roles_won || {})[role] || 0;
+                    return (
+                      <span key={role} style={{ 
+                        background: 'var(--bg-body)', 
+                        padding: '6px 12px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.75rem',
+                        border: '1px solid var(--gold-darker)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        minWidth: '80px'
+                      }}>
+                        <strong style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>{wins} / {played}</strong>
+                        <span style={{ fontSize: '0.65rem', opacity: 0.8, marginTop: '2px' }}>{role}</span>
+                      </span>
+                    );
+                  })}
               </div>
             </div>
           )}

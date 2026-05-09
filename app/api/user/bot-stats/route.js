@@ -84,7 +84,8 @@ export async function GET() {
         village_won: Number(werewolf.village_won || 0),
         wolf_played: Number(werewolf.wolf_played || 0),
         wolf_won: Number(werewolf.wolf_won || 0),
-        roles_played: werewolf.roles_played || {}
+        roles_played: werewolf.roles_played || {},
+        roles_won: werewolf.roles_won || {}
       };
     }
 
