@@ -67,7 +67,8 @@ export async function GET() {
         played: Number(wordle.ladder_played || 0),
         total_words: Number(wordle.ladder_total_words || 0),
         max_words: Number(wordle.ladder_max_words || 0),
-        earnings: Number(wordle.ladder_total_earnings || 0)
+        earnings: Number(wordle.ladder_total_earnings || 0),
+        average: Number(wordle.ladder_played || 0) > 0 ? (Number(wordle.ladder_total_words || 0) / Number(wordle.ladder_played)).toFixed(1) : '0.0'
       }
     } : null;
 

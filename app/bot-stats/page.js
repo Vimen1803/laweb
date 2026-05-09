@@ -48,31 +48,54 @@ export default function BotStatsPage() {
 
     return (
       <div className="fade-in">
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
-          <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-            <span className="stat-value" style={{ fontSize: '1.2rem' }}>{isLadder ? stats.total_words : stats.wins}</span>
-            <span className="stat-label">{isLadder ? 'Total Palabras' : 'Victorias'}</span>
-          </div>
-          {!isLadder && (
-            <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-              <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.winrate}%</span>
-              <span className="stat-label">Winrate</span>
-            </div>
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          {!isLadder ? (
+            <>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.wins}</span>
+                <span className="stat-label">Victorias</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.played}</span>
+                <span className="stat-label">Jugadas</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.winrate}%</span>
+                <span className="stat-label">Winrate</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.streak}</span>
+                <span className="stat-label">Racha Act.</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.max_streak}</span>
+                <span className="stat-label">Racha Máx.</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{Number(stats.earnings || 0).toFixed(0)}</span>
+                <span className="stat-label">Créditos</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.played}</span>
+                <span className="stat-label">Jugadas</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.max_words}</span>
+                <span className="stat-label">Récord</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{Number(stats.earnings || 0).toFixed(0)}</span>
+                <span className="stat-label">Créditos</span>
+              </div>
+              <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.average}</span>
+                <span className="stat-label">Media</span>
+              </div>
+            </>
           )}
-          {!isLadder && (
-            <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-              <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.streak}</span>
-              <span className="stat-label">Racha Act.</span>
-            </div>
-          )}
-          <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-            <span className="stat-value" style={{ fontSize: '1.2rem' }}>{isLadder ? stats.max_words : stats.max_streak}</span>
-            <span className="stat-label">{isLadder ? 'Máx. Escalera' : 'Racha Máx.'}</span>
-          </div>
-          <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-            <span className="stat-value" style={{ fontSize: '1.2rem' }}>{Number(stats.earnings || 0).toFixed(0)}</span>
-            <span className="stat-label">Créditos</span>
-          </div>
         </div>
 
         {!isLadder && stats.distribution && Object.keys(stats.distribution).length > 0 && (
