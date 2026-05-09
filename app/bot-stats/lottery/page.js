@@ -7,12 +7,17 @@ import {
   SparklesIcon, 
   ClockIcon, 
   HashtagIcon,
-  TrophyIcon
+  TrophyIcon,
+  MagnifyingGlassIcon,
+  CheckCircleIcon,
+  XCircleIcon
 } from '@heroicons/react/24/solid';
 
 export default function LotteryStatsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
 
   useEffect(() => {
     fetch('/api/user/bot-stats')
@@ -26,6 +31,29 @@ export default function LotteryStatsPage() {
         setLoading(false);
       });
   }, []);
+
+  const handleSearch = (e) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    
+    if (!val || isNaN(val)) {
+      setSearchResult(null);
+      return;
+    }
+
+    const num = parseInt(val);
+    if (data && data.numbers) {
+      if (data.numbers.includes(num)) {
+        setSearchResult('guessed');
+      } else if (num < data.min || num > data.max) {
+        setSearchResult('out-of-range');
+      } else {
+        setSearchResult('available');
+      }
+    }
+  };
+
+  // ... (loading and empty states remain same)
 
   if (loading) {
     return (
@@ -102,6 +130,68 @@ export default function LotteryStatsPage() {
               <span style={{ color: 'var(--gold)', fontSize: '1.1rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>Portador de la Fortuna</span>
             </div>
             <p style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>ID del Rol: {data.role}</p>
+          </div>
+        </div>
+
+        {/* Searcher Section */}
+        <div style={{ marginBottom: '3rem' }}>
+          <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <MagnifyingGlassIcon style={{ width: 18, height: 18 }} /> Buscador de Números
+          </h3>
+          <div className="card" style={{ background: 'rgba(255,255,255,0.01)', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1.5rem' }}>Escribe un número para comprobar si ya ha sido intentado por otro jugador.</p>
+            <div style={{ position: 'relative', maxWidth: '400px' }}>
+              <input 
+                type="number"
+                placeholder="Ej: 972"
+                value={searchQuery}
+                onChange={handleSearch}
+                style={{ 
+                  width: '100%', 
+                  padding: '15px 15px 15px 45px', 
+                  borderRadius: '12px', 
+                  background: 'rgba(0,0,0,0.3)', 
+                  border: '1px solid rgba(255,255,255,0.1)', 
+                  color: '#fff',
+                  fontSize: '1.1rem',
+                  outline: 'none'
+                }}
+              />
+              <MagnifyingGlassIcon style={{ width: 20, height: 20, color: 'rgba(255,255,255,0.3)', position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+            </div>
+
+            {searchResult && (
+              <div className="fade-in" style={{ marginTop: '1.5rem', padding: '15px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '12px', 
+                background: searchResult === 'available' ? 'rgba(46,204,113,0.1)' : 'rgba(231,76,60,0.1)',
+                border: `1px solid ${searchResult === 'available' ? 'rgba(46,204,113,0.2)' : 'rgba(231,76,60,0.2)'}`
+              }}>
+                {searchResult === 'available' ? (
+                  <>
+                    <CheckCircleIcon style={{ width: 24, height: 24, color: '#2ecc71' }} />
+                    <div>
+                      <p style={{ color: '#2ecc71', fontWeight: 800 }}>¡Número disponible!</p>
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Este número aún no ha sido dicho. ¡Pruébalo en Discord!</p>
+                    </div>
+                  </>
+                ) : searchResult === 'guessed' ? (
+                  <>
+                    <XCircleIcon style={{ width: 24, height: 24, color: '#e74c3c' }} />
+                    <div>
+                      <p style={{ color: '#e74c3c', fontWeight: 800 }}>Número ya intentado</p>
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>Alguien ya ha dicho el {searchQuery}. Prueba con otro diferente.</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <XCircleIcon style={{ width: 24, height: 24, color: '#f39c12' }} />
+                    <div>
+                      <p style={{ color: '#f39c12', fontWeight: 800 }}>Fuera de rango</p>
+                      <p style={{ fontSize: '0.8rem', opacity: 0.8 }}>El número debe estar entre {data.min} y {data.max}.</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

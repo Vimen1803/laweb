@@ -107,6 +107,7 @@ export async function GET() {
       timeout: Number(lottery.timeout || 0),
       role: lottery.role ? lottery.role.toString() : null,
       guessed: Array.isArray(lottery.numeros) ? lottery.numeros.length : 0,
+      numbers: Array.isArray(lottery.numeros) ? lottery.numeros : [],
       channel: lottery.channel_id ? lottery.channel_id.toString() : null
     } : null;
 
