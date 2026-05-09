@@ -84,6 +84,12 @@ export async function GET() {
         village_won: Number(werewolf.village_won || 0),
         wolf_played: Number(werewolf.wolf_played || 0),
         wolf_won: Number(werewolf.wolf_won || 0),
+        tanner_played: Number(werewolf.tanner_played || 0),
+        tanner_won: Number(werewolf.tanner_won || 0),
+        white_wolf_played: Number(werewolf.white_wolf_played || 0),
+        white_wolf_won: Number(werewolf.white_wolf_won || 0),
+        lovers_played: Number(werewolf.lovers_played || 0),
+        lovers_won: Number(werewolf.lovers_won || 0),
         roles_played: werewolf.roles_played || {},
         roles_won: werewolf.roles_won || {}
       };
@@ -98,6 +104,12 @@ export async function GET() {
         village_won: 51,
         wolf_played: 48,
         wolf_won: 26,
+        tanner_played: 5,
+        tanner_won: 2,
+        white_wolf_played: 6,
+        white_wolf_won: 3,
+        lovers_played: 10,
+        lovers_won: 4,
         roles_played: {
           "Aldeano": 45, "Hombre Lobo": 32, "Vidente": 21, "Cazador": 18, 
           "Bruja": 12, "Cupido": 10, "Lobo Blanco": 8, "Flautista": 6, "Chaman": 4

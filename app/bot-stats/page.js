@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   ChartBarIcon, 
   TrophyIcon, 
@@ -10,7 +11,11 @@ import {
   UserGroupIcon, 
   SparklesIcon,
   QuestionMarkCircleIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  ArrowRightIcon,
+  HeartIcon,
+  UserIcon,
+  ShieldCheckIcon
 } from '@heroicons/react/24/solid';
 
 export default function BotStatsPage() {
@@ -169,71 +174,44 @@ export default function BotStatsPage() {
           ) : renderWordleStats(wordleMode, wordle[wordleMode])}
         </div>
 
-        {/* WEREWOLF */}
-        <div className="card" style={{ borderTop: '4px solid #8b0000', padding: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
-            <UserGroupIcon style={{ width: 28, height: 28, color: '#8b0000' }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
-          </div>
-
-          {!werewolf ? (
-            <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p>
-          ) : (
-            <div className="fade-in">
-              <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_played || 0}</span>
-                  <span className="stat-label">Partidas</span>
-                </div>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_won || 0}</span>
-                  <span className="stat-label">Victorias</span>
-                </div>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>
-                    {werewolf.games_played ? ((werewolf.games_won / werewolf.games_played) * 100).toFixed(1) : 0}%
-                  </span>
-                  <span className="stat-label">Winrate</span>
-                </div>
-              </div>
-
-              <div className="grid-2" style={{ gap: '1rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: 'rgba(46,204,113,0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(46,204,113,0.2)' }}>
-                  <h4 style={{ color: '#2ecc71', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '4px' }}>Aldea</h4>
-                  <p style={{ fontSize: '1rem', fontWeight: 700 }}>{werewolf.village_won || 0} / {werewolf.village_played || 0} <small style={{ fontWeight: 400, fontSize: '0.7rem', opacity: 0.7 }}>W/P</small></p>
-                </div>
-                <div style={{ background: 'rgba(231,76,60,0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(231,76,60,0.2)' }}>
-                  <h4 style={{ color: '#e74c3c', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '4px' }}>Lobos</h4>
-                  <p style={{ fontSize: '1rem', fontWeight: 700 }}>{werewolf.wolf_won || 0} / {werewolf.wolf_played || 0} <small style={{ fontWeight: 400, fontSize: '0.7rem', opacity: 0.7 }}>W/P</small></p>
-                </div>
-              </div>
-
-              <h4 style={{ marginBottom: '1rem', color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Estadísticas por Rol</h4>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {Object.entries(werewolf.roles_played || {})
-                  .sort(([, a], [, b]) => b - a)
-                  .slice(0, 12)
-                  .map(([role, played]) => {
-                    const wins = (werewolf.roles_won || {})[role] || 0;
-                    return (
-                      <span key={role} style={{ 
-                        background: 'var(--bg-body)', 
-                        padding: '6px 12px', 
-                        borderRadius: '6px', 
-                        fontSize: '0.75rem',
-                        border: '1px solid var(--gold-darker)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        minWidth: '80px'
-                      }}>
-                        <strong style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>{wins} / {played}</strong>
-                        <span style={{ fontSize: '0.65rem', opacity: 0.8, marginTop: '2px' }}>{role}</span>
-                      </span>
-                    );
-                  })}
-              </div>
+        {/* WEREWOLF SUMMARY */}
+        <div className="card" style={{ borderTop: '4px solid #8b0000', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+              <UserGroupIcon style={{ width: 28, height: 28, color: '#8b0000' }} />
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
             </div>
+
+            {!werewolf ? (
+              <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p>
+            ) : (
+              <div className="fade-in">
+                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_played || 0}</span>
+                    <span className="stat-label">Partidas</span>
+                  </div>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_won || 0}</span>
+                    <span className="stat-label">Victorias</span>
+                  </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-body)', padding: '15px', borderRadius: '12px', border: '1px solid var(--gold-darker)' }}>
+                  <h4 style={{ color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '10px' }}>Resumen de Rendimiento</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                    <span>Winrate Global:</span>
+                    <span style={{ fontWeight: 700 }}>{werewolf.games_played ? ((werewolf.games_won / werewolf.games_played) * 100).toFixed(1) : 0}%</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {werewolf && (
+            <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              Ver Estadísticas Detalladas <ArrowRightIcon style={{ width: 16, height: 16 }} />
+            </Link>
           )}
         </div>
       </div>
