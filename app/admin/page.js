@@ -31,6 +31,7 @@ export default function AdminPage() {
   const [userData, setUserData] = useState(null);
   const [clubesLaData, setClubesLaData] = useState([]);
   const [isAddingClub, setIsAddingClub] = useState(false);
+  const [adminSidebarOpen, setAdminSidebarOpen] = useState(false);
   const [isAddingBlacklist, setIsAddingBlacklist] = useState(false);
   
   useEffect(() => {
@@ -190,18 +191,19 @@ export default function AdminPage() {
     <div style={{ paddingTop: '1rem' }}>
       <div className="admin-layout">
         {/* Sidebar */}
-        <aside className="admin-sidebar">
-          <div className="sidebar-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <LockClosedIcon style={{ width: 20, height: 20 }} /> PANEL ADMIN
+        <aside className={`admin-sidebar ${!adminSidebarOpen ? 'collapsed' : ''}`}>
+          <div className="sidebar-title" onClick={() => setAdminSidebarOpen(!adminSidebarOpen)} style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between', cursor: 'pointer' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><LockClosedIcon style={{ width: 20, height: 20 }} /> PANEL ADMIN</span>
+            <span className="sidebar-toggle-icon" style={{ fontSize: '0.8rem', transition: 'transform 0.3s', transform: adminSidebarOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
           </div>
           {sideItems.map(s => (
             <button key={s.id}
               className={`sidebar-item ${section === s.id ? 'active' : ''}`}
-              onClick={() => setSection(s.id)}>
+              onClick={() => { setSection(s.id); setAdminSidebarOpen(false); }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>{s.icon} {s.label}</span>
             </button>
           ))}
-          <div style={{ padding: '1rem 0.75rem', marginTop: '1rem', borderTop: '1px solid var(--border)' }}>
+          <div className="admin-sidebar-footer" style={{ padding: '1rem 0.75rem', marginTop: '1rem', borderTop: '1px solid var(--border)' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
               ⚠️ Panel de lectura/escritura. Los datos se obtienen y modifican directamente de la base de datos del bot.
             </p>
