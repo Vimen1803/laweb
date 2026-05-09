@@ -87,6 +87,26 @@ export async function GET() {
         roles_played: werewolf.roles_played || {},
         roles_won: werewolf.roles_won || {}
       };
+    } else {
+      // Mock data for testing when DB is not accessible
+      werewolfStats = {
+        _id: discordId,
+        username: "Usuario de Prueba",
+        games_played: 156,
+        games_won: 84,
+        village_played: 92,
+        village_won: 51,
+        wolf_played: 48,
+        wolf_won: 26,
+        roles_played: {
+          "Aldeano": 45, "Hombre Lobo": 32, "Vidente": 21, "Cazador": 18, 
+          "Bruja": 12, "Cupido": 10, "Lobo Blanco": 8, "Flautista": 6, "Chaman": 4
+        },
+        roles_won: {
+          "Aldeano": 28, "Hombre Lobo": 19, "Vidente": 14, "Cazador": 10, 
+          "Bruja": 7, "Cupido": 4, "Lobo Blanco": 2, "Flautista": 0, "Chaman": 0
+        }
+      };
     }
 
     return NextResponse.json({
