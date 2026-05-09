@@ -84,6 +84,9 @@ export default function Navbar() {
             {session.user.image && (
               <img src={session.user.image} alt="" className="nav-avatar" />
             )}
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                {session.user.name}
+              </span>
             <a href="/api/auth/signout?callbackUrl=/" className="btn-logout">
               Salir
             </a>
