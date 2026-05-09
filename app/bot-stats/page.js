@@ -70,7 +70,7 @@ export default function BotStatsPage() {
       </h1>
       <p className="section-subtitle">Tu rendimiento en los minijuegos de LA Spain</p>
 
-      <div className="grid-2">
+      <div className="grid-2" style={{ alignItems: 'stretch' }}>
         {/* WORDLE */}
         <div className="card" style={{ borderTop: '4px solid #538d4e', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
@@ -79,57 +79,60 @@ export default function BotStatsPage() {
           </div>
 
           {!wordle ? (
-            <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has jugado ninguna partida de Wordle.</p>
+            <div style={{ flexGrow: 1 }}><p className="text-muted" style={{ padding: '20px 0' }}>Aún no has jugado ninguna partida de Wordle.</p></div>
           ) : (
-            <div className="fade-in">
-              {/* Row 1: Principal Stats */}
-              <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.5rem', color: 'var(--gold)' }}>{wordle[wordleMode].played}</span>
-                  <span className="stat-label">Jugadas</span>
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+              <div style={{ flexGrow: 1 }}>
+                {/* Row 1: Principal Stats */}
+                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem', color: 'var(--gold)' }}>{wordle[wordleMode].played}</span>
+                    <span className="stat-label">Jugadas</span>
+                  </div>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem', color: '#538d4e' }}>{wordle[wordleMode].wins}</span>
+                    <span className="stat-label">Victorias</span>
+                  </div>
                 </div>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.5rem', color: '#538d4e' }}>{wordle[wordleMode].wins}</span>
-                  <span className="stat-label">Victorias</span>
-                </div>
-              </div>
 
-              {/* Other 4 stats in 2x2 grid */}
-              {wordleMode !== 'ladder' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Winrate</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].winrate}%</p>
+                <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Estadísticas del Modo</h4>
+                {/* Other 4 stats in 2x2 grid */}
+                {wordleMode !== 'ladder' ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Winrate</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].winrate}%</p>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Racha Act.</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].streak}</p>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Racha Máx.</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].max_streak}</p>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Créditos</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{Number(wordle[wordleMode].earnings || 0).toFixed(0)}</p>
+                    </div>
                   </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Racha Act.</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].streak}</p>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Récord</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].max_words}</p>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Media</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].average}</p>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', gridColumn: 'span 2' }}>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Créditos Totales</p>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{Number(wordle[wordleMode].earnings || 0).toFixed(0)}</p>
+                    </div>
                   </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Racha Máx.</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].max_streak}</p>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Créditos</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{Number(wordle[wordleMode].earnings || 0).toFixed(0)}</p>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Récord</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].max_words}</p>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Media</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{wordle[wordleMode].average}</p>
-                  </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', gridColumn: 'span 2' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Créditos Totales</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{Number(wordle[wordleMode].earnings || 0).toFixed(0)}</p>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Mode Buttons */}
               <div className="hero-buttons" style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', justifyContent: 'center' }}>
@@ -167,41 +170,46 @@ export default function BotStatsPage() {
           </div>
 
           {!werewolf ? (
-            <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p>
+            <div style={{ flexGrow: 1 }}><p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p></div>
           ) : (
-            <div className="fade-in">
-              <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_played || 0}</span>
-                  <span className="stat-label">Partidas</span>
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+              <div style={{ flexGrow: 1 }}>
+                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem' }}>{werewolf.games_played || 0}</span>
+                    <span className="stat-label">Partidas</span>
+                  </div>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem' }}>{werewolf.games_won || 0}</span>
+                    <span className="stat-label">Victorias</span>
+                  </div>
                 </div>
-                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_won || 0}</span>
-                  <span className="stat-label">Victorias</span>
+
+                <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento por Bando</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(46,204,113,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(46,204,113,0.2)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: '#2ecc71', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Aldea</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.village_won} / {werewolf.village_played}</p>
+                  </div>
+                  <div style={{ background: 'rgba(231,76,60,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(231,76,60,0.2)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: '#e74c3c', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Lobos</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.wolf_won} / {werewolf.wolf_played}</p>
+                  </div>
+                  <div style={{ background: 'rgba(241,196,15,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(241,196,15,0.2)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: '#f1c40f', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Solitario</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} / {(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)}</p>
+                  </div>
+                  <div style={{ background: 'rgba(233,30,99,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(233,30,99,0.2)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: '#e91e63', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Amantes</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.lovers_won} / {werewolf.lovers_played}</p>
+                  </div>
                 </div>
               </div>
 
-              <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento por Bando</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                <div style={{ background: 'rgba(46,204,113,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(46,204,113,0.2)', textAlign: 'center' }}>
-                  <p style={{ fontSize: '0.65rem', color: '#2ecc71', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Aldea</p>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.village_won} / {werewolf.village_played}</p>
-                </div>
-                <div style={{ background: 'rgba(231,76,60,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(231,76,60,0.2)', textAlign: 'center' }}>
-                  <p style={{ fontSize: '0.65rem', color: '#e74c3c', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Lobos</p>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.wolf_won} / {werewolf.wolf_played}</p>
-                </div>
-                <div style={{ background: 'rgba(241,196,15,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(241,196,15,0.2)', textAlign: 'center' }}>
-                  <p style={{ fontSize: '0.65rem', color: '#f1c40f', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Solitario</p>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} / {(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)}</p>
-                </div>
-                <div style={{ background: 'rgba(233,30,99,0.1)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(233,30,99,0.2)', textAlign: 'center' }}>
-                  <p style={{ fontSize: '0.65rem', color: '#e91e63', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Amantes</p>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.lovers_won} / {werewolf.lovers_played}</p>
-                </div>
-              </div>
+              {/* Spacing to match Wordle buttons height if needed, though buttons are already at the bottom */}
+              <div style={{ height: 'calc(1.5rem + 32px)', marginBottom: '1.5rem', display: 'none' }}></div> 
 
-              <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                 Estadísticas por Rol <ArrowRightIcon style={{ width: 16, height: 16 }} />
               </Link>
             </div>
