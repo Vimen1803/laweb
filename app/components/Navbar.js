@@ -23,7 +23,6 @@ export default function Navbar() {
     { href: '/normas', label: 'Normas' },
     { href: '/roles', label: 'Roles' },
     { href: '/brawlstars', label: 'Brawl Stars' },
-    { href: '/staff', label: 'Staff' },
     { href: '/faq', label: 'FAQ' },
   ];
 

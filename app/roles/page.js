@@ -28,10 +28,26 @@ const specialRoles = [
 ];
 
 const staffRoles = [
-  { name: 'Ayudante', desc: 'Encargados de ayudar a mantener la actividad, reportar comportamientos inadecuados y resolver dudas de los miembros.', color: '#3498db' },
-  { name: 'Moderador', desc: 'Encargados de imponer sanciones a los miembros que incumplan las normas y resolver conflictos.', color: '#9b59b6' },
-  { name: 'Manager', desc: 'Encargados de la gestión del servidor: toma de decisiones importantes, implementación de sugerencias y administración interna.', color: '#e67e22' },
-  { name: 'Admin', desc: 'Encargados de la representación del servidor. Cumplen funciones similares a los Managers siendo la cara más visible del Staff.', color: '#e74c3c' },
+  {
+    name: 'Ayudante', color: '#00bcd4',
+    desc: 'Encargados de ayudar en los tickets de soporte, resolviendo dudas y aprendiendo del resto del staff.',
+    members: ['victor', 'p a t a t a', 'Oscucar', 'Sebas 🐳🩵']
+  },
+  {
+    name: 'Moderador', color: '#5865f2',
+    desc: 'Encargados de todo el apartado de moderación del servidor. Pueden banear, dar strikes, mutear y resolver conflictos.',
+    members: ['b r i a m', 'Dani El Rolo']
+  },
+  {
+    name: 'Manager', color: '#9b59b6',
+    desc: 'Encargados de prácticamente todas las tareas más importantes del servidor, su palabra es ley y orden.',
+    members: ['David_01', 'Prince Senju', 'DrakuL']
+  },
+  {
+    name: 'Admin', color: '#ffffff',
+    desc: 'Es el rango máximo. Son los creadores y/o personas que representan LA Spain.',
+    members: ['Amaroyusi ☀️ #LA2026', 'Srta.Vocales']
+  },
 ];
 
 export default function RolesPage() {
@@ -79,18 +95,41 @@ export default function RolesPage() {
       </div>
 
       {/* Staff roles */}
-      <div>
+      <div style={{ marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', fontFamily: 'Outfit, sans-serif', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <ShieldCheckIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} /> Roles de Staff
+          <ShieldCheckIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} /> Equipo de Staff
         </h2>
-        <div className="grid-2">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {staffRoles.map((r, i) => (
-            <div key={i} className="card" style={{ borderLeft: `3px solid ${r.color}` }}>
-              <h4 style={{ color: r.color, marginBottom: '0.5rem' }}>{r.name}</h4>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.7 }}>{r.desc}</p>
+            <div key={i} className="card" style={{ borderLeft: `4px solid ${r.color}` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ flex: 1, minWidth: '250px' }}>
+                  <h4 style={{ color: r.color, marginBottom: '0.25rem' }}>{r.name}</h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{r.desc}</p>
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {r.members.map((m, j) => (
+                    <span key={j} style={{
+                      background: `${r.color}15`, color: r.color,
+                      padding: '4px 12px', borderRadius: '100px',
+                      fontSize: '0.75rem', fontWeight: 600,
+                      border: `1px solid ${r.color}30`,
+                    }}>
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="card" style={{ textAlign: 'center', background: 'rgba(201,168,76,0.05)', borderColor: 'rgba(201,168,76,0.2)' }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          💡 El rol <strong style={{ color: 'var(--gold)' }}>@Staff</strong> engloba a todos los miembros mencionados.
+          El rol <strong style={{ color: 'var(--gold)' }}>@Soporte</strong> engloba al staff que responde tickets.
+        </p>
       </div>
     </section>
   );

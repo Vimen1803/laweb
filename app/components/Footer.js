@@ -29,7 +29,6 @@ export default function Footer() {
           <ul className="footer-links">
             <li><Link href="/roles">Roles</Link></li>
             <li><Link href="/brawlstars">Brawl Stars</Link></li>
-            <li><Link href="/staff">Staff</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
           </ul>
         </div>
