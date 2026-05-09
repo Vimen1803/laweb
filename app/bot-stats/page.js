@@ -174,44 +174,52 @@ export default function BotStatsPage() {
           ) : renderWordleStats(wordleMode, wordle[wordleMode])}
         </div>
 
-        {/* WEREWOLF SUMMARY */}
-        <div className="card" style={{ borderTop: '4px solid #8b0000', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
-              <UserGroupIcon style={{ width: 28, height: 28, color: '#8b0000' }} />
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
-            </div>
+        {/* WEREWOLF SUMMARY & BANDOS */}
+        <div className="card" style={{ borderTop: '4px solid #8b0000', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+            <UserGroupIcon style={{ width: 28, height: 28, color: '#8b0000' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
+          </div>
 
-            {!werewolf ? (
-              <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p>
-            ) : (
-              <div className="fade-in">
-                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_played || 0}</span>
-                    <span className="stat-label">Partidas</span>
-                  </div>
-                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
-                    <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_won || 0}</span>
-                    <span className="stat-label">Victorias</span>
-                  </div>
+          {!werewolf ? (
+            <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has participado en ninguna partida de Werewolf.</p>
+          ) : (
+            <div className="fade-in">
+              <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_played || 0}</span>
+                  <span className="stat-label">Partidas</span>
                 </div>
-
-                <div style={{ background: 'var(--bg-body)', padding: '15px', borderRadius: '12px', border: '1px solid var(--gold-darker)' }}>
-                  <h4 style={{ color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '10px' }}>Resumen de Rendimiento</h4>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                    <span>Winrate Global:</span>
-                    <span style={{ fontWeight: 700 }}>{werewolf.games_played ? ((werewolf.games_won / werewolf.games_played) * 100).toFixed(1) : 0}%</span>
-                  </div>
+                <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+                  <span className="stat-value" style={{ fontSize: '1.2rem' }}>{werewolf.games_won || 0}</span>
+                  <span className="stat-label">Victorias</span>
                 </div>
               </div>
-            )}
-          </div>
-          
-          {werewolf && (
-            <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              Ver Estadísticas Detalladas <ArrowRightIcon style={{ width: 16, height: 16 }} />
-            </Link>
+
+              <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento por Bando</h4>
+              <div className="grid-2" style={{ gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <div style={{ background: 'rgba(46,204,113,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(46,204,113,0.2)' }}>
+                  <p style={{ fontSize: '0.6rem', color: '#2ecc71', textTransform: 'uppercase', marginBottom: '2px' }}>Aldea</p>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.village_won} / {werewolf.village_played}</p>
+                </div>
+                <div style={{ background: 'rgba(231,76,60,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(231,76,60,0.2)' }}>
+                  <p style={{ fontSize: '0.6rem', color: '#e74c3c', textTransform: 'uppercase', marginBottom: '2px' }}>Lobos</p>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.wolf_won} / {werewolf.wolf_played}</p>
+                </div>
+                <div style={{ background: 'rgba(241,196,15,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(241,196,15,0.2)' }}>
+                  <p style={{ fontSize: '0.6rem', color: '#f1c40f', textTransform: 'uppercase', marginBottom: '2px' }}>Solitario</p>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} / {(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)}</p>
+                </div>
+                <div style={{ background: 'rgba(233,30,99,0.1)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(233,30,99,0.2)' }}>
+                  <p style={{ fontSize: '0.6rem', color: '#e91e63', textTransform: 'uppercase', marginBottom: '2px' }}>Amantes</p>
+                  <p style={{ fontSize: '0.9rem', fontWeight: 700 }}>{werewolf.lovers_won} / {werewolf.lovers_played}</p>
+                </div>
+              </div>
+
+              <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                Estadísticas por Rol <ArrowRightIcon style={{ width: 16, height: 16 }} />
+              </Link>
+            </div>
           )}
         </div>
       </div>

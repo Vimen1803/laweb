@@ -74,27 +74,12 @@ export default function WerewolfStatsPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
         <UserGroupIcon style={{ width: 40, height: 40, color: '#8b0000' }} />
         <div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', margin: 0 }}>Estadísticas de Werewolf</h1>
-          <p className="text-muted">Desglose detallado de tu rendimiento por bando y rol</p>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', margin: 0 }}>Rendimiento por Rol</h1>
+          <p className="text-muted">Análisis detallado de victorias y partidas con cada rol</p>
         </div>
-      </div>
-
-      <div className="grid-4" style={{ marginBottom: '3rem' }}>
-        <BandoCard title="Aldea" icon={ShieldCheckIcon} color="#2ecc71" played={werewolf.village_played} won={werewolf.village_won} />
-        <BandoCard title="Lobos" icon={BoltIcon} color="#e74c3c" played={werewolf.wolf_played} won={werewolf.wolf_won} />
-        <div>
-          <BandoCard title="Solitario" icon={UserIcon} color="#f1c40f" played={(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)} won={(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} />
-          <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '5px' }}>Tanner + Lobo Blanco</p>
-        </div>
-        <BandoCard title="Amantes" icon={HeartIcon} color="#e91e63" played={werewolf.lovers_played} won={werewolf.lovers_won} />
       </div>
 
       <div className="card" style={{ padding: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
-          <TrophyIcon style={{ width: 28, height: 28, color: 'var(--gold)' }} />
-          <h2 style={{ fontSize: '1.8rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Rendimiento por Rol</h2>
-        </div>
-
         <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.5rem' }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
