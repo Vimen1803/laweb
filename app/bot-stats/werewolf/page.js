@@ -79,11 +79,11 @@ export default function WerewolfStatsPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '2rem 0.5rem', width: '100%', border: 'none', background: 'rgba(255,255,255,0.02)' }}>
+      <div className="card" style={{ padding: '3rem 1.5rem', width: '100%', background: 'rgba(255,255,255,0.02)' }}>
         <div className="stat-grid" style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(8, 1fr)', 
-          gap: '0.75rem', 
+          gridTemplateColumns: 'repeat(6, 1fr)', 
+          gap: '3rem 2rem', 
           width: '100%',
           margin: 0
         }}>
@@ -94,42 +94,35 @@ export default function WerewolfStatsPage() {
               const wr = played > 0 ? (wins / played * 100).toFixed(0) : 0;
               return (
                 <div key={role} style={{ 
-                  background: 'rgba(255, 255, 255, 0.03)', 
-                  padding: '20px 5px', 
-                  borderRadius: '12px', 
-                  border: '1px solid rgba(201, 168, 76, 0.25)',
                   textAlign: 'center',
                   position: 'relative',
-                  overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'center',
-                  minHeight: '130px',
                   width: '100%'
                 }}>
                   <div style={{ 
-                    position: 'absolute', 
-                    top: 0, 
-                    right: 0, 
+                    display: 'inline-block',
+                    margin: '0 auto 10px auto',
                     background: 'var(--gold)', 
                     color: '#000', 
-                    padding: '2px 6px', 
-                    fontSize: '0.65rem', 
+                    padding: '2px 8px', 
+                    fontSize: '0.7rem', 
                     fontWeight: 800,
-                    borderBottomLeftRadius: '8px'
+                    borderRadius: '4px'
                   }}>
-                    {wr}%
+                    {wr}% WINRATE
                   </div>
-                  <h4 style={{ fontSize: '0.9rem', marginBottom: '15px', fontWeight: 700, color: '#fff', padding: '0 5px' }}>{role}</h4>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center', width: '100%' }}>
+                  <h4 style={{ fontSize: '1.1rem', marginBottom: '15px', fontWeight: 800, color: '#fff', letterSpacing: '0.5px' }}>{role}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', alignItems: 'center', width: '100%' }}>
                     <div style={{ flex: 1, textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: 'var(--gold)' }}>{wins}</p>
-                      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>WIN</p>
+                      <p style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0, color: 'var(--gold)', lineHeight: 1 }}>{wins}</p>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: '5px 0 0 0', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '1px' }}>WIN</p>
                     </div>
-                    <div style={{ width: '1px', height: '25px', background: 'rgba(255,255,255,0.1)' }} />
+                    <div style={{ width: '1px', height: '30px', background: 'rgba(255,255,255,0.1)' }} />
                     <div style={{ flex: 1, textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: '#fff' }}>{played}</p>
-                      <p style={{ fontSize: '0.55rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', fontWeight: 700 }}>PLAYED</p>
+                      <p style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0, color: '#fff', lineHeight: 1 }}>{played}</p>
+                      <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: '5px 0 0 0', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '1px' }}>PLAYED</p>
                     </div>
                   </div>
                 </div>
