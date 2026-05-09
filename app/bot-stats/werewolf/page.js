@@ -80,7 +80,7 @@ export default function WerewolfStatsPage() {
       </div>
 
       <div className="card" style={{ padding: '2rem' }}>
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '1.5rem' }}>
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '1rem' }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
             .map(([role, played]) => {
@@ -89,12 +89,15 @@ export default function WerewolfStatsPage() {
               return (
                 <div key={role} style={{ 
                   background: 'var(--bg-body)', 
-                  padding: '20px', 
-                  borderRadius: '15px', 
+                  padding: '15px 10px', 
+                  borderRadius: '12px', 
                   border: '1px solid var(--gold-darker)',
                   textAlign: 'center',
                   position: 'relative',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}>
                   <div style={{ 
                     position: 'absolute', 
@@ -102,23 +105,23 @@ export default function WerewolfStatsPage() {
                     right: 0, 
                     background: 'var(--gold)', 
                     color: '#000', 
-                    padding: '2px 8px', 
-                    fontSize: '0.65rem', 
+                    padding: '1px 5px', 
+                    fontSize: '0.6rem', 
                     fontWeight: 800,
-                    borderBottomLeftRadius: '8px'
+                    borderBottomLeftRadius: '6px'
                   }}>
-                    {wr}% WR
+                    {wr}%
                   </div>
-                  <h4 style={{ fontSize: '1rem', marginBottom: '12px', fontWeight: 700 }}>{role}</h4>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', alignItems: 'center' }}>
+                  <h4 style={{ fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{role}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>{wins}</p>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>Wins</p>
+                      <p style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{wins}</p>
+                      <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>W</p>
                     </div>
-                    <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.1)' }} />
+                    <div style={{ width: '1px', height: '15px', background: 'rgba(255,255,255,0.1)' }} />
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>{played}</p>
-                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>Plays</p>
+                      <p style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{played}</p>
+                      <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>P</p>
                     </div>
                   </div>
                 </div>
