@@ -32,7 +32,7 @@ export const metadata = {
     images: ['/lashare.png'],
     creator: '@Viiictooor18',
   },
-  icons: { icon: '/lashare.png' },
+  icons: { icon: '/la-icon.png' },
 };
 
 export default function RootLayout({ children }) {
