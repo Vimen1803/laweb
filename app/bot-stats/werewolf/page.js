@@ -82,7 +82,10 @@ export default function WerewolfStatsPage() {
       <div className="grid-4" style={{ marginBottom: '3rem' }}>
         <BandoCard title="Aldea" icon={ShieldCheckIcon} color="#2ecc71" played={werewolf.village_played} won={werewolf.village_won} />
         <BandoCard title="Lobos" icon={BoltIcon} color="#e74c3c" played={werewolf.wolf_played} won={werewolf.wolf_won} />
-        <BandoCard title="Solitario" icon={UserIcon} color="#f1c40f" played={(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)} won={(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} />
+        <div>
+          <BandoCard title="Solitario" icon={UserIcon} color="#f1c40f" played={(werewolf.tanner_played || 0) + (werewolf.white_wolf_played || 0)} won={(werewolf.tanner_won || 0) + (werewolf.white_wolf_won || 0)} />
+          <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '5px' }}>Tanner + Lobo Blanco</p>
+        </div>
         <BandoCard title="Amantes" icon={HeartIcon} color="#e91e63" played={werewolf.lovers_played} won={werewolf.lovers_won} />
       </div>
 
