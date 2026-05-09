@@ -16,48 +16,54 @@ export async function GET() {
     const werewolfDb = client.db('werewolf');
 
     const memberIdLong = Long.fromString(discordId);
+    const GUILD_ID = "460550486257565697"; // LA Spain
+    const guildIdLong = Long.fromString(GUILD_ID);
     
     // Fetch Wordle stats (labot.wordle)
-    // We try Long, then Number (if safe), then string
-    let wordle = await labotDb.collection('wordle').findOne({ member_id: memberIdLong });
-    if (!wordle) wordle = await labotDb.collection('wordle').findOne({ member_id: discordId });
-    if (!wordle && Number.isSafeInteger(Number(discordId))) {
-      wordle = await labotDb.collection('wordle').findOne({ member_id: Number(discordId) });
+    // We try to find the one in LA Spain first
+    let wordle = await labotDb.collection('wordle').findOne({ 
+      member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
+      guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
+    });
+    
+    // Fallback to any guild if not found in LA Spain
+    if (!wordle) {
+      wordle = await labotDb.collection('wordle').findOne({ 
+        member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+      });
     }
 
     // Fetch Werewolf stats (werewolf.players)
-    let werewolf = await werewolfDb.collection('players').findOne({ _id: memberIdLong });
-    if (!werewolf) werewolf = await werewolfDb.collection('players').findOne({ _id: discordId });
-    if (!werewolf && Number.isSafeInteger(Number(discordId))) {
-      werewolf = await werewolfDb.collection('players').findOne({ _id: Number(discordId) });
-    }
+    let werewolf = await werewolfDb.collection('players').findOne({ 
+      _id: { $in: [memberIdLong, discordId, Number(discordId)] }
+    });
 
     // Process Wordle data to separate modes
+    const processMode = (prefix, data) => {
+      const p = prefix ? `${prefix}_` : '';
+      const played = data[`${p}played`] || (prefix === '' ? data.played : 0) || 0;
+      let wins = data[`${p}total_wins`] || 0;
+      
+      // Special logic for Normal wins if prefix is empty
+      if (prefix === '') {
+        wins = Math.max(0, (data.total_wins || 0) - ((data.double_total_wins || 0) * 2) - ((data.triple_total_wins || 0) * 3));
+      }
+
+      return {
+        played,
+        wins,
+        winrate: played > 0 ? ((wins / played) * 100).toFixed(1) : '0.0',
+        streak: data[`${p}streak`] || 0,
+        max_streak: data[`${p}max_streak`] || 0,
+        earnings: data[`${p}total_earnings`] || (prefix === '' ? data.total_earnings : 0) || 0,
+        distribution: data[`${p}guess_distribution`] || {}
+      };
+    };
+
     const wordleStats = wordle ? {
-      normal: {
-        played: wordle.played || 0,
-        wins: Math.max(0, (wordle.total_wins || 0) - ((wordle.double_total_wins || 0) * 2) - ((wordle.triple_total_wins || 0) * 3)),
-        streak: wordle.streak || 0,
-        max_streak: wordle.max_streak || 0,
-        earnings: wordle.normal_total_earnings || 0, // Fallback if exists
-        distribution: wordle.guess_distribution || {}
-      },
-      double: {
-        played: wordle.double_played || 0,
-        wins: wordle.double_total_wins || 0,
-        streak: wordle.double_streak || 0,
-        max_streak: wordle.double_max_streak || 0,
-        earnings: wordle.double_total_earnings || 0,
-        distribution: wordle.double_guess_distribution || {}
-      },
-      triple: {
-        played: wordle.triple_played || 0,
-        wins: wordle.triple_total_wins || 0,
-        streak: wordle.triple_streak || 0,
-        max_streak: wordle.triple_max_streak || 0,
-        earnings: wordle.triple_total_earnings || 0,
-        distribution: wordle.triple_guess_distribution || {}
-      },
+      normal: processMode('', wordle),
+      double: processMode('double', wordle),
+      triple: processMode('triple', wordle),
       ladder: {
         played: wordle.ladder_played || 0,
         total_words: wordle.ladder_total_words || 0,

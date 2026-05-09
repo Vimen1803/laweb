@@ -47,11 +47,17 @@ export default function BotStatsPage() {
 
     return (
       <div className="fade-in">
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
             <span className="stat-value" style={{ fontSize: '1.2rem' }}>{isLadder ? stats.total_words : stats.wins}</span>
             <span className="stat-label">{isLadder ? 'Total Palabras' : 'Victorias'}</span>
           </div>
+          {!isLadder && (
+            <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
+              <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.winrate}%</span>
+              <span className="stat-label">Winrate</span>
+            </div>
+          )}
           {!isLadder && (
             <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '12px' }}>
               <span className="stat-value" style={{ fontSize: '1.2rem' }}>{stats.streak}</span>
