@@ -39,11 +39,6 @@ export default function Home() {
             LA Spain ha dejado huella en torneos como la <strong>Gems League Europe</strong> o la <strong>Clash Royale League</strong>, 
             y ha contado entre sus filas a campeones mundiales como <span className="highlight">Mohamed Light</span>.
           </p>
-          <p>
-            Hoy, LA Spain cuenta con un <strong>bot propio (LA Bot)</strong> con más de 100 comandos, 
-            un sistema de economía interactivo, minijuegos exclusivos, un sistema de niveles con recompensas, y un equipo de staff comprometido 
-            que trabaja día a día para mantener esta comunidad viva.
-          </p>
         </div>
         <div className="hero-buttons">
           <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener" className="btn btn-primary">

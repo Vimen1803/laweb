@@ -80,7 +80,7 @@ export async function POST(req) {
 
     await db.collection('users').updateOne(
       { member_id: memberId },
-      { $set: { member_id: memberId, bs_tag: tag } },
+      { $set: { member_id: memberId, bs_tag: tag , bs_alt_tag: undefined} },
       { upsert: true }
     );
 
