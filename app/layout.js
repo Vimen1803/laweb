@@ -30,7 +30,7 @@ export const metadata = {
     title: 'LA Spain - La mayor comunidad de Brawl Stars',
     description: 'La comunidad hispana de clubes más grande de Brawl Stars. Únete a nuestra familia de más de 15 clubes y compite al más alto nivel.',
     images: ['/lashare.png'],
-    creator: '@LASpain_',
+    creator: '@Viiictooor18',
   },
   icons: { icon: '/lashare.png' },
 };
