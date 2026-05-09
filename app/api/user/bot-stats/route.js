@@ -16,26 +16,58 @@ export async function GET() {
     const werewolfDb = client.db('werewolf');
 
     const memberIdLong = Long.fromString(discordId);
-    const memberIdInt = parseInt(discordId);
-
+    
     // Fetch Wordle stats (labot.wordle)
-    // member_id is stored as int or long in wordle? 
-    // From cogs/wordle/wordle.py: dB.WORDLE.find_one({"guild_id": ctx.guild.id, "member_id": ctx.author.id})
-    // Python usually stores discord IDs as Int64 (Long).
+    // We try Long, then Number (if safe), then string
     let wordle = await labotDb.collection('wordle').findOne({ member_id: memberIdLong });
-    if (!wordle) {
-        wordle = await labotDb.collection('wordle').findOne({ member_id: memberIdInt });
+    if (!wordle) wordle = await labotDb.collection('wordle').findOne({ member_id: discordId });
+    if (!wordle && Number.isSafeInteger(Number(discordId))) {
+      wordle = await labotDb.collection('wordle').findOne({ member_id: Number(discordId) });
     }
 
     // Fetch Werewolf stats (werewolf.players)
-    // From cogs/werewolf/database.py: "_id": <discord_user_id int>
     let werewolf = await werewolfDb.collection('players').findOne({ _id: memberIdLong });
-    if (!werewolf) {
-        werewolf = await werewolfDb.collection('players').findOne({ _id: memberIdInt });
+    if (!werewolf) werewolf = await werewolfDb.collection('players').findOne({ _id: discordId });
+    if (!werewolf && Number.isSafeInteger(Number(discordId))) {
+      werewolf = await werewolfDb.collection('players').findOne({ _id: Number(discordId) });
     }
 
+    // Process Wordle data to separate modes
+    const wordleStats = wordle ? {
+      normal: {
+        played: wordle.played || 0,
+        wins: Math.max(0, (wordle.total_wins || 0) - ((wordle.double_total_wins || 0) * 2) - ((wordle.triple_total_wins || 0) * 3)),
+        streak: wordle.streak || 0,
+        max_streak: wordle.max_streak || 0,
+        earnings: wordle.normal_total_earnings || 0, // Fallback if exists
+        distribution: wordle.guess_distribution || {}
+      },
+      double: {
+        played: wordle.double_played || 0,
+        wins: wordle.double_total_wins || 0,
+        streak: wordle.double_streak || 0,
+        max_streak: wordle.double_max_streak || 0,
+        earnings: wordle.double_total_earnings || 0,
+        distribution: wordle.double_guess_distribution || {}
+      },
+      triple: {
+        played: wordle.triple_played || 0,
+        wins: wordle.triple_total_wins || 0,
+        streak: wordle.triple_streak || 0,
+        max_streak: wordle.triple_max_streak || 0,
+        earnings: wordle.triple_total_earnings || 0,
+        distribution: wordle.triple_guess_distribution || {}
+      },
+      ladder: {
+        played: wordle.ladder_played || 0,
+        total_words: wordle.ladder_total_words || 0,
+        max_words: wordle.ladder_max_words || 0,
+        earnings: wordle.ladder_total_earnings || 0
+      }
+    } : null;
+
     return NextResponse.json({
-      wordle: wordle || null,
+      wordle: wordleStats,
       werewolf: werewolf || null,
       trivial: null // Próximamente
     });
