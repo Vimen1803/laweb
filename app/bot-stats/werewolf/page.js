@@ -66,7 +66,7 @@ export default function WerewolfStatsPage() {
   );
 
   return (
-    <section className="section" style={{ maxWidth: 1200 }}>
+    <section className="section" style={{ maxWidth: '100%', paddingLeft: '20px', paddingRight: '20px' }}>
       <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
         <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
       </Link>
@@ -128,13 +128,6 @@ export default function WerewolfStatsPage() {
               );
             })}
         </div>
-      </div>
-
-      <div className="card" style={{ marginTop: '2rem', background: 'rgba(201,168,76,0.05)', borderColor: 'rgba(201,168,76,0.2)' }}>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <SparklesIcon style={{ width: 16, height: 16, color: 'var(--gold)' }} />
-          Estas estadísticas incluyen todas tus partidas como infectado, niño salvaje y otros roles de transformación.
-        </p>
       </div>
     </section>
   );
