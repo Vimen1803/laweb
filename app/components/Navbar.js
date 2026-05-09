@@ -18,13 +18,10 @@ export default function Navbar() {
 
   const links = [
     { href: '/', label: 'Inicio' },
-    { href: '/about', label: 'About Us' },
     { href: '/brawlstars', label: 'Brawl Stars' },
     { href: '/bot-stats', label: 'Bot Stats' },
     { href: '/comandos', label: 'Comandos' },
-    { href: '/roles', label: 'Roles' },
-    { href: '/normas', label: 'Normas' },
-    { href: '/faq', label: 'FAQ' },
+    { href: '/dc-info', label: 'DC Info' },
   ];
 
   return (

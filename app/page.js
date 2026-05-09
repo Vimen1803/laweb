@@ -40,10 +40,16 @@ export default function Home() {
             y ha contado entre sus filas a campeones mundiales como <span className="highlight">Mohamed Light</span>.
           </p>
         </div>
-        <div className="hero-buttons">
+        <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener" className="btn btn-primary">
             Únete al Discord
           </a>
+          <Link href="/about" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontWeight: 700 }}>
+            About Us
+          </Link>
+          <Link href="/faq" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontWeight: 700 }}>
+            FAQ
+          </Link>
         </div>
 
         {/* Dynamic stats */}
