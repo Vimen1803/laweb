@@ -103,8 +103,8 @@ export default function WerewolfStatsPage() {
       }}>
         <div className="stat-grid" style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)', 
-          gap: '3.5rem 2rem', 
+          gridTemplateColumns: 'repeat(8, 1fr)', 
+          gap: '3.5rem 4rem', 
           width: '100%',
           justifyContent: 'center',
           justifyItems: 'center',
