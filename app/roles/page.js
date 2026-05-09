@@ -24,7 +24,7 @@ const specialRoles = [
   { name: 'Nitro Booster', desc: 'Obtenido al mejorar el servidor con Discord Nitro, consulta las ventajas en info-boosters.', color: '#f47fff' },
   { name: 'Tier 1 / Tier 2 / Tier 3', desc: 'Obtenidos al apoyar monetariamente al servidor, consulta las ventajas en abonos.', color: '#2ecc71' },
   { name: 'Buscar Brawl', desc: 'Recibe pings de otros miembros cuando busquen equipo para Brawl Stars.', color: '#e67e22' },
-  { name: 'Cumpleañero', desc: 'Obtén ventajas especiales durante el día de tu cumpleaños. Usa: !remember-birthday Año-Mes-Día', color: '#e74c3c' },
+  { name: 'Cumpleañero', desc: 'Obtén ventajas especiales durante el día de tu cumpleaños. Usa: ,remember-birthday Año-Mes-Día', color: '#e74c3c' },
 ];
 
 const staffRoles = [
@@ -95,30 +95,28 @@ export default function RolesPage() {
       </div>
 
       {/* Staff roles */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem', fontFamily: 'Outfit, sans-serif', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ marginBottom: '3rem' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', fontFamily: 'Outfit, sans-serif', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ShieldCheckIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} /> Equipo de Staff
         </h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="grid-2">
           {staffRoles.map((r, i) => (
-            <div key={i} className="card" style={{ borderLeft: `4px solid ${r.color}` }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ flex: 1, minWidth: '250px' }}>
-                  <h4 style={{ color: r.color, marginBottom: '0.25rem' }}>{r.name}</h4>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{r.desc}</p>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {r.members.map((m, j) => (
-                    <span key={j} style={{
-                      background: `${r.color}15`, color: r.color,
-                      padding: '4px 12px', borderRadius: '100px',
-                      fontSize: '0.75rem', fontWeight: 600,
-                      border: `1px solid ${r.color}30`,
-                    }}>
-                      {m}
-                    </span>
-                  ))}
-                </div>
+            <div key={i} className="card" style={{ borderLeft: `4px solid ${r.color}`, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <h4 style={{ color: r.color, marginBottom: '0.25rem' }}>{r.name}</h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.6 }}>{r.desc}</p>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 'auto' }}>
+                {r.members.map((m, j) => (
+                  <span key={j} style={{
+                    background: `${r.color}15`, color: r.color,
+                    padding: '4px 12px', borderRadius: '100px',
+                    fontSize: '0.75rem', fontWeight: 600,
+                    border: `1px solid ${r.color}30`,
+                  }}>
+                    {m}
+                  </span>
+                ))}
               </div>
             </div>
           ))}
