@@ -16,7 +16,7 @@ export const metadata = {
     siteName: 'LA Spain',
     images: [
       {
-        url: '/la-icon.png',
+        url: '/lashare.png',
         width: 512,
         height: 512,
         alt: 'LA Spain Logo',
@@ -29,10 +29,10 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'LA Spain - La mayor comunidad de Brawl Stars',
     description: 'La comunidad hispana de clubes más grande de Brawl Stars. Únete a nuestra familia de más de 15 clubes y compite al más alto nivel.',
-    images: ['/la-icon.png'],
+    images: ['/lashare.png'],
     creator: '@LASpain_',
   },
-  icons: { icon: '/la-icon.png' },
+  icons: { icon: '/lashare.png' },
 };
 
 export default function RootLayout({ children }) {
