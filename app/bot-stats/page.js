@@ -118,40 +118,10 @@ export default function BotStatsPage() {
             </>
           )}
         </div>
-
-        {!isLadder && stats.distribution && Object.keys(stats.distribution).length > 0 && (
-          <>
-            <h4 style={{ marginBottom: '1rem', color: 'var(--gold)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Distribución de Intentos</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {Object.entries(stats.distribution).sort(([a],[b]) => a-b).map(([guess, count]) => {
-                const max = Math.max(...Object.values(stats.distribution));
-                const percent = max > 0 ? (count / max) * 100 : 0;
-                return (
-                  <div key={guess} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ width: '15px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{guess}</span>
-                    <div style={{ flex: 1, background: 'var(--bg-body)', height: '18px', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ 
-                        width: `${Math.max(8, percent)}%`, 
-                        height: '100%', 
-                        background: count === max ? '#538d4e' : 'var(--gold-dark)', 
-                        transition: 'width 1s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'flex-end',
-                        paddingRight: '8px',
-                        fontSize: '0.65rem',
-                        fontWeight: 700,
-                        color: '#fff'
-                      }}>
-                        {count > 0 && count}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
+        
+        <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#538d4e', borderColor: '#538d4e' }}>
+          Ver Estadísticas Detalladas <ArrowRightIcon style={{ width: 16, height: 16 }} />
+        </Link>
       </div>
     );
   };
