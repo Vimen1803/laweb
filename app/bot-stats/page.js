@@ -144,7 +144,7 @@ export default function BotStatsPage() {
               </div>
 
               {/* Mode Buttons */}
-              <div className="hero-buttons" style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', justifyContent: 'center' }}>
+              <div className="wordle-mode-buttons" style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', justifyContent: 'center' }}>
                 {['normal', 'double', 'triple', 'ladder'].map(m => (
                   <button 
                     key={m}

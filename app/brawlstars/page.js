@@ -205,7 +205,7 @@ export default function BrawlStarsPage() {
       {(tab === 'profile' || tab === 'club') && (
         <>
           {myBrawlInfo && myBrawlInfo.loggedIn && myBrawlInfo.tag && tab !== 'clubs' && (
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div className="bs-quick-buttons" style={{ display: 'flex', gap: '10px', marginBottom: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button className="btn-primary" onClick={() => {
                 setTab('profile');
                 setTag(myBrawlInfo.tag);
