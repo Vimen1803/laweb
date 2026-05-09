@@ -79,8 +79,8 @@ export default function WerewolfStatsPage() {
         </div>
       </div>
 
-      <div className="card" style={{ padding: '1.5rem 0.5rem', width: '100%' }}>
-        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(6, 1fr)', gap: '0.5rem', width: '100%' }}>
+      <div className="card" style={{ padding: '2rem 1rem', width: '100%' }}>
+        <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: '1rem', width: '100%' }}>
           {Object.entries(werewolf.roles_played || {})
             .sort(([, a], [, b]) => b - a)
             .map(([role, played]) => {
@@ -88,16 +88,17 @@ export default function WerewolfStatsPage() {
               const wr = played > 0 ? (wins / played * 100).toFixed(0) : 0;
               return (
                 <div key={role} style={{ 
-                  background: 'var(--bg-body)', 
-                  padding: '15px 10px', 
+                  background: 'rgba(255, 255, 255, 0.03)', 
+                  padding: '20px 10px', 
                   borderRadius: '12px', 
-                  border: '1px solid var(--gold-darker)',
+                  border: '1px solid rgba(201, 168, 76, 0.3)',
                   textAlign: 'center',
                   position: 'relative',
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  minHeight: '120px'
                 }}>
                   <div style={{ 
                     position: 'absolute', 
@@ -105,23 +106,23 @@ export default function WerewolfStatsPage() {
                     right: 0, 
                     background: 'var(--gold)', 
                     color: '#000', 
-                    padding: '1px 5px', 
-                    fontSize: '0.6rem', 
+                    padding: '2px 6px', 
+                    fontSize: '0.7rem', 
                     fontWeight: 800,
-                    borderBottomLeftRadius: '6px'
+                    borderBottomLeftRadius: '8px'
                   }}>
                     {wr}%
                   </div>
-                  <h4 style={{ fontSize: '0.85rem', marginBottom: '8px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{role}</h4>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center' }}>
+                  <h4 style={{ fontSize: '0.95rem', marginBottom: '15px', fontWeight: 700, color: '#fff' }}>{role}</h4>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{wins}</p>
-                      <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>W</p>
+                      <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: 'var(--gold)' }}>{wins}</p>
+                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>W</p>
                     </div>
-                    <div style={{ width: '1px', height: '15px', background: 'rgba(255,255,255,0.1)' }} />
+                    <div style={{ width: '1px', height: '25px', background: 'rgba(255,255,255,0.1)' }} />
                     <div style={{ textAlign: 'center' }}>
-                      <p style={{ fontSize: '1rem', fontWeight: 800, margin: 0 }}>{played}</p>
-                      <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase' }}>P</p>
+                      <p style={{ fontSize: '1.4rem', fontWeight: 900, margin: 0, color: '#fff' }}>{played}</p>
+                      <p style={{ fontSize: '0.6rem', color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>P</p>
                     </div>
                   </div>
                 </div>
