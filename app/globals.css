@@ -128,7 +128,9 @@ a:hover { color: var(--gold-light); }
 .hero h1 {
   font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900;
   background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: 1rem; letter-spacing: -1px;
 }
 .hero p { color: var(--text-secondary); font-size: 1.1rem; max-width: 700px; margin: 0 auto 2rem; }
@@ -682,3 +684,46 @@ a:hover { color: var(--gold-light); }
 .bs-club-key { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
 .bs-club-stats-row { display: flex; gap: 1rem; }
 .bs-club-stat-value { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+
+/* History Section */
+.history-section {
+  padding: 6rem 2rem;
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.history-content {
+  position: relative;
+  padding-left: 2rem;
+  border-left: 2px solid var(--gold);
+}
+
+.history-content p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.history-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.history-content .highlight {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .history-section { padding: 4rem 1.5rem; }
+  .history-content { padding-left: 1.5rem; }
+}
