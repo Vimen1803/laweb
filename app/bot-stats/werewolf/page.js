@@ -34,7 +34,23 @@ export default function WerewolfStatsPage() {
   }, []);
 
   if (loading) return <div className="section"><p className="text-muted text-center">Cargando estadísticas de Werewolf...</p></div>;
-  if (error || !data) return <div className="section"><p className="text-center text-danger">⚠️ {error || 'Error al cargar datos'}.</p></div>;
+
+  if (error || !data) return (
+    <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
+      <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
+        <div style={{ background: 'rgba(201,168,76,0.1)', width: '80px', height: '80px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem auto' }}>
+          <UserIcon style={{ width: 40, height: 40, color: 'var(--gold)' }} />
+        </div>
+        <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Estadísticas de Werewolf</h2>
+        <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: '500px', margin: '0 auto 2.5rem auto' }}>
+          Inicia sesión para ver tu rendimiento detallado por bando y rol.
+        </p>
+        <a href="/api/auth/signin" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '15px 40px', fontSize: '1.1rem', borderRadius: '12px', fontWeight: 700 }}>
+          <SparklesIcon style={{ width: 20, height: 20 }} /> Iniciar Sesión con Discord
+        </a>
+      </div>
+    </section>
+  );
 
   const werewolf = data;
 
@@ -82,7 +98,7 @@ export default function WerewolfStatsPage() {
       <div className="card" style={{ padding: '3rem 1.5rem', width: '100%', background: 'rgba(255,255,255,0.02)' }}>
         <div className="stat-grid" style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(6, 1fr)', 
+          gridTemplateColumns: 'repeat(8, 1fr)', 
           gap: '3rem 2rem', 
           width: '100%',
           margin: 0
