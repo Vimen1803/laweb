@@ -95,9 +95,25 @@ export async function GET() {
       };
     }
 
+    // Fetch Lottery stats (labot.lottery)
+    const lottery = await labotDb.collection('lottery').findOne({
+      guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+      user_id: null // Active lottery
+    });
+
+    const lotteryStats = lottery ? {
+      min: Number(lottery.range_min || 0),
+      max: Number(lottery.range_max || 0),
+      timeout: Number(lottery.timeout || 0),
+      role: lottery.role ? lottery.role.toString() : null,
+      guessed: Array.isArray(lottery.numeros) ? lottery.numeros.length : 0,
+      channel: lottery.channel_id ? lottery.channel_id.toString() : null
+    } : null;
+
     return NextResponse.json({
       wordle: wordleStats,
       werewolf: werewolfStats,
+      lottery: lotteryStats,
       trivial: null // Próximamente
     });
   } catch (err) {

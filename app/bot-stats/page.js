@@ -10,6 +10,7 @@ import {
   BoltIcon, 
   UserGroupIcon, 
   SparklesIcon,
+  TicketIcon,
   QuestionMarkCircleIcon,
   WrenchScrewdriverIcon,
   ArrowRightIcon,
@@ -84,7 +85,7 @@ export default function BotStatsPage() {
                 <PuzzlePieceIcon style={{ width: 30, height: 30, color: '#538d4e' }} />
               </div>
               <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has jugado ninguna partida de Wordle.</p>
-              <a href="https://discord.gg/laspain" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+              <a href="https://discord.gg/DbRUker" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                 ¡Empieza a jugar en Discord!
               </a>
             </div>
@@ -183,7 +184,7 @@ export default function BotStatsPage() {
                 <UserGroupIcon style={{ width: 30, height: 30, color: '#8b0000' }} />
               </div>
               <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has participado en ninguna partida de Werewolf.</p>
-              <a href="https://discord.gg/laspain" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+              <a href="https://discord.gg/DbRUker" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                 ¡Únete a una partida en Discord!
               </a>
             </div>
@@ -233,14 +234,71 @@ export default function BotStatsPage() {
         </div>
       </div>
 
-      {/* TRIVIAL */}
-      <div className="card" style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.7 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '1rem' }}>
-          <QuestionMarkCircleIcon style={{ width: 28, height: 28, color: 'var(--gold)' }} />
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Trivial</h2>
+      <div className="grid-2" style={{ alignItems: 'stretch', marginTop: '2rem' }}>
+        {/* LOTERÍA */}
+        <div className="card" style={{ borderTop: '4px solid #f39c12', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+            <TicketIcon style={{ width: 28, height: 28, color: '#f39c12' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Lotería Activa</h2>
+          </div>
+
+          {!data.lottery ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <div style={{ background: 'rgba(243,156,18,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <TicketIcon style={{ width: 30, height: 30, color: '#f39c12' }} />
+              </div>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>No hay ninguna lotería activa en este momento.</p>
+              <p style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>¡Vuelve pronto para participar!</p>
+            </div>
+          ) : (
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+              <div style={{ flexGrow: 1 }}>
+                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.4rem', color: '#f39c12' }}>{data.lottery.min} - {data.lottery.max}</span>
+                    <span className="stat-label">Rango</span>
+                  </div>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem' }}>{data.lottery.guessed}</span>
+                    <span className="stat-label">Nº Dichos</span>
+                  </div>
+                </div>
+
+                <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Detalles del Sorteo</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Cooldown</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{data.lottery.timeout}s</p>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Recompensa</p>
+                    <p style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold)' }}>Rol Exclusivo</p>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', gridColumn: 'span 2' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Premio Especial</p>
+                    <p style={{ fontSize: '1rem', fontWeight: 800 }}>Portador de la Fortuna</p>
+                  </div>
+                </div>
+              </div>
+
+              <Link href="/bot-stats/lottery" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#f39c12', borderColor: '#f39c12', color: '#000', fontWeight: 700 }}>
+                Ver Más Detalles <ArrowRightIcon style={{ width: 16, height: 16 }} />
+              </Link>
+            </div>
+          )}
         </div>
-        <p className="highlight" style={{ fontSize: '1.1rem', fontWeight: 700 }}>PRÓXIMAMENTE</p>
-        <p className="text-muted" style={{ fontSize: '0.85rem' }}>Estamos integrando el sistema de Trivial con la web. ¡Estad atentos!</p>
+
+        {/* TRIVIAL */}
+        <div className="card" style={{ borderTop: '4px solid #3498db', padding: '1.5rem', display: 'flex', flexDirection: 'column', opacity: 0.7, background: 'rgba(52, 152, 219, 0.02)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+            <QuestionMarkCircleIcon style={{ width: 28, height: 28, color: '#3498db' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Trivial</h2>
+          </div>
+          <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+            <p className="highlight" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#3498db', marginBottom: '0.5rem' }}>PRÓXIMAMENTE</p>
+            <p className="text-muted" style={{ fontSize: '0.85rem' }}>Estamos integrando el sistema de Trivial con la web.</p>
+          </div>
+        </div>
       </div>
 
       <div className="card" style={{ marginTop: '2rem', background: 'rgba(201,168,76,0.05)', borderColor: 'rgba(201,168,76,0.2)' }}>
