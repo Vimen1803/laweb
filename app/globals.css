@@ -847,29 +847,60 @@ a:hover { color: var(--gold-light); }
     display: none !important;
   }
 
-  /* Admin tables: horizontal scroll on mobile */
+  /* Admin layout: reduce padding */
+  .admin-layout {
+    padding: 1rem 0.5rem !important;
+  }
+
+  /* Admin tables: fit within screen */
   .admin-card {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
+    padding: 0.75rem !important;
+    overflow: hidden !important;
   }
   .admin-table {
-    min-width: 500px !important;
-    font-size: 0.8rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 0.7rem !important;
+    table-layout: fixed !important;
   }
   .admin-table th,
   .admin-table td {
-    padding: 8px 6px !important;
-    white-space: nowrap !important;
+    padding: 6px 4px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  .admin-table th {
+    font-size: 0.6rem !important;
+    letter-spacing: 0 !important;
   }
 
   /* Admin forms: stack vertically */
-  .admin-layout form[style*="flex"] {
+  .admin-layout form {
     flex-direction: column !important;
+    gap: 8px !important;
   }
   .admin-layout form input,
   .admin-layout form button {
     width: 100% !important;
     flex: unset !important;
+    min-width: 0 !important;
+  }
+
+  /* Section title responsive */
+  .admin-layout .section-title {
+    font-size: 1.3rem !important;
+  }
+
+  /* Admin card title */
+  .admin-card-title {
+    font-size: 0.9rem !important;
+  }
+
+  /* Prevent any horizontal overflow */
+  .admin-layout > div {
+    overflow: hidden !important;
+    max-width: 100% !important;
   }
 }
 
