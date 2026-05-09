@@ -165,23 +165,6 @@ export default function LotteryStatsPage() {
           </div>
         </div>
 
-        {/* Reward & Info Footer */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', marginTop: '2rem' }}>
-          <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ background: 'var(--gold)', width: '45px', height: '45px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <TrophyIcon style={{ width: 22, height: 22, color: '#000' }} />
-            </div>
-            <div>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: 800, marginBottom: '0.25rem' }}>Premio: Portador de la Fortuna</h4>
-              <p className="text-muted" style={{ fontSize: '0.85rem' }}>Adivina el número en Discord para ganar este rol exclusivo automáticamente.</p>
-            </div>
-          </div>
-          <div className="card" style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.1)', padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
-             <p style={{ fontSize: '0.7rem', color: 'var(--gold)', textTransform: 'uppercase', fontWeight: 800, marginBottom: '4px' }}>Rol ID</p>
-             <p style={{ fontSize: '0.8rem', opacity: 0.6 }}>{data.role}</p>
-          </div>
-        </div>
-
         <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', padding: '2rem', marginTop: '2rem' }}>
           <SparklesIcon style={{ width: 30, height: 30, color: 'var(--gold)', margin: '0 auto 1rem' }} />
           <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>¿Cómo Participar?</h4>
