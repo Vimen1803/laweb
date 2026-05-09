@@ -17,6 +17,7 @@ export default function BotStatsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [wordleMode, setWordleMode] = useState('normal');
 
   useEffect(() => {
     fetch('/api/user/bot-stats')
@@ -39,8 +40,6 @@ export default function BotStatsPage() {
 
   const wordle = data.wordle || null;
   const werewolf = data.werewolf || null;
-  
-  const [wordleMode, setWordleMode] = useState('normal');
 
   const renderWordleStats = (mode, stats) => {
     if (!stats || stats.played === 0) return <p className="text-muted" style={{ padding: '20px 0' }}>Aún no has jugado este modo.</p>;
