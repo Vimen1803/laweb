@@ -1,18 +1,24 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 import { StarIcon, UserIcon, ChatBubbleBottomCenterTextIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutline } from '@heroicons/react/24/outline';
 
 export default function ReviewsPage() {
-  const { data: session } = useSession();
+  const [session, setSession] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [average, setAverage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/session')
+      .then(r => r.json())
+      .then(d => setSession(d))
+      .catch(() => {});
+  }, []);
 
   // Form state
   const [rating, setRating] = useState(5);
