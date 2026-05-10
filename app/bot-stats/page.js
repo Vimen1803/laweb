@@ -168,9 +168,9 @@ export default function BotStatsPage() {
                 <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
-                <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                <Link href="/bot-stats/wordle/doc" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
                   Documentación
-                </a>
+                </Link>
               </div>
             </div>
           )}

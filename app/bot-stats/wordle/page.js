@@ -90,9 +90,9 @@ export default function WordleStatsPage() {
         <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px' }}>
           <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
         </Link>
-        <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
+        <Link href="/bot-stats/wordle/doc" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
           Ver Documentación
-        </a>
+        </Link>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '20px' }}>

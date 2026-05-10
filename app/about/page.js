@@ -26,7 +26,7 @@ const minigames = [
   {
     name: 'Werewolf',
     emoji: <MoonIcon style={{ width: 24, height: 24 }} />,
-    desc: 'El clásico juego del Hombre Lobo adaptado a Discord. Partidas de 5 a 20 jugadores con más de 20 roles únicos, fases de noche y día, votaciones y habilidades especiales. ¡Engaña, deduce y sobrevive!',
+    desc: 'El clásico juego del Hombre Lobo adaptado a Discord. Partidas de 5 a 20 jugadores con más de 20 roles únicos, fases de noche y día, votaciones y habilidades especiales.',
     color: '#e74c3c',
     link: 'https://lawerewolfdoc.vercel.app/',
   },
@@ -35,7 +35,7 @@ const minigames = [
     emoji: <PuzzlePieceIcon style={{ width: 24, height: 24 }} />,
     desc: 'Adivina la palabra secreta en 6 intentos. Basado en el famoso juego de palabras, con estadísticas, rachas y un ranking para competir con tus amigos.',
     color: '#2ecc71',
-    link: 'https://lawerewolfdoc.vercel.app/',
+    link: '/bot-stats/wordle/doc',
   },
   {
     name: 'Economía & Eventos',
