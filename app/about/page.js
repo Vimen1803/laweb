@@ -35,6 +35,7 @@ const minigames = [
     emoji: <PuzzlePieceIcon style={{ width: 24, height: 24 }} />,
     desc: 'Adivina la palabra secreta en 6 intentos. Basado en el famoso juego de palabras, con estadísticas, rachas y un ranking para competir con tus amigos.',
     color: '#2ecc71',
+    link: 'https://lawerewolfdoc.vercel.app/',
   },
   {
     name: 'Economía & Eventos',
