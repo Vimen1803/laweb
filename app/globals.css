@@ -985,6 +985,35 @@ a:hover { color: var(--gold-light); }
   .bs-member-role-mobile {
     display: block !important;
   }
+
+  /* Bot Stats & Wordle Layouts */
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .section {
+    padding: 2rem 1rem !important;
+  }
+  .card {
+    padding: 1.25rem !important;
+  }
+  .wordle-mode-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .wordle-mode-buttons button {
+    width: 100% !important;
+    padding: 10px 5px !important;
+    font-size: 0.8rem !important;
+  }
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .bs-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
 }
 
 @media (max-width: 900px) {

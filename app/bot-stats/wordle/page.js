@@ -134,11 +134,11 @@ export default function WordleStatsPage() {
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem' }}>{stats.played}</span>
-                    <span className="stat-label">Partidas Jugadas</span>
+                    <span className="stat-label">Partidas</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem', color: '#538d4e' }}>{stats.winrate}%</span>
-                    <span className="stat-label">Ratio de Victoria</span>
+                    <span className="stat-label">WinRate</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem' }}>{stats.streak}</span>
@@ -150,7 +150,7 @@ export default function WordleStatsPage() {
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem', color: 'var(--gold)' }}>{Number(stats.earnings || 0).toFixed(0)}</span>
-                    <span className="stat-label">Créditos Ganados</span>
+                    <span className="stat-label">Créditos</span>
                   </div>
                 </>
               ) : (
@@ -161,15 +161,15 @@ export default function WordleStatsPage() {
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem', color: 'var(--gold)' }}>{stats.max_words}</span>
-                    <span className="stat-label">Récord de Palabras</span>
+                    <span className="stat-label">Récord</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem', color: 'var(--gold)' }}>{Number(stats.earnings || 0).toFixed(0)}</span>
-                    <span className="stat-label">Créditos Totales</span>
+                    <span className="stat-label">Créditos</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '20px' }}>
                     <span className="stat-value" style={{ fontSize: '1.8rem' }}>{stats.average}</span>
-                    <span className="stat-label">Media de Palabras</span>
+                    <span className="stat-label">Media</span>
                   </div>
                 </>
               )}
