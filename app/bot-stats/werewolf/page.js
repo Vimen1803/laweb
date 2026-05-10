@@ -83,9 +83,14 @@ export default function WerewolfStatsPage() {
 
   return (
     <section className="section" style={{ maxWidth: 1400, paddingLeft: '1rem', paddingRight: '1rem' }}>
-      <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
-        <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
-      </Link>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
+        <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px' }}>
+          <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
+        </Link>
+        <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
+          Ver Documentación
+        </a>
+      </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
         <UserGroupIcon style={{ width: 40, height: 40, color: '#8b0000' }} />

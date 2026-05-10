@@ -226,9 +226,14 @@ export default function BotStatsPage() {
               {/* Spacing to match Wordle buttons height if needed, though buttons are already at the bottom */}
               <div style={{ height: 'calc(1.5rem + 32px)', marginBottom: '1.5rem', display: 'none' }}></div> 
 
-              <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
-                Estadísticas por Rol <ArrowRightIcon style={{ width: 16, height: 16 }} />
-              </Link>
+              <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
+                  Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
+                </Link>
+                <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                  Documentación
+                </a>
+              </div>
             </div>
           )}
         </div>
