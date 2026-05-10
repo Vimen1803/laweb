@@ -20,7 +20,7 @@ export default function DCInfoPage() {
           <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', lineHeight: '1.5', flexGrow: 1 }}>
             Reglamento oficial. Mantener un ambiente sano es nuestra prioridad.
           </p>
-          <Link href="/normas" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.9rem', background: 'rgba(255,255,255,0.05)'}}>
+          <Link href="/normas" className="btn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.9rem', background: 'rgba(255,255,255,0.05)'}}>
             Reglas <ArrowRightIcon style={{ width: 14, height: 14 }} />
           </Link>
         </div>
