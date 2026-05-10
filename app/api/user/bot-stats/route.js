@@ -7,9 +7,7 @@ export async function GET() {
   try {
     const session = await auth();
     const discordId = session?.discordId || session?.user?.id;
-    if (!discordId) {
-      return NextResponse.json({ error: 'Debes iniciar sesión primero.' }, { status: 401 });
-    }
+    const isAuthenticated = !!discordId;
 
     const client = await clientPromise;
     const werewolfClient = await werewolfClientPromise;
@@ -17,28 +15,34 @@ export async function GET() {
     const labotDb = client.db('labot');
     const werewolfDb = werewolfClient.db('werewolf');
 
-    const memberIdLong = Long.fromString(discordId);
     const GUILD_ID = "460550486257565697"; // LA Spain
     const guildIdLong = Long.fromString(GUILD_ID);
-    
-    // Fetch Wordle stats (labot.wordle)
-    // We try to find the one in LA Spain first
-    let wordle = await labotDb.collection('wordle').findOne({ 
-      member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
-      guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
-    });
-    
-    // Fallback to any guild if not found in LA Spain
-    if (!wordle) {
+
+    let wordle = null;
+    let werewolf = null;
+
+    if (isAuthenticated) {
+      const memberIdLong = Long.fromString(discordId);
+      
+      // Fetch Wordle stats (labot.wordle)
+      // We try to find the one in LA Spain first
       wordle = await labotDb.collection('wordle').findOne({ 
-        member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+        member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
+      });
+      
+      // Fallback to any guild if not found in LA Spain
+      if (!wordle) {
+        wordle = await labotDb.collection('wordle').findOne({ 
+          member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+        });
+      }
+
+      // Fetch Werewolf stats (werewolf.players)
+      werewolf = await werewolfDb.collection('players').findOne({ 
+        _id: { $in: [memberIdLong, discordId, Number(discordId)] }
       });
     }
-
-    // Fetch Werewolf stats (werewolf.players)
-    let werewolf = await werewolfDb.collection('players').findOne({ 
-      _id: { $in: [memberIdLong, discordId, Number(discordId)] }
-    });
 
     // Process Wordle data to separate modes
     const processMode = (prefix, data) => {
