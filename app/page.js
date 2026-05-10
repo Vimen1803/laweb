@@ -65,7 +65,7 @@ export default function Home() {
             con más de {stats.members ? stats.members.toLocaleString() : '6500'} miembros en Discord y una red de más de {stats.clubs ? stats.clubs : '15'} clubes activos que compiten al más alto nivel.
           </p>
           <p>
-            Ir a la página global de LA Gaming
+            Ir a la página global de
             <Link href="https://lagaming.com" target="_blank" rel="noopener" style={{color: 'var(--gold)', fontWeight: 700}}>
               LA Gaming
             </Link>
