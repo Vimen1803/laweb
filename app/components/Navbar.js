@@ -67,12 +67,12 @@ export default function Navbar() {
               <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                 {session.user.name}
               </span>
-              <a href="/api/auth/signout?callbackUrl=/" className="btn-logout" onClick={() => setOpen(false)}>
+              <a href={`/api/auth/signout?callbackUrl=${path}`} className="btn-logout" onClick={() => setOpen(false)}>
                 Salir
               </a>
             </div>
           ) : (
-            <a href="/api/auth/signin" className="btn-login" onClick={() => setOpen(false)}>
+            <a href={`/api/auth/signin?callbackUrl=${path}`} className="btn-login" onClick={() => setOpen(false)}>
               Iniciar Sesión
             </a>
           )}
@@ -88,12 +88,12 @@ export default function Navbar() {
             <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                 {session.user.name}
               </span>
-            <a href="/api/auth/signout?callbackUrl=/" className="btn-logout">
+            <a href={`/api/auth/signout?callbackUrl=${path}`} className="btn-logout">
               Salir
             </a>
           </div>
         ) : (
-          <a href="/api/auth/signin" className="btn-login">
+          <a href={`/api/auth/signin?callbackUrl=${path}`} className="btn-login">
             Iniciar Sesión
           </a>
         )}
