@@ -247,7 +247,7 @@ export default function BrawlStarsPage() {
               <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '15px' }}>
                 Vincula tu cuenta de Discord para guardar tu Player Tag y acceder rápidamente a tu perfil.
               </p>
-              <a href="/api/auth/signin" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '14px 32px', borderRadius: '12px', minWidth: '250px', fontSize: '1.05rem', fontWeight: 'bold' }}>
+              <a href="/api/auth/signin?callbackUrl=/brawlstars" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '14px 32px', borderRadius: '12px', minWidth: '250px', fontSize: '1.05rem', fontWeight: 'bold' }}>
                 Iniciar Sesión con Discord
               </a>
             </div>

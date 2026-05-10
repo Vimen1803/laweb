@@ -83,7 +83,7 @@ export default function BotStatsPage() {
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
               <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Inicia sesión para ver tus estadísticas personalizadas.</p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <a href="/api/auth/signin" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Iniciar Sesión
                 </a>
                 <Link href="/bot-stats/wordle/doc" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
@@ -202,7 +202,7 @@ export default function BotStatsPage() {
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
               <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Inicia sesión para ver tus estadísticas personalizadas.</p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <a href="/api/auth/signin" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Iniciar Sesión
                 </a>
                 <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
