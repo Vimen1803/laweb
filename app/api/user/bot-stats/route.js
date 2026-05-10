@@ -22,30 +22,37 @@ export async function GET() {
     let werewolf = null;
 
     if (isAuthenticated) {
-      const memberIdLong = Long.fromString(discordId);
-      
-      // Fetch Wordle stats (labot.wordle)
-      // We try to find the one in LA Spain first
-      wordle = await labotDb.collection('wordle').findOne({ 
-        member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
-        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
-      });
-      
-      // Fallback to any guild if not found in LA Spain
-      if (!wordle) {
+      try {
+        const memberIdLong = Long.fromString(discordId);
+        
+        // Fetch Wordle stats (labot.wordle)
         wordle = await labotDb.collection('wordle').findOne({ 
-          member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+          member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
+          guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
         });
-      }
+        
+        if (!wordle) {
+          wordle = await labotDb.collection('wordle').findOne({ 
+            member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+          });
+        }
 
-      // Fetch Werewolf stats (werewolf.players)
-      werewolf = await werewolfDb.collection('players').findOne({ 
-        _id: { $in: [memberIdLong, discordId, Number(discordId)] }
-      });
+        // Fetch Werewolf stats (werewolf.players)
+        try {
+          werewolf = await werewolfDb.collection('players').findOne({ 
+            _id: { $in: [memberIdLong, discordId, Number(discordId)] }
+          });
+        } catch (wwErr) {
+          console.error('Error fetching from werewolf.players:', wwErr);
+        }
+      } catch (idErr) {
+        console.error('Error creating Long from discordId:', idErr);
+      }
     }
 
-    // Process Wordle data to separate modes
+    // Process Wordle data
     const processMode = (prefix, data) => {
+      if (!data) return null;
       const p = prefix ? `${prefix}_` : '';
       const played = data[`${p}played`] || (prefix === '' ? data.played : 0) || 0;
       let wins = data[`${p}total_wins`] || 0;
@@ -81,31 +88,40 @@ export async function GET() {
     // Sanitize Werewolf data
     let werewolfStats = null;
     if (werewolf) {
-      werewolfStats = {
-        ...werewolf,
-        _id: werewolf._id.toString(),
-        games_played: Number(werewolf.games_played || 0),
-        games_won: Number(werewolf.games_won || 0),
-        village_played: Number(werewolf.village_played || 0),
-        village_won: Number(werewolf.village_won || 0),
-        wolf_played: Number(werewolf.wolf_played || 0),
-        wolf_won: Number(werewolf.wolf_won || 0),
-        tanner_played: Number(werewolf.tanner_played || 0),
-        tanner_won: Number(werewolf.tanner_won || 0),
-        white_wolf_played: Number(werewolf.white_wolf_played || 0),
-        white_wolf_won: Number(werewolf.white_wolf_won || 0),
-        lovers_played: Number(werewolf.lovers_played || 0),
-        lovers_won: Number(werewolf.lovers_won || 0),
-        roles_played: werewolf.roles_played || {},
-        roles_won: werewolf.roles_won || {}
-      };
+      try {
+        werewolfStats = {
+          ...werewolf,
+          _id: werewolf._id ? werewolf._id.toString() : discordId,
+          games_played: Number(werewolf.games_played || 0),
+          games_won: Number(werewolf.games_won || 0),
+          village_played: Number(werewolf.village_played || 0),
+          village_won: Number(werewolf.village_won || 0),
+          wolf_played: Number(werewolf.wolf_played || 0),
+          wolf_won: Number(werewolf.wolf_won || 0),
+          tanner_played: Number(werewolf.tanner_played || 0),
+          tanner_won: Number(werewolf.tanner_won || 0),
+          white_wolf_played: Number(werewolf.white_wolf_played || 0),
+          white_wolf_won: Number(werewolf.white_wolf_won || 0),
+          lovers_played: Number(werewolf.lovers_played || 0),
+          lovers_won: Number(werewolf.lovers_won || 0),
+          roles_played: werewolf.roles_played || {},
+          roles_won: werewolf.roles_won || {}
+        };
+      } catch (wwProcErr) {
+        console.error('Error processing werewolf data:', wwProcErr);
+      }
     }
 
     // Fetch Lottery stats (labot.lottery)
-    const lottery = await labotDb.collection('lottery').findOne({
-      guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
-      user_id: null // Active lottery
-    });
+    let lottery = null;
+    try {
+      lottery = await labotDb.collection('lottery').findOne({
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+        user_id: null // Active lottery
+      });
+    } catch (lotErr) {
+      console.error('Error fetching lottery:', lotErr);
+    }
 
     const lotteryStats = lottery ? {
       min: Number(lottery.range_min || 0),
@@ -122,10 +138,10 @@ export async function GET() {
       wordle: wordleStats,
       werewolf: werewolfStats,
       lottery: lotteryStats,
-      trivial: null // Próximamente
+      trivial: null
     });
   } catch (err) {
-    console.error('Error fetching bot stats:', err);
+    console.error('Critical error in bot-stats API:', err);
     return NextResponse.json({ error: 'Error al obtener estadísticas.' }, { status: 500 });
   }
 }
