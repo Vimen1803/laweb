@@ -985,28 +985,30 @@ a:hover { color: var(--gold-light); }
   .bs-member-role-mobile {
     display: block !important;
   }
+}
 
-  /* Bot Stats & Wordle Layouts: Balanced Spacing */
+/* Bot Stats & Wordle Layouts: Balanced Spacing */
+@media (max-width: 900px) {
   .grid-2 {
     grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
+    gap: 1rem !important;
   }
   .section {
-    padding: 2rem 1.25rem !important;
+    padding: 1.5rem 1rem !important;
   }
   .section-title {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
     justify-content: center !important;
     text-align: center !important;
     flex-wrap: wrap !important;
   }
   .section-subtitle {
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
     text-align: center !important;
-    margin-bottom: 2rem !important;
+    margin-bottom: 1.5rem !important;
   }
   .card {
-    padding: 1.25rem !important;
+    padding: 1rem !important;
   }
   .wordle-mode-buttons {
     display: grid !important;
@@ -1016,21 +1018,21 @@ a:hover { color: var(--gold-light); }
   }
   .wordle-mode-buttons button {
     width: 100% !important;
-    padding: 10px 5px !important;
-    font-size: 0.8rem !important;
+    padding: 8px 4px !important;
+    font-size: 0.75rem !important;
   }
   .stat-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
+    gap: 8px !important;
   }
   .stat-item {
-    padding: 15px 10px !important;
+    padding: 10px !important;
   }
   .stat-value {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
   .stat-label {
-    font-size: 0.7rem !important;
+    font-size: 0.65rem !important;
   }
   .bs-stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
