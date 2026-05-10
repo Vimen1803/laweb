@@ -188,7 +188,7 @@ export default function ReviewsPage() {
         
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', marginTop: '2rem' }}>
           {average > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(201,168,76,0.1)', padding: '10px 25px', borderRadius: '50px', border: '1px solid rgba(201,168,76,0.2)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 25px'}}>
               <div style={{ display: 'flex' }}>
                 {[1, 2, 3, 4, 5].map(s => (
                   <StarIcon key={s} style={{ width: 20, height: 20, color: s <= Math.round(average) ? 'var(--gold)' : 'rgba(255,255,255,0.1)' }} />
