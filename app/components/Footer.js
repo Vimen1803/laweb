@@ -30,6 +30,7 @@ export default function Footer() {
             <li><Link href="/roles">Roles</Link></li>
             <li><Link href="/brawlstars">Brawl Stars</Link></li>
             <li><Link href="/bot-stats">Bot Stats</Link></li>
+            <li><Link href="/reviews">Reseñas</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
           </ul>
         </div>

@@ -22,6 +22,7 @@ export default function Navbar() {
     { href: '/bot-stats', label: 'Bot Stats' },
     { href: '/comandos', label: 'Comandos' },
     { href: '/dc-info', label: 'DC Info' },
+    { href: '/reviews', label: 'Reseñas' },
   ];
 
   return (

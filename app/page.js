@@ -5,6 +5,7 @@ import { CommandLineIcon, SparklesIcon, BookOpenIcon, StarIcon, DocumentTextIcon
 
 export default function Home() {
   const [stats, setStats] = useState({ members: null, bsMembers: null, clubs: null });
+  const [rating, setRating] = useState({ average: 0, total: 0 });
 
   useEffect(() => {
     fetch('/api/discord')
@@ -17,13 +18,43 @@ export default function Home() {
         });
       })
       .catch(() => {});
+
+    fetch('/api/reviews')
+      .then(r => r.json())
+      .then(d => {
+        setRating({ average: d.average || 0, total: d.total || 0 });
+      })
+      .catch(() => {});
   }, []);
 
   return (
     <>
       {/* Hero */}
       <section className="hero">
-        <h1 className="hero-title">LA Spain</h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          <h1 className="hero-title" style={{ margin: 0 }}>LA Spain</h1>
+          {rating.average > 0 && (
+            <Link href="/reviews" className="fade-in" style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              background: 'rgba(201,168,76,0.1)', 
+              padding: '8px 15px', 
+              borderRadius: '50px', 
+              textDecoration: 'none',
+              border: '1px solid rgba(201,168,76,0.2)',
+              transition: 'all 0.3s ease',
+              transform: 'scale(1)',
+            }}
+            onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              <StarIcon style={{ width: 20, height: 20, color: 'var(--gold)' }} />
+              <span style={{ color: 'var(--gold)', fontWeight: 800, fontSize: '1.2rem' }}>{rating.average.toFixed(1)}</span>
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem' }}>({rating.total})</span>
+            </Link>
+          )}
+        </div>
         <div className="hero-desc">
            <p>
             <strong>LA Spain</strong> nació el <span className="highlight">4 de mayo de 2019</span> de la mano 

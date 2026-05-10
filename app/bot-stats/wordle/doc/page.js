@@ -13,9 +13,6 @@ export default function WordleDocPage() {
       </div>
 
       <div className="card" style={{ padding: '4rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
-        <div style={{ background: 'rgba(201,168,76,0.1)', width: '100px', height: '100px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem auto' }}>
-          <WrenchScrewdriverIcon style={{ width: 50, height: 50, color: 'var(--gold)' }} />
-        </div>
         <h2 style={{ fontSize: '2.5rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem', color: 'var(--gold)' }}>Próximamente</h2>
         <p className="text-muted" style={{ fontSize: '1.2rem', marginBottom: '1rem', maxWidth: '600px', margin: '0 auto 2.5rem auto' }}>
           La documentación detallada sobre cómo jugar al Wordle, los comandos disponibles y el funcionamiento de las estadísticas estará disponible muy pronto.
