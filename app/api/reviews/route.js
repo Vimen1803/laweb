@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { werewolfClientPromise } from '@/lib/mongodb';
 import { auth } from '@/lib/auth';
-import werewolfClientPromise from '@/lib/werewolf';
 
 export async function GET() {
   try {
-    const werewolfClient = await werewolfClientPromise;
-    const db = werewolfClient.db('labot');
+    const client = await werewolfClientPromise;
+    const db = client.db('labot');
     
     const reviews = await db.collection('reviews').find({}).sort({ timestamp: -1 }).toArray();
     
@@ -44,7 +43,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'El mensaje no puede superar los 500 caracteres' }, { status: 400 });
     }
 
-    const client = await clientPromise;
+    const client = await werewolfClientPromise;
     const db = client.db('labot');
 
     // Prevent multiple reviews from the same user?
