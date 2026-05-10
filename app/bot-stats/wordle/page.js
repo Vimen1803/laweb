@@ -23,7 +23,7 @@ export default function WordleStatsPage() {
         return res.json();
       })
       .then(d => {
-        setData(d.wordle);
+        setData(d);
         setLoading(false);
       })
       .catch(err => {
@@ -34,7 +34,7 @@ export default function WordleStatsPage() {
 
   if (loading) return <div className="section"><p className="text-muted text-center">Cargando estadísticas de Wordle...</p></div>;
 
-  if (error || !data) return (
+  if (error || (data && !data.isAuthenticated)) return (
     <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
       <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Wordle Stats</h2>
@@ -44,7 +44,19 @@ export default function WordleStatsPage() {
     </section>
   );
 
-  const stats = data[mode];
+  const wordle = data?.wordle || null;
+
+  if (!wordle || wordle.normal.played === 0) return (
+    <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
+      <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
+        <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Wordle Stats</h2>
+        <p className="text-muted">Aún no has jugado ninguna partida de Wordle.</p>
+        <a href="https://discord.gg/DbRUker" target="_blank" className="btn btn-primary" style={{ marginTop: '2rem' }}>¡Empieza a jugar en Discord!</a>
+      </div>
+    </section>
+  );
+
+  const stats = wordle[mode];
   const isLadder = mode === 'ladder';
 
   const renderDistribution = (dist) => {

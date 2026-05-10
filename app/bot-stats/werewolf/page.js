@@ -24,7 +24,7 @@ export default function WerewolfStatsPage() {
         return res.json();
       })
       .then(d => {
-        setData(d.werewolf);
+        setData(d);
         setLoading(false);
       })
       .catch(err => {
@@ -35,7 +35,7 @@ export default function WerewolfStatsPage() {
 
   if (loading) return <div className="section"><p className="text-muted text-center">Cargando estadísticas de Werewolf...</p></div>;
 
-  if (error || !data) return (
+  if (error || (data && !data.isAuthenticated)) return (
     <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
       <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Estadísticas de Werewolf</h2>
@@ -49,7 +49,21 @@ export default function WerewolfStatsPage() {
     </section>
   );
 
-  const werewolf = data;
+  const werewolf = data?.werewolf || null;
+
+  if (!werewolf || werewolf.games_played === 0) return (
+    <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
+      <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
+        <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Estadísticas de Werewolf</h2>
+        <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: '500px', margin: '0 auto 2.5rem auto' }}>
+          Aún no has participado en ninguna partida de Werewolf.
+        </p>
+        <a href="https://discord.gg/DbRUker" target="_blank" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '15px 40px', fontSize: '1.1rem', borderRadius: '12px', fontWeight: 700 }}>
+          ¡Únete a una partida en Discord!
+        </a>
+      </div>
+    </section>
+  );
 
   const BandoCard = ({ title, icon: Icon, color, played, won }) => (
     <div className="card" style={{ borderLeft: `4px solid ${color}`, background: 'var(--bg-body)' }}>
