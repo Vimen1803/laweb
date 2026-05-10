@@ -14,7 +14,6 @@ export default function ReviewsPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [view, setView] = useState('list'); // 'list' or 'form'
-  const [loginAlert, setLoginAlert] = useState(false);
 
   const MAX_CHARS = 500;
 
@@ -59,8 +58,7 @@ export default function ReviewsPage() {
 
   const handleOpenForm = () => {
     if (!session) {
-      setLoginAlert(true);
-      setTimeout(() => setLoginAlert(false), 3000);
+      window.location.href = '/api/auth/signin?callbackUrl=/reviews';
       return;
     }
     setView('form');
@@ -207,26 +205,6 @@ export default function ReviewsPage() {
             >
               <PencilSquareIcon style={{ width: 20, height: 20 }} /> Publicar reseña
             </button>
-            
-            {loginAlert && (
-              <div className="fade-in" style={{ 
-                position: 'absolute', 
-                top: '100%', 
-                left: '50%', 
-                transform: 'translateX(-50%)', 
-                marginTop: '10px', 
-                background: '#e74c3c', 
-                color: 'white', 
-                padding: '8px 15px', 
-                borderRadius: '8px', 
-                fontSize: '0.85rem', 
-                whiteSpace: 'nowrap',
-                zIndex: 10,
-                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
-              }}>
-                Necesitas iniciar sesión para publicar reseñas
-              </div>
-            )}
           </div>
         </div>
       </header>
