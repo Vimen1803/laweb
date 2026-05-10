@@ -947,8 +947,11 @@ a:hover { color: var(--gold-light); }
   }
 
   /* Brawl Stars Club Members List */
+  .bs-members-section {
+    padding: 1rem 0.25rem !important;
+  }
   .bs-member-row {
-    padding: 10px 5px !important;
+    padding: 10px 0 !important;
   }
   .bs-member-row > div:first-child {
     gap: 2px !important;
