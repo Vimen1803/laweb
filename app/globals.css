@@ -923,7 +923,7 @@ a:hover { color: var(--gold-light); }
     gap: 0 !important;
   }
 
-  /* Brawl Stars Profile Header */
+  /* Brawl Stars Profile Header & Brawlers */
   .bs-profile-header {
     flex-direction: column !important;
     align-items: center !important;
@@ -944,6 +944,26 @@ a:hover { color: var(--gold-light); }
   .bs-profile-header .bs-profile-icon img,
   .bs-profile-header .bs-profile-icon div {
     margin-bottom: 4px !important;
+  }
+
+  .bs-brawlers-section {
+    padding: 1rem 0.5rem !important;
+  }
+  .bs-brawlers-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px !important;
+  }
+  .bs-brawler-chip {
+    padding: 4px !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 4px !important;
+  }
+  .bs-brawler-name {
+    font-size: 0.7rem !important;
+  }
+  .bs-brawler-trophies {
+    font-size: 0.65rem !important;
   }
 
   /* Brawl Stars Club Members List */
