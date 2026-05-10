@@ -79,7 +79,17 @@ export default function BotStatsPage() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Wordle</h2>
           </div>
 
-          {!wordle || wordle.normal.played === 0 ? (
+          {!data.isAuthenticated ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <div style={{ background: 'rgba(83,141,78,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <PuzzlePieceIcon style={{ width: 30, height: 30, color: '#538d4e' }} />
+              </div>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Inicia sesión para ver tus estadísticas personalizadas.</p>
+              <Link href="/bot-stats/wordle/doc" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000' }}>
+                Ver Documentación
+              </Link>
+            </div>
+          ) : (!wordle || wordle.normal.played === 0) ? (
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
               <div style={{ background: 'rgba(83,141,78,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
                 <PuzzlePieceIcon style={{ width: 30, height: 30, color: '#538d4e' }} />
@@ -189,7 +199,17 @@ export default function BotStatsPage() {
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Werewolf</h2>
           </div>
 
-          {!werewolf || werewolf.games_played === 0 ? (
+          {!data.isAuthenticated ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <div style={{ background: 'rgba(139,0,0,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <UserGroupIcon style={{ width: 30, height: 30, color: '#8b0000' }} />
+              </div>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Inicia sesión para ver tus estadísticas personalizadas.</p>
+              <a href="https://lawerewolfdoc.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px', background: '#8b0000', borderColor: '#8b0000', color: '#fff' }}>
+                Ver Documentación
+              </a>
+            </div>
+          ) : (!werewolf || werewolf.games_played === 0) ? (
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
               <div style={{ background: 'rgba(139,0,0,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
                 <UserGroupIcon style={{ width: 30, height: 30, color: '#8b0000' }} />

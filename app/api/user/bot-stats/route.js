@@ -118,6 +118,7 @@ export async function GET() {
     } : null;
 
     return NextResponse.json({
+      isAuthenticated,
       wordle: wordleStats,
       werewolf: werewolfStats,
       lottery: lotteryStats,
