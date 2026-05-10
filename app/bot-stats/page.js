@@ -154,8 +154,8 @@ export default function BotStatsPage() {
                       padding: '6px 12px', 
                       fontSize: '0.75rem', 
                       textTransform: 'capitalize',
-                      background: wordleMode === m ? '#538d4e' : 'rgba(255,255,255,0.05)',
-                      borderColor: wordleMode === m ? '#538d4e' : 'transparent',
+                      background: wordleMode === m ? '#var(--gold)' : 'rgba(255,255,255,0.05)',
+                      borderColor: wordleMode === m ? '#var(--gold)' : 'transparent',
                       fontWeight: 700
                     }}
                   >
@@ -164,7 +164,7 @@ export default function BotStatsPage() {
                 ))}
               </div>
 
-              <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#538d4e', borderColor: '#538d4e', fontWeight: 700 }}>
+              <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#var(--gold)', borderColor: '#var(--gold)', fontWeight: 700 }}>
                 Ver Estadísticas Detalladas <ArrowRightIcon style={{ width: 16, height: 16 }} />
               </Link>
             </div>
