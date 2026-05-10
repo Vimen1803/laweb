@@ -144,20 +144,21 @@ export default function BotStatsPage() {
               </div>
 
               {/* Mode Buttons */}
-              <div className="wordle-mode-buttons" style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', justifyContent: 'center' }}>
+              <div className="wordle-mode-buttons" style={{ marginBottom: '1.5rem' }}>
                 {['normal', 'double', 'triple', 'ladder'].map(m => (
                   <button 
                     key={m}
                     onClick={() => setWordleMode(m)}
                     className={`btn ${wordleMode === m ? 'btn-primary' : ''}`}
                     style={{ 
-                      padding: '6px 12px', 
+                      padding: '10px 12px', 
                       fontSize: '0.75rem', 
                       textTransform: 'capitalize',
                       background: wordleMode === m ? 'var(--gold)' : '#fff',
-                      color: wordleMode === m ? '#000' : '#000',
+                      color: '#000',
                       borderColor: wordleMode === m ? 'var(--gold)' : '#ddd',
-                      fontWeight: 700
+                      fontWeight: 700,
+                      width: '100%'
                     }}
                   >
                     {m}

@@ -245,6 +245,13 @@ a:hover { color: var(--gold-light); }
   color: var(--text-muted); font-size: 1rem;
 }
 
+.wordle-mode-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
 /* Command modal */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.7);
