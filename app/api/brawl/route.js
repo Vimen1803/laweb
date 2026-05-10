@@ -80,7 +80,7 @@ function mapClub(c) {
   if (!c) return null;
   // role: 1=president, 2=vicePresident, 3=senior, 4=member
   const roleMap = { 1: 'member', 2: 'president', 3: 'senior', 4: 'vicePresident' };
-  const typeMap = { 1: 'ABIERTO', 2: 'CON INVITACIÓN', 3: 'CERRADO' };
+  const typeMap = { 1: 'ABIERTO', 2: 'INVITACIÓN', 3: 'CERRADO' };
   return {
     tag: c.id?.tag,
     name: c.name,

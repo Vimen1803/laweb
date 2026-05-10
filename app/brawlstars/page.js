@@ -449,10 +449,13 @@ export default function BrawlStarsPage() {
                           ) : (
                             <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--border)' }}></div>
                           )}
-                          <span className="bs-member-name" style={{ fontSize: '1rem' }}>{m.name}</span>
+                          <div className="bs-member-info-col" style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span className="bs-member-name" style={{ fontSize: '1rem', lineHeight: '1.2' }}>{m.name}</span>
+                            <span className="bs-member-role-mobile" style={{ color: roleColor(m.role), fontSize: '0.75rem', fontWeight: 600 }}>{roleName(m.role)}</span>
+                          </div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                          <span className="bs-member-role" style={{ color: roleColor(m.role) }}>{roleName(m.role)}</span>
+                          <span className="bs-member-role-desktop" style={{ color: roleColor(m.role), fontWeight: 600, fontSize: '0.8rem' }}>{roleName(m.role)}</span>
                           <span className="bs-member-trophies" style={{ color: 'var(--gold)', display: 'flex', alignItems: 'center', gap: '5px' }}>{m.trophies?.toLocaleString()}<img src="https://beta.brawlstats.com/dist/trophy.96ebb0874d0e7e7a7c235bfbb751f2cf.png" alt="" style={{ height: '18px', objectFit: 'contain' }} /></span>
                         </div>
                       </div>

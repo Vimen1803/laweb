@@ -904,7 +904,7 @@ a:hover { color: var(--gold-light); }
 
   /* Brawl Stars Clubs List Spacing */
   .bs-club-card {
-    padding: 10px 8px !important;
+    padding: 10px 0 !important;
   }
   .bs-club-rank {
     margin-right: 4px !important;
@@ -944,7 +944,7 @@ a:hover { color: var(--gold-light); }
 
   /* Brawl Stars Club Members List */
   .bs-member-row {
-    padding: 10px 4px !important;
+    padding: 10px 0 !important;
   }
   .bs-member-row > div:first-child {
     gap: 6px !important;
@@ -952,6 +952,12 @@ a:hover { color: var(--gold-light); }
   .bs-member-rank {
     min-width: 22px !important;
     font-size: 0.8rem !important;
+  }
+  .bs-member-role-desktop {
+    display: none !important;
+  }
+  .bs-member-role-mobile {
+    display: block !important;
   }
 }
 
