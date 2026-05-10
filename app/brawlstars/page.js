@@ -370,8 +370,8 @@ export default function BrawlStarsPage() {
                           style={{ width: 28, height: 28, borderRadius: '4px', objectFit: 'cover' }}
                           onError={(e) => { e.target.style.display = 'none'; }} />
                         <span className="bs-brawler-name">{b.name}</span>
-                        <span className="bs-brawler-trophies" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '12px' }} /> {b.trophies}
+                        <span className="bs-brawler-trophies" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                          {b.trophies} <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '12px' }} />
                         </span>
                       </div>
                     ))}

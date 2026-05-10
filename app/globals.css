@@ -954,10 +954,8 @@ a:hover { color: var(--gold-light); }
     gap: 4px !important;
   }
   .bs-brawler-chip {
-    padding: 4px !important;
-    flex-direction: column !important;
-    text-align: center !important;
-    gap: 4px !important;
+    padding: 6px 8px !important;
+    gap: 6px !important;
   }
   .bs-brawler-name {
     font-size: 0.7rem !important;
