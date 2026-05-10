@@ -490,8 +490,8 @@ export default function BrawlStarsPage() {
                     <img src={clubBadgeUrl(c.badgeId)} alt="" style={{ width: 42, height: 42, objectFit: 'contain', marginRight: '15px' }}
                       onError={(e) => { e.target.style.display = 'none'; }} />
                   )}
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <h4 className="bs-club-name" style={{ margin: 0, fontSize: '1.2rem' }}>{c.name}</h4>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
+                    <h4 className="bs-club-name" style={{ margin: 0, fontSize: '1.2rem', lineHeight: '1.2' }}>{c.name}</h4>
                     <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{c.tag}</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', minWidth: '100px' }}>

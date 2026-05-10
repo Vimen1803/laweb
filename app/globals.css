@@ -907,11 +907,12 @@ a:hover { color: var(--gold-light); }
     padding: 10px 5px !important;
   }
   .bs-club-rank {
-    margin-right: 2px !important;
+    margin-right: 0 !important;
+    min-width: auto !important;
     font-size: 0.95rem !important;
   }
   .bs-club-card > img {
-    margin-right: 4px !important;
+    margin-right: 2px !important;
     width: 32px !important;
     height: 32px !important;
   }
@@ -919,7 +920,7 @@ a:hover { color: var(--gold-light); }
     font-size: 1.05rem !important;
   }
   .bs-club-card > div:last-child > div:first-child {
-    gap: 2px !important;
+    gap: 0 !important;
   }
 
   /* Brawl Stars Profile Header */
@@ -950,10 +951,11 @@ a:hover { color: var(--gold-light); }
     padding: 10px 5px !important;
   }
   .bs-member-row > div:first-child {
-    gap: 6px !important;
+    gap: 2px !important;
   }
   .bs-member-rank {
-    min-width: 22px !important;
+    min-width: auto !important;
+    margin-right: 2px !important;
     font-size: 0.8rem !important;
   }
   .bs-member-role-desktop {
