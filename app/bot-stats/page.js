@@ -165,7 +165,7 @@ export default function BotStatsPage() {
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+              <div className="stats-actions" style={{ display: 'flex', gap: '10px', width: '100%' }}>
                 <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
@@ -232,7 +232,7 @@ export default function BotStatsPage() {
               {/* Spacing to match Wordle buttons height if needed, though buttons are already at the bottom */}
               <div style={{ height: 'calc(1.5rem + 32px)', marginBottom: '1.5rem', display: 'none' }}></div> 
 
-              <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+              <div className="stats-actions" style={{ display: 'flex', gap: '10px', width: '100%' }}>
                 <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
