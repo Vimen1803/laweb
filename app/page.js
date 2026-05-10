@@ -65,8 +65,10 @@ export default function Home() {
             con más de {stats.members ? stats.members.toLocaleString() : '6500'} miembros en Discord y una red de más de {stats.clubs ? stats.clubs : '15'} clubes activos que compiten al más alto nivel.
           </p>
           <p>
-            LA Spain ha dejado huella en torneos como la <strong>Gems League Europe</strong> o la <strong>Clash Royale League</strong>, 
-            y ha contado entre sus filas a campeones mundiales como <span className="highlight">Mohamed Light</span>.
+            Ir a la página global de LA Gaming
+            <Link href="https://lagaming.com" target="_blank" rel="noopener" style={{color: 'var(--gold)', fontWeight: 700}}>
+              LA Gaming
+            </Link>
           </p>
         </div>
         <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
