@@ -38,11 +38,9 @@ export default function Home() {
               display: 'flex', 
               alignItems: 'center', 
               gap: '8px', 
-              background: 'rgba(201,168,76,0.1)', 
               padding: '8px 15px', 
               borderRadius: '50px', 
               textDecoration: 'none',
-              border: '1px solid rgba(201,168,76,0.2)',
               transition: 'all 0.3s ease',
               transform: 'scale(1)',
             }}

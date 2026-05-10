@@ -182,7 +182,6 @@ export default function ReviewsPage() {
     <section className="section" style={{ maxWidth: 900, margin: '0 auto' }}>
       <header style={{ textAlign: 'center', marginBottom: '3rem' }}>
         <h1 className="section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
-          <SparklesIcon style={{ width: 40, height: 40, color: 'var(--gold)' }} /> 
           Reseñas de la Comunidad
         </h1>
         <p className="section-subtitle">Lo que nuestros miembros opinan de LA Spain</p>
