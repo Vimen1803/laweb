@@ -42,7 +42,7 @@ export default function WerewolfStatsPage() {
         <p className="text-muted" style={{ fontSize: '1.1rem', marginBottom: '2.5rem', maxWidth: '500px', margin: '0 auto 2.5rem auto' }}>
           Inicia sesión para ver tu rendimiento detallado por bando y rol.
         </p>
-        <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '15px 40px', fontSize: '1.1rem', borderRadius: '12px', fontWeight: 700 }}>
+        <a href="/api/auth/signin?callbackUrl=/bot-stats/werewolf" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '15px 40px', fontSize: '1.1rem', borderRadius: '12px', fontWeight: 700 }}>
           Iniciar Sesión con Discord
         </a>
       </div>
