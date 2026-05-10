@@ -155,7 +155,7 @@ export default function BotStatsPage() {
                       fontSize: '0.75rem', 
                       textTransform: 'capitalize',
                       background: wordleMode === m ? 'var(--gold)' : 'var(--bg-body)',
-                      borderColor: 'var(--gold)',
+                      borderColor: wordleMode === m ? 'var(--gold)' : 'var(--gold)',
                       fontWeight: 700
                     }}
                   >
