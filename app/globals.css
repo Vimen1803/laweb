@@ -890,6 +890,69 @@ a:hover { color: var(--gold-light); }
   .admin-layout .section-title {
     font-size: 1.3rem !important;
   }
+
+  /* 8. Fixes for mobile spacing and overflow */
+  
+  /* Blacklist entry card fix for small screens */
+  .admin-entry-card {
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+  .admin-card {
+    padding: 0.5rem !important;
+  }
+
+  /* Brawl Stars Clubs List Spacing */
+  .bs-club-card {
+    padding: 10px 8px !important;
+  }
+  .bs-club-rank {
+    margin-right: 4px !important;
+    font-size: 0.95rem !important;
+  }
+  .bs-club-card img {
+    margin-right: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .bs-club-name {
+    font-size: 1.05rem !important;
+  }
+
+  /* Brawl Stars Profile Header */
+  .bs-profile-header {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 1.5rem 1rem !important;
+    gap: 10px !important;
+  }
+  .bs-profile-header > div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .bs-profile-club {
+    justify-content: center !important;
+    margin-top: 4px !important;
+  }
+  .bs-profile-header .bs-profile-icon img,
+  .bs-profile-header .bs-profile-icon div {
+    margin-bottom: 4px !important;
+  }
+
+  /* Brawl Stars Club Members List */
+  .bs-member-row {
+    padding: 10px 4px !important;
+  }
+  .bs-member-row > div:first-child {
+    gap: 6px !important;
+  }
+  .bs-member-rank {
+    min-width: 22px !important;
+    font-size: 0.8rem !important;
+  }
 }
 
 @media (max-width: 900px) {
