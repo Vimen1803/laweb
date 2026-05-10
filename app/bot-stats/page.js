@@ -158,7 +158,11 @@ export default function BotStatsPage() {
                       color: '#000',
                       borderColor: wordleMode === m ? 'var(--gold)' : '#ddd',
                       fontWeight: 700,
-                      width: '100%'
+                      width: '100%',
+                      textAlign: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
                     }}
                   >
                     {m}
