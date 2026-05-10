@@ -99,7 +99,7 @@ export default function BotStatsPage() {
                     <span className="stat-label">Jugadas</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
-                    <span className="stat-value" style={{ fontSize: '1.5rem', color: '#538d4e' }}>{wordle[wordleMode].wins}</span>
+                    <span className="stat-value" style={{ fontSize: '1.5rem', color: 'var(--gold)' }}>{wordle[wordleMode].wins}</span>
                     <span className="stat-label">Victorias</span>
                   </div>
                 </div>
@@ -154,8 +154,8 @@ export default function BotStatsPage() {
                       padding: '6px 12px', 
                       fontSize: '0.75rem', 
                       textTransform: 'capitalize',
-                      background: wordleMode === m ? '#var(--gold)' : 'rgba(255,255,255,0.05)',
-                      borderColor: wordleMode === m ? '#var(--gold)' : 'transparent',
+                      background: wordleMode === m ? '#var(--gold)' : '#var(--bg-body)',
+                      borderColor: wordleMode === m ? '#var(--gold)' : '#var(--gold)',
                       fontWeight: 700
                     }}
                   >
