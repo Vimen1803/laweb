@@ -39,7 +39,7 @@ export default function WordleStatsPage() {
       <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Wordle Stats</h2>
         <p className="text-muted">Inicia sesión para ver tu rendimiento detallado en Wordle.</p>
-        <a href="/api/auth/signin?callbackUrl=/bot-stats/wordle" className="btn btn-primary" style={{ marginTop: '2rem' }}>Iniciar Sesión</a>
+        <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ marginTop: '2rem' }}>Iniciar Sesión</a>
       </div>
     </section>
   );
