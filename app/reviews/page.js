@@ -57,7 +57,7 @@ export default function ReviewsPage() {
   }, [session]);
 
   const handleOpenForm = () => {
-    if (!session) {
+    if (!session?.user) {
       window.location.href = '/api/auth/signin?callbackUrl=/reviews';
       return;
     }
@@ -66,7 +66,7 @@ export default function ReviewsPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!session) return;
+    if (!session?.user) return;
     
     setSubmitting(true);
     setError(null);
