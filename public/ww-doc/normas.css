@@ -1,0 +1,21 @@
+.bando-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 1rem; }
+.bando-card { padding: 1.5rem; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-subtle); }
+.bando-card h3 { margin: 0.75rem 0 0.5rem; font-size: 1.1rem; }
+.bando-card p { font-size: 0.875rem; color: var(--text-secondary); }
+.bando-emoji { font-size: 2.5rem; }
+.bando-village { background: rgba(29,158,117,0.06); border-color: rgba(29,158,117,0.2); }
+.bando-wolves { background: rgba(216,90,48,0.06); border-color: rgba(216,90,48,0.2); }
+.bando-solo { background: rgba(127,119,221,0.06); border-color: rgba(127,119,221,0.2); }
+.rule-section { margin-bottom: 1.25rem; }
+.rule-section p { color: var(--text-secondary); line-height: 1.7; }
+.rules-list, .steps-list { list-style: none; counter-reset: item; padding: 0; }
+.rules-list li, .steps-list li { counter-increment: item; padding: 0.75rem 0 0.75rem 2.5rem; position: relative; color: var(--text-secondary); border-bottom: 1px solid var(--border-subtle); }
+.rules-list li:last-child, .steps-list li:last-child { border-bottom: none; }
+.rules-list li::before, .steps-list li::before { content: counter(item); position: absolute; left: 0; top: 0.75rem; width: 28px; height: 28px; background: var(--bg-elevated); color: var(--accent-wolf); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; }
+.rules-list li strong { color: var(--text-primary); }
+code { background: var(--bg-elevated); padding: 2px 8px; border-radius: 4px; font-size: 0.85em; color: var(--accent-gold); }
+@media (max-width: 768px) { 
+  .bando-grid { grid-template-columns: 1fr; } 
+  .rules-list li, .steps-list li { padding-left: 2.2rem; font-size: 0.9rem; }
+  .bando-card { padding: 1.25rem; }
+}
