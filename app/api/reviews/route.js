@@ -43,7 +43,7 @@ export async function POST(req) {
       return NextResponse.json({ error: 'El mensaje no puede superar los 500 caracteres' }, { status: 400 });
     }
 
-    const client = await werewolfClientPromise;
+    const client = await clientPromise;
     const db = client.db('labot');
 
     // Prevent multiple reviews from the same user?
