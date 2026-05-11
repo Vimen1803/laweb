@@ -98,7 +98,7 @@ export default function WerewolfStatsPage() {
         <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px' }}>
           <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
         </Link>
-        <a href="/bot-stats/werewolf/doc" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
+        <a href="/bot-stats/werewolf/doc/index" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
           Ver Documentación
         </a>
       </div>

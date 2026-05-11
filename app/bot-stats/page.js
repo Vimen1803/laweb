@@ -259,7 +259,7 @@ export default function BotStatsPage() {
                 <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
-                <a href="/bot-stats/werewolf/doc" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                <a href="/bot-stats/werewolf/doc/index" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
                   Documentación
                 </a>
               </div>
