@@ -9,11 +9,22 @@ export async function GET() {
     const discordId = session?.discordId || session?.user?.id;
     const isAuthenticated = !!discordId;
 
-    const client = await clientPromise;
-    const werewolfClient = await werewolfClientPromise;
-    
-    const labotDb = client.db('labot');
-    const werewolfDb = werewolfClient.db('werewolf');
+    let labotDb = null;
+    let werewolfDb = null;
+
+    try {
+      const client = await clientPromise;
+      labotDb = client.db('labot');
+    } catch (e) {
+      console.warn('labot connection failed:', e.message);
+    }
+
+    try {
+      const werewolfClient = await werewolfClientPromise;
+      werewolfDb = werewolfClient.db('werewolf');
+    } catch (e) {
+      console.warn('werewolf connection failed:', e.message);
+    }
 
     const GUILD_ID = "460550486257565697"; // LA Spain
     const guildIdLong = Long.fromString(GUILD_ID);
@@ -23,25 +34,25 @@ export async function GET() {
 
     if (isAuthenticated) {
       const memberIdLong = Long.fromString(discordId);
-      
-      // Fetch Wordle stats (labot.wordle)
-      // We try to find the one in LA Spain first
-      wordle = await labotDb.collection('wordle').findOne({ 
-        member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
-        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
-      });
-      
-      // Fallback to any guild if not found in LA Spain
-      if (!wordle) {
-        wordle = await labotDb.collection('wordle').findOne({ 
-          member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+
+      if (labotDb) {
+        wordle = await labotDb.collection('wordle').findOne({
+          member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
+          guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
         });
+
+        if (!wordle) {
+          wordle = await labotDb.collection('wordle').findOne({
+            member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
+          });
+        }
       }
 
-      // Fetch Werewolf stats (werewolf.players)
-      werewolf = await werewolfDb.collection('players').findOne({ 
-        _id: { $in: [memberIdLong, discordId, Number(discordId)] }
-      });
+      if (werewolfDb) {
+        werewolf = await werewolfDb.collection('players').findOne({
+          _id: { $in: [memberIdLong, discordId, Number(discordId)] }
+        });
+      }
     }
 
     // Process Wordle data to separate modes
@@ -49,7 +60,7 @@ export async function GET() {
       const p = prefix ? `${prefix}_` : '';
       const played = data[`${p}played`] || (prefix === '' ? data.played : 0) || 0;
       let wins = data[`${p}total_wins`] || 0;
-      
+
       if (prefix === '') {
         wins = Math.max(0, (data.total_wins || 0) - ((data.double_total_wins || 0) * 2) - ((data.triple_total_wins || 0) * 3));
       }
@@ -102,27 +113,30 @@ export async function GET() {
     }
 
     // Fetch Lottery stats (labot.lottery)
-    const lottery = await labotDb.collection('lottery').findOne({
-      guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
-      user_id: null // Active lottery
-    });
+    let lotteryStats = null;
+    if (labotDb) {
+      const lottery = await labotDb.collection('lottery').findOne({
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+        user_id: null
+      });
 
-    const lotteryStats = lottery ? {
-      min: Number(lottery.range_min || 0),
-      max: Number(lottery.range_max || 0),
-      timeout: Number(lottery.timeout || 0),
-      role: lottery.role ? lottery.role.toString() : null,
-      guessed: Array.isArray(lottery.numeros) ? lottery.numeros.length : 0,
-      numbers: Array.isArray(lottery.numeros) ? lottery.numeros : [],
-      channel: lottery.channel_id ? lottery.channel_id.toString() : null
-    } : null;
+      lotteryStats = lottery ? {
+        min: Number(lottery.range_min || 0),
+        max: Number(lottery.range_max || 0),
+        timeout: Number(lottery.timeout || 0),
+        role: lottery.role ? lottery.role.toString() : null,
+        guessed: Array.isArray(lottery.numeros) ? lottery.numeros.length : 0,
+        numbers: Array.isArray(lottery.numeros) ? lottery.numeros : [],
+        channel: lottery.channel_id ? lottery.channel_id.toString() : null
+      } : null;
+    }
 
     return NextResponse.json({
       isAuthenticated,
       wordle: wordleStats,
       werewolf: werewolfStats,
       lottery: lotteryStats,
-      trivial: null // Próximamente
+      trivial: null
     });
   } catch (err) {
     console.error('Error fetching bot stats:', err);
