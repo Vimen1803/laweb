@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 export default function WerewolfDocPage() {
   useEffect(() => {
-    window.location.href = '/ww-doc/index.html';
+    window.location.href = '/bot-stats/werewolf/doc/index.html';
   }, []);
 
   return (

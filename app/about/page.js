@@ -28,7 +28,7 @@ const minigames = [
     emoji: <MoonIcon style={{ width: 24, height: 24 }} />,
     desc: 'El clásico juego del Hombre Lobo adaptado a Discord. Partidas de 5 a 20 jugadores con más de 20 roles únicos, fases de noche y día, votaciones y habilidades especiales.',
     color: '#e74c3c',
-    link: '/ww-doc/index.html',
+    link: '/bot-stats/werewolf/doc/index.html',
   },
   {
     name: 'Wordle',
@@ -191,3 +191,4 @@ export default function AboutPage() {
     </section>
   );
 }
+

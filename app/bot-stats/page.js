@@ -205,7 +205,7 @@ export default function BotStatsPage() {
                 <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Iniciar Sesión
                 </a>
-                <a href="/ww-doc/index.html" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                <a href="/bot-stats/werewolf/doc/index.html" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Ver Documentación
                 </a>
               </div>
@@ -259,7 +259,7 @@ export default function BotStatsPage() {
                 <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
-                <a href="/ww-doc/index.html" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                <a href="/bot-stats/werewolf/doc/index.html" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
                   Documentación
                 </a>
               </div>
@@ -344,3 +344,4 @@ export default function BotStatsPage() {
     </section>
   );
 }
+
