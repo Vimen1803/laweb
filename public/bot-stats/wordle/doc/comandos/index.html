@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comandos — LA Wordle</title>
+  <link rel="stylesheet" href="/bot-stats/wordle/doc/global.css">
+  <link rel="icon" href="/bot-stats/wordle/doc/assets/lalogo.png" type="image/png">
+  <style>
+    .dashboard-container { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; align-items: start; }
+    @media (max-width: 700px) { .dashboard-container { grid-template-columns: 1fr; } }
+    .sidebar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; position: sticky; top: 80px; }
+    .sidebar-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; padding: 0 8px; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;
+      font-weight: 600; color: var(--text-muted); transition: all 0.2s;
+    }
+    .sidebar-nav li:hover, .sidebar-nav li.active { background: rgba(106,170,100,0.12); color: var(--accent); }
+    .nav-count {
+      background: rgba(255,255,255,0.08); border-radius: 50px;
+      padding: 1px 8px; font-size: 0.75rem; font-weight: 700;
+    }
+    .commands-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .cmd-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1rem 1.2rem; cursor: pointer; transition: all 0.2s;
+    }
+    .cmd-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .cmd-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .cmd-name { font-size: 0.95rem; font-weight: 800; font-family: monospace; color: var(--accent); }
+    .cmd-tag {
+      font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 50px;
+      background: rgba(255,255,255,0.06); color: var(--text-muted); text-transform: uppercase;
+    }
+    .cmd-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .search-wrapper {
+      display: flex; align-items: center; gap: 10px; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 1rem;
+    }
+    .search-wrapper svg { width: 18px; height: 18px; color: var(--text-muted); flex-shrink: 0; }
+    .search-wrapper input {
+      background: none; border: none; color: var(--text); font-size: 0.95rem;
+      outline: none; width: 100%; font-family: 'Outfit', sans-serif;
+    }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+    .modal-content {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; max-width: 520px; width: 100%; position: relative; max-height: 90vh; overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px; background: rgba(255,255,255,0.08);
+      border: none; color: var(--text); width: 32px; height: 32px; border-radius: 50%;
+      cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-title { font-size: 1.3rem; font-weight: 900; font-family: monospace; color: var(--accent); margin-bottom: 1rem; }
+    .modal-section { margin-bottom: 1rem; }
+    .modal-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+    .modal-section p { color: var(--text-muted); line-height: 1.6; }
+    .params-list { list-style: none; }
+    .params-list li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted); }
+    .examples-box { display: flex; flex-direction: column; gap: 6px; }
+    .examples-box code {
+      background: rgba(255,255,255,0.06); padding: 6px 10px; border-radius: 6px;
+      font-size: 0.9rem; font-family: monospace; color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <a href="https://laweb-eta.vercel.app" target="_blank" class="header-branding">
+    <img src="/bot-stats/wordle/doc/assets/lalogo.png" alt="LA Logo" class="brand-logo">
+    <span class="brand-name">LA Spain</span>
+  </a>
+  <div class="header-logo"><span class="wordle-emoji">🟩</span> LA <span>Wordle</span><span class="wordle-emoji"> 🟩</span></div>
+  <a href="https://discord.gg/VJX7vvSDjr" class="header-discord" target="_blank">
+    <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.06,72.06,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.71,32.65-1.82,56.6.39,80.21a105.73,105.73,0,0,0,32.17,16.15,77.7,77.7,0,0,0,6.89-11.11,68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.52-51.27-19.07-72.13ZM42.45,65.69C36.18,65.69,31,60,31,53s5.12-12.67,11.41-12.67S54,46,53.86,53,48.74,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5.12-12.67,11.44-12.67S96.22,46,96,53,90.89,65.69,84.69,65.69Z"/></svg>
+    Discord
+  </a>
+</header>
+<nav class="site-nav">
+  <a href="/bot-stats/wordle/doc/index">🏠 Inicio</a>
+  <a href="/bot-stats/wordle/doc/modos">🎮 Modos</a>
+  <a href="/bot-stats/wordle/doc/puntuacion">⭐ Puntuación</a>
+  <a href="/bot-stats/wordle/doc/comandos" class="active">⌨️ Comandos</a>
+  <a href="/bot-stats/wordle/doc/normas">📜 Normas</a>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;padding:40px 20px 80px;">
+  <h1 class="page-title">⌨️ Comandos</h1>
+  <p class="page-subtitle">Todos los comandos del Wordle. Haz clic en uno para ver sus detalles.</p>
+
+  <div class="dashboard-container">
+    <aside class="sidebar fade-in">
+      <div class="sidebar-header">Categorías</div>
+      <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="active" data-cat="all"><span>🌍 Ver Todos</span><span class="nav-count" id="count-all">0</span></li>
+        <li data-cat="juego"><span>🎮 Juego</span><span class="nav-count" id="count-juego">0</span></li>
+        <li data-cat="stats"><span>📊 Estadísticas</span><span class="nav-count" id="count-stats">0</span></li>
+        <li data-cat="xd"><span>😂 Wordle XD</span><span class="nav-count" id="count-xd">0</span></li>
+        <li data-cat="admin"><span>🔒 Admin</span><span class="nav-count" id="count-admin">0</span></li>
+      </ul>
+    </aside>
+
+    <main>
+      <div class="search-wrapper">
+        <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path></svg>
+        <input type="text" id="cmd-search" placeholder="Buscar comando...">
+      </div>
+      <div class="commands-grid" id="cmd-container"></div>
+    </main>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-content fade-in">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-section"><h3>Descripción</h3><p id="modal-desc"></p></div>
+    <div class="modal-section"><h3>Parámetros</h3><ul class="params-list" id="modal-params"></ul></div>
+    <div class="modal-section"><h3>Ejemplos</h3><div class="examples-box" id="modal-examples"></div></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 Todos los derechos reservados <a href="https://laweb-eta.vercel.app" target="_blank" style="color: var(--accent);">LA Spain</a>.<br><br>Desarrollado por Vimen.</p>
+</footer>
+
+<script>
+const CMDS = [
+  { id:'wordle', name:',wordle', cat:'juego', desc:'Inicia una partida Normal (1 palabra, 6 intentos).', long:'Arranca una partida de Wordle clásico. Tienes 6 intentos para adivinar una palabra de 5 letras. Cada intento debe ser una palabra válida.', params:[], examples:[',wordle', ',w'] },
+  { id:'doble', name:',wordle doble', cat:'juego', desc:'Inicia una partida Doble (2 palabras, 6 intentos).', long:'Abre dos tableros simultáneos. Cada intento que escribas se aplica a los dos tableros a la vez. Tienes 6 intentos para adivinar ambas palabras.', params:[], examples:[',wordle doble', ',wordle d', ',w d'] },
+  { id:'triple', name:',wordle triple', cat:'juego', desc:'Inicia una partida Triple (3 palabras, 6 intentos).', long:'El modo más difícil. Tres tableros simultáneos con solo 6 intentos compartidos. Solo para los más valientes.', params:[], examples:[',wordle triple', ',wordle t'] },
+  { id:'escalera', name:',wordle escalera', cat:'juego', desc:'Inicia el modo Escalera (∞ palabras, 2 tableros).', long:'Modo infinito con 2 tableros activos. Cuando resuelves una palabra, se reemplaza por una nueva. El juego termina cuando fallas. Puntuación: N×(N+1).', params:[], examples:[',wordle escalera', ',wordle e'] },
+  { id:'lb', name:',wordle lb', cat:'stats', desc:'Tabla de clasificación por categoría y modo.', long:'Muestra el ranking del servidor. Puedes filtrar por categoría (points, wins, streak, max, played, winrate, escalera) y modo (normal, doble, triple).', params:[{name:'categoría', desc:'points, wins, streak, max, played, winrate, escalera', opt:true},{name:'modo', desc:'normal, doble, triple', opt:true}], examples:[',wordle lb', ',wordle lb wins', ',wordle lb streak doble', ',wordle lb escalera'] },
+  { id:'stats', name:',wordle stats', cat:'stats', desc:'Muestra las estadísticas de un jugador.', long:'Genera una imagen con tus estadísticas (o las de otro usuario): partidas, victorias, racha actual, racha máxima y distribución de intentos, según el modo seleccionado.', params:[{name:'modo', desc:'normal, doble, triple, escalera', opt:true},{name:'@usuario', desc:'Mención del usuario a consultar', opt:true}], examples:[',wordle stats', ',wordle stats doble', ',wordle stats @vicktor', ',wordle stats triple @vicktor'] },
+  { id:'tip', name:',wordle tip', cat:'stats', desc:'Muestra el consejo fijado de la CMD Gang.', long:'Envía el enlace al consejo oficial fijado en el canal de Wordle. Útil cuando no sabes por dónde empezar.', params:[], examples:[',wordle tip'] },
+  { id:'normas', name:',wordle normas', cat:'stats', desc:'Muestra las normas de la CMD Gang.', long:'Envía un embed con las reglas de comportamiento del canal de Wordle. Léelas si eres nuevo.', params:[], examples:[',wordle normas'] },
+  { id:'xd', name:',wordle xd', cat:'xd', desc:'Muestra la lista de palabras del Wordle XD.', long:'El Wordle XD es una lista especial de palabras graciosas o temáticas añadidas por la comunidad. Este comando muestra todas las entradas con paginación.', params:[], examples:[',wordle xd'] },
+  { id:'xd_add', name:',wordle xd add', cat:'xd', desc:'Añade una palabra a la lista Wordle XD.', long:'Permite añadir una palabra a la lista comuntiaria del Wordle XD. La palabra quedará registrada con tu nombre y la fecha.', params:[{name:'palabra', desc:'La palabra a añadir', opt:false},{name:'enlace', desc:'URL de referencia (imagen, contexto, etc.)', opt:false}], examples:[',wordle xd add perro https://imagen.com'] },
+  { id:'xd_del', name:',wordle xd delete', cat:'xd', desc:'Elimina una palabra de la lista Wordle XD.', long:'Borra una entrada existente de la lista del Wordle XD. Solo disponible para administradores.', params:[{name:'palabra', desc:'La palabra a eliminar', opt:false}], examples:[',wordle xd delete perro'] },
+  { id:'recompensa', name:',wordle recompensa', cat:'admin', desc:'Calcula la recompensa (XP) de un usuario. [Admin]', long:'Muestra cuántos créditos acumulados tiene un usuario pendientes de ser canjeados. Solo disponible para administradores.', params:[{name:'@usuario', desc:'Usuario a consultar', opt:false}], examples:[',wordle recompensa @vicktor'] },
+  { id:'done', name:',wordle done', cat:'admin', desc:'Marca a un usuario como recompensado. [Admin]', long:'Registra que los créditos de un usuario ya han sido canjeados, reseteando su contador. Solo disponible para administradores.', params:[{name:'@usuario', desc:'Usuario a marcar', opt:false}], examples:[',wordle done @vicktor'] },
+];
+
+const container = document.getElementById('cmd-container');
+const searchInput = document.getElementById('cmd-search');
+const navItems = document.querySelectorAll('#sidebar-nav li');
+let currentCat = 'all';
+
+function renderCmds() {
+  const q = searchInput.value.toLowerCase();
+  const filtered = CMDS.filter(c => (currentCat === 'all' || c.cat === currentCat) && (c.name.includes(q) || c.desc.toLowerCase().includes(q)));
+  container.innerHTML = filtered.map(c => `
+    <div class="cmd-card fade-in" onclick="openModal('${c.id}')">
+      <div class="cmd-card-header">
+        <div class="cmd-name">${c.name}</div>
+        <div class="cmd-tag">${c.cat}</div>
+      </div>
+      <div class="cmd-desc">${c.desc}</div>
+    </div>
+  `).join('');
+}
+
+function updateCounts() {
+  document.getElementById('count-all').textContent = CMDS.length;
+  ['juego','stats','xd','admin'].forEach(cat => {
+    const el = document.getElementById(`count-${cat}`);
+    if (el) el.textContent = CMDS.filter(c => c.cat === cat).length;
+  });
+}
+
+function openModal(id) {
+  const cmd = CMDS.find(c => c.id === id);
+  if (!cmd) return;
+  document.getElementById('modal-title').textContent = cmd.name;
+  document.getElementById('modal-desc').textContent = cmd.long;
+  document.getElementById('modal-params').innerHTML = cmd.params.length
+    ? cmd.params.map(p => `<li><strong>${p.name}:</strong> ${p.desc} ${p.opt ? '<em style="opacity:0.6">(Opcional)</em>' : ''}</li>`).join('')
+    : '<li>Este comando no requiere parámetros.</li>';
+  document.getElementById('modal-examples').innerHTML = cmd.examples.map(e => `<code>${e}</code>`).join('');
+  document.getElementById('modal').classList.add('visible');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('visible'); }
+
+navItems.forEach(item => {
+  item.onclick = () => {
+    navItems.forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+    currentCat = item.dataset.cat;
+    renderCmds();
+  };
+});
+
+searchInput.oninput = renderCmds;
+window.onclick = e => { if (e.target.id === 'modal') closeModal(); };
+
+updateCounts();
+renderCmds();
+</script>
+</body>
+</html>
