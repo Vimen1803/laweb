@@ -6,6 +6,10 @@ const nextConfig = {
         source: '/bot-stats/werewolf/doc',
         destination: '/bot-stats/werewolf/doc/index.html',
       },
+      {
+        source: '/bot-stats/werewolf/doc/index',
+        destination: '/bot-stats/werewolf/doc/index.html',
+      },
     ];
   },
 };
