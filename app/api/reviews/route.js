@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { werewolfClientPromise } from '@/lib/mongodb';
+import { clientPromise } from '@/lib/mongodb';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const client = await werewolfClientPromise;
+    const client = await clientPromise;
     const db = client.db('labot');
     
     const reviews = await db.collection('reviews').find({}).sort({ timestamp: -1 }).toArray();
