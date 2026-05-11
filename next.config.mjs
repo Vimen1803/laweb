@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/bot-stats/werewolf/doc',
-        destination: '/bot-stats/werewolf/doc/index.html',
+        destination: '/bot-stats/werewolf/doc/index',
       },
       {
         source: '/bot-stats/werewolf/doc/index',

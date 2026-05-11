@@ -205,7 +205,7 @@ export default function BotStatsPage() {
                 <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Iniciar Sesión
                 </a>
-                <a href="/bot-stats/werewolf/doc" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                <a href="/bot-stats/werewolf/doc/index" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Ver Documentación
                 </a>
               </div>
