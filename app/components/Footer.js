@@ -42,6 +42,7 @@ export default function Footer() {
             <li><a href="https://x.com/LASpain_" target="_blank" rel="noopener">Twitter / X</a></li>
             <li><a href="https://www.tiktok.com/@laspain_" target="_blank" rel="noopener">TikTok</a></li>
             <li><a href="https://brawl-stars-club.fandom.com/wiki/LA_Spain_(Club_Family)" target="_blank" rel="noopener">Wiki</a></li>
+            <li><a href="https://lagaming.com/" target="_blank" rel="noopener">LA Gaming</a></li>
           </ul>
         </div>
       </div>
