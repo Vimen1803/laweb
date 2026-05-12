@@ -41,6 +41,7 @@ export default function BrawlStarsPage() {
   const [saveTagInput, setSaveTagInput] = useState('');
   const [savingAccount, setSavingAccount] = useState(false);
   const [selectedBrawler, setSelectedBrawler] = useState(null);
+  const [brawlerSort, setBrawlerSort] = useState('trophies');
 
   useEffect(() => {
     fetch('/api/user/brawl')
@@ -364,22 +365,49 @@ export default function BrawlStarsPage() {
               {/* Brawlers */}
               {result.brawlers && (
                 <div className="bs-brawlers-section">
-                  <h3 style={{ color: 'var(--gold)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <img src="https://cdn.brawlify.com/icon/Brawler.png" alt="" style={{ height: '24px', objectFit: 'contain' }} /> Brawlers ({result.brawlers.length})
-                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
+                    <h3 style={{ color: 'var(--gold)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <img src="https://cdn.brawlify.com/icon/Brawler.png" alt="" style={{ height: '24px', objectFit: 'contain' }} /> Brawlers ({result.brawlers.length})
+                    </h3>
+                    {/* Sliding pill toggle */}
+                    <div
+                      onClick={() => setBrawlerSort(s => s === 'trophies' ? 'name' : 'trophies')}
+                      style={{
+                        position: 'relative', display: 'flex', alignItems: 'center',
+                        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '50px', padding: '3px', cursor: 'pointer', userSelect: 'none',
+                        width: '160px', height: '34px',
+                      }}>
+                      {/* Sliding indicator */}
+                      <div style={{
+                        position: 'absolute', top: '3px', left: brawlerSort === 'trophies' ? '3px' : 'calc(50% + 0px)',
+                        width: 'calc(50% - 3px)', height: 'calc(100% - 6px)',
+                        background: 'var(--gold, #c9a84c)', borderRadius: '50px',
+                        transition: 'left 0.25s ease',
+                      }} />
+                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'trophies' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>🏆 Trofeos</span>
+                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'name' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>🔤 Nombre</span>
+                    </div>
+                  </div>
                   <div className="bs-brawlers-grid">
-                    {result.brawlers.sort((a, b) => b.trophies - a.trophies).map((b, i) => (
-                      <div key={i} className="bs-brawler-chip" style={{ cursor: 'pointer' }}
-                        onClick={() => setSelectedBrawler(b)}>
-                        <img src={brawlerIcon(b)} alt={b.name}
-                          style={{ width: 28, height: 28, borderRadius: '4px', objectFit: 'cover' }}
-                          onError={(e) => { e.target.style.display = 'none'; }} />
-                        <span className="bs-brawler-name">{b.name}</span>
-                        <span className="bs-brawler-trophies" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                          {b.trophies} <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '12px' }} />
-                        </span>
-                      </div>
-                    ))}
+                    {[...result.brawlers]
+                      .sort(brawlerSort === 'trophies'
+                        ? (a, b) => b.trophies - a.trophies
+                        : (a, b) => a.name.localeCompare(b.name)
+                      )
+                      .map((b, i) => (
+                        <div key={b.id || i} className="bs-brawler-chip" style={{ cursor: 'pointer' }}
+                          onClick={() => setSelectedBrawler(b)}>
+                          <img src={brawlerIcon(b)} alt={b.name}
+                            style={{ width: 28, height: 28, borderRadius: '4px', objectFit: 'cover' }}
+                            onError={(e) => { e.target.style.display = 'none'; }} />
+                          <span className="bs-brawler-name">{b.name}</span>
+                          <span className="bs-brawler-trophies" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                            {b.trophies} <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '12px' }} />
+                          </span>
+                        </div>
+                      ))
+                    }
                   </div>
                 </div>
               )}
