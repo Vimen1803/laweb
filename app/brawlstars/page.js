@@ -282,13 +282,14 @@ export default function BrawlStarsPage() {
                   <h2 className="bs-profile-name">{result.name}</h2>
                   <span className="bs-profile-tag">{result.tag}</span>
                   {result.club && (
-                    <div className="bs-profile-club" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px' }}>
+                    <div className="bs-profile-club" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '5px', cursor: 'pointer' }}
+                      onClick={() => { setTab('club'); setTag(result.club.tag); performSearch('club', result.club.tag); setResult(null); }}>
                       {result.club.badgeId ? (
                         <img src={`https://cdn.brawlify.com/club-badges/regular/${result.club.badgeId}.png`} alt="Club" style={{ width: 20, height: 20, objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
                       ) : (
                         <BuildingLibraryIcon style={{ width: 20, height: 20, color: 'var(--gold)' }} />
                       )}
-                      <span style={{ color: 'var(--gold)', fontSize: '0.85rem' }}>{result.club.name}</span>
+                      <span style={{ color: 'var(--gold)', fontSize: '0.85rem', textDecoration: 'underline', textUnderlineOffset: '3px' }}>{result.club.name}</span>
                     </div>
                   )}
                 </div>
@@ -439,7 +440,8 @@ export default function BrawlStarsPage() {
                   <h3 style={{ color: 'var(--gold)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><UsersIcon style={{ width: 24, height: 24 }} /> Miembros ({result.members.length})</h3>
                   <div className="bs-members-list">
                     {result.members.map((m, i) => (
-                      <div key={i} className="bs-member-row">
+                      <div key={i} className="bs-member-row" style={{ cursor: 'pointer' }}
+                        onClick={() => { setTab('profile'); setTag(m.tag); setResult(null); performSearch('player', m.tag); }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                           <span className="bs-member-rank" style={{ minWidth: '35px' }}>#{i + 1}</span>
                           {m.icon?.id ? (
