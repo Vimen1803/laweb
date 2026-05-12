@@ -386,114 +386,32 @@ export default function BrawlStarsPage() {
               {selectedBrawler && (
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
                   onClick={() => setSelectedBrawler(null)}>
-                  <div style={{ background: 'var(--bg-card, #1a1a24)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '2rem', maxWidth: '560px', width: '100%', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}
+                  <div style={{ background: 'var(--bg-card, #1a1a24)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', padding: '2rem', maxWidth: '400px', width: '100%', position: 'relative' }}
                     onClick={e => e.stopPropagation()}>
-
-                    {/* Close */}
-                    <button onClick={() => setSelectedBrawler(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.08)', border: 'none', color: 'white', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-
-                    {/* Header */}
+                    <button onClick={() => setSelectedBrawler(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(255,255,255,0.08)', border: 'none', color: 'white', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '1.5rem' }}>
-                      <img src={brawlerIcon(selectedBrawler)} alt={selectedBrawler.name}
-                        style={{ width: 80, height: 80, borderRadius: '12px', objectFit: 'cover', border: '2px solid var(--gold, #c9a84c)' }}
-                        onError={e => e.target.style.display = 'none'} />
+                      <img src={brawlerIcon(selectedBrawler)} alt={selectedBrawler.name} style={{ width: 72, height: 72, borderRadius: '12px', objectFit: 'cover', border: '2px solid var(--gold, #c9a84c)' }} onError={e => e.target.style.display = 'none'} />
                       <div>
-                        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, margin: 0 }}>{selectedBrawler.name}</h2>
-                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
-                          <span style={{ background: 'rgba(255,255,255,0.08)', padding: '3px 10px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700 }}>Nivel {selectedBrawler.power}</span>
-                          <span style={{ background: 'rgba(201,168,76,0.15)', color: 'var(--gold, #c9a84c)', padding: '3px 10px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700 }}>Rango {selectedBrawler.rank}</span>
-                          {selectedBrawler.prestige > 0 && <span style={{ background: 'rgba(231,76,60,0.15)', color: '#e74c3c', padding: '3px 10px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700 }}>{'⭐'.repeat(Math.min(selectedBrawler.prestige, 5))} Prestigio {selectedBrawler.prestige}</span>}
-                        </div>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 900, margin: 0 }}>{selectedBrawler.name}</h2>
+                        <span style={{ background: 'rgba(255,255,255,0.08)', padding: '3px 10px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 700, marginTop: '6px', display: 'inline-block' }}>Nivel {selectedBrawler.power}</span>
                       </div>
                     </div>
-
-                    {/* Trophy Stats */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '1.5rem' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '1.4rem', fontWeight: 900, color: 'var(--gold, #c9a84c)' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '1.5rem', fontWeight: 900, color: 'var(--gold, #c9a84c)' }}>
                           {selectedBrawler.trophies?.toLocaleString()}
                           <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '20px' }} />
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>Trofeos Actuales</div>
+                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>Copas Actuales</div>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '1.4rem', fontWeight: 900, color: '#e74c3c' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '16px', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '1.5rem', fontWeight: 900, color: '#e74c3c' }}>
                           {selectedBrawler.highestTrophies?.toLocaleString()}
                           <img src="https://cdn.brawlify.com/icon/trophy.png" alt="" style={{ height: '20px' }} />
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>Trofeos Máximos</div>
+                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>Copas M&aacute;ximas</div>
                       </div>
-                      {selectedBrawler.mastery != null && (
-                        <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '10px', padding: '14px', textAlign: 'center', gridColumn: 'span 2' }}>
-                          <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#9b59b6' }}>{selectedBrawler.mastery?.toLocaleString()} pts</div>
-                          <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>Maestría</div>
-                        </div>
-                      )}
                     </div>
-
-                    {/* Star Powers */}
-                    {selectedBrawler.starPowers?.length > 0 && (
-                      <div style={{ marginBottom: '1.2rem' }}>
-                        <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>⭐ Star Powers</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {selectedBrawler.starPowers.map((sp, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '10px' }}>
-                              <img src={`https://cdn.brawlify.com/star-powers/${sp.id}.png`} alt={sp.name} style={{ width: 36, height: 36, objectFit: 'contain' }} onError={e => e.target.style.display = 'none'} />
-                              <span style={{ fontWeight: 700 }}>{sp.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Gadgets */}
-                    {selectedBrawler.gadgets?.length > 0 && (
-                      <div style={{ marginBottom: '1.2rem' }}>
-                        <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>🔧 Gadgets</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {selectedBrawler.gadgets.map((g, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '10px' }}>
-                              <img src={`https://cdn.brawlify.com/gadgets/${g.id}.png`} alt={g.name} style={{ width: 36, height: 36, objectFit: 'contain' }} onError={e => e.target.style.display = 'none'} />
-                              <span style={{ fontWeight: 700 }}>{g.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Gears */}
-                    {selectedBrawler.gears?.length > 0 && (
-                      <div style={{ marginBottom: '1.2rem' }}>
-                        <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>⚙️ Gears</h4>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                          {selectedBrawler.gears.map((g, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '8px 12px' }}>
-                              <img src={`https://cdn.brawlify.com/gears/${g.id}.png`} alt={g.name} style={{ width: 28, height: 28, objectFit: 'contain' }} onError={e => e.target.style.display = 'none'} />
-                              <div>
-                                <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{g.name}</div>
-                                {g.level && <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Nivel {g.level}</div>}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Hypercharge */}
-                    {selectedBrawler.hyperCharge && (
-                      <div style={{ background: 'linear-gradient(135deg, rgba(155,89,182,0.15), rgba(52,152,219,0.15))', border: '1px solid rgba(155,89,182,0.3)', borderRadius: '10px', padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <span style={{ fontSize: '1.5rem' }}>⚡</span>
-                        <div>
-                          <div style={{ fontWeight: 800, color: '#9b59b6' }}>Hypercarga</div>
-                          <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>{typeof selectedBrawler.hyperCharge === 'string' ? selectedBrawler.hyperCharge : 'Desbloqueada'}</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* No extras fallback */}
-                    {!selectedBrawler.starPowers?.length && !selectedBrawler.gadgets?.length && !selectedBrawler.gears?.length && !selectedBrawler.hyperCharge && (
-                      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', textAlign: 'center', padding: '10px 0' }}>No hay habilidades desbloqueadas o no disponibles en la API.</p>
-                    )}
                   </div>
                 </div>
               )}
@@ -501,6 +419,7 @@ export default function BrawlStarsPage() {
           )}
 
           {/* Club result */}
+
           {result && tab === 'club' && (
             <div className="bs-profile">
               <div className="bs-profile-header">
