@@ -1,13 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cambios — LA Werewolf</title>
   <meta name="description" content="Historial de actualizaciones y cambios en el bot LA Werewolf.">
-  <link rel="stylesheet" href="global.css">
-  <link rel="stylesheet" href="cambios.css">
+  <link rel="stylesheet" href="/bot-stats/werewolf/doc/global.css">
   <link rel="icon" href="/bot-stats/werewolf/doc/assets/lalogo.png" type="image/png">
+  <style>
+    .changelog-header { display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none; }
+    .changelog-content { display:none; margin-top:1rem; }
+    .changelog-item.open .changelog-content { display:block; }
+    .chevron { font-size:0.9rem; transition:transform 0.25s; display:inline-block; color:var(--text-muted); }
+    .changelog-item.open .chevron { transform:rotate(180deg); }
+    .changelog-date { font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:4px; }
+    .changelog-title { font-size:1.1rem; font-weight:700; margin:0; }
+    .changelog-list { padding-left:1.4rem; color:var(--text-muted); line-height:1.7; }
+    .changelog-list li { margin-bottom:6px; }
+    .changelog-item { margin-bottom:1rem; }
+    h3 { font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin:1rem 0 0.5rem; }
+    code { background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-family:monospace; font-size:0.9em; }
+  </style>
 </head>
 <body>
 <header class="site-header">
@@ -251,7 +264,11 @@
 <footer class="site-footer">
   <p>© 2026 Todos los derechos reservados <a href="https://laweb-eta.vercel.app" target="_blank" style="color: purple; text-decoration: none;">LA Spain</a>.<br><br>Desarrollado por Vimen.</p>
 </footer>
-<script src="cambios.js"></script>
+<script>
+function toggleChangelog(header) {
+  header.parentElement.classList.toggle('open');
+}
+</script>
 </body>
 </html>
 
