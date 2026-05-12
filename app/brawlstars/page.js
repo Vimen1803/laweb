@@ -385,8 +385,8 @@ export default function BrawlStarsPage() {
                         background: 'var(--gold, #c9a84c)', borderRadius: '50px',
                         transition: 'left 0.25s ease',
                       }} />
-                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'trophies' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>🏆 Trofeos</span>
-                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'name' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>🔤 Nombre</span>
+                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'trophies' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>Trofeos</span>
+                      <span style={{ position: 'relative', flex: 1, textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: brawlerSort === 'name' ? '#000' : 'rgba(255,255,255,0.5)', transition: 'color 0.2s', zIndex: 1 }}>Nombre</span>
                     </div>
                   </div>
                   <div className="bs-brawlers-grid">
