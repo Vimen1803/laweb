@@ -319,15 +319,17 @@ export default function BrawlStarsPage() {
                   <div className="bs-stat-label">Victorias 3v3</div>
                 </div>
                 <div className="bs-stat-card">
-                  <div className="bs-stat-icon"><img src="https://beta.brawlstats.com/dist/event_mode_showdown.6645d79502821e2d681b6f819a28eb12.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number">{(result.soloVictories || 0).toLocaleString()}</div>
-                  <div className="bs-stat-label">Solo SD</div>
-                </div>
-                <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://beta.brawlstats.com/dist/event_mode_duo_showdown.e9ddf754c048aa63d14de7ccfd8b6ec7.png" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
-                  <div className="bs-stat-number">{(result.duoVictories || 0).toLocaleString()}</div>
-                  <div className="bs-stat-label">Dúo SD</div>
+                  <div className="bs-stat-number">{((result.soloVictories || 0) + (result.duoVictories || 0)).toLocaleString()}</div>
+                  <div className="bs-stat-label">SD Wins</div>
                 </div>
+                {result.recordLevel > 0 && (
+                  <div className="bs-stat-card">
+                    <div className="bs-stat-icon"><img src={`https://raw.githubusercontent.com/Brawlify/CDN/refs/heads/master/records/regular/${result.recordLevel}.png`} alt="" style={{ height: '32px', objectFit: 'contain' }} onError={e => e.target.style.display = 'none'} /></div>
+                    <div className="bs-stat-number">{(result.recordPoints || 0).toLocaleString()}</div>
+                    <div className="bs-stat-label">Récord (Nv. {result.recordLevel})</div>
+                  </div>
+                )}
                 <div className="bs-stat-card">
                   <div className="bs-stat-icon"><img src="https://corestats.pro/static/assets/prestige_icons/totalprestige.png?v=8f12fccf" alt="" style={{ height: '32px', objectFit: 'contain' }} /></div>
                   <div className="bs-stat-number">{result.totalPrestigeLevel || 0}</div>
