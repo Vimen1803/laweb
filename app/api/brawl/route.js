@@ -63,16 +63,29 @@ function mapPlayer(r, brawlerNames = {}) {
     highestAllTimeRankedRank: highestRanked || null,
     highestAllTimeRankedRankName: rankedTierName(highestRanked),
     club: r.is_in_alliance && r.alliance ? { name: r.alliance.name, tag: r.alliance.id.tag } : null,
-    brawlers: r.brawlers?.map(b => ({
-      id: b.brawler_id,
-      name: brawlerNames[b.brawler_id] || `#${b.brawler_id}`,
-      power: b.power_level,
-      rank: b.trophies >= 1000 ? 30 : b.trophies >= 750 ? 25 : b.trophies >= 500 ? 20 : 10,
-      trophies: b.trophies,
-      highestTrophies: b.highest_trophies,
-      starPowers: [],
-      gadgets: []
-    })) || []
+    brawlers: r.brawlers?.map(b => {
+      // Rank calculation from trophies (official breakpoints)
+      const t = b.trophies || 0;
+      let rank = 1;
+      const thresholds = [0,10,20,30,40,60,80,100,130,160,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350,1400,1450,1500,1600,1700,1800];
+      for (let i = 0; i < thresholds.length; i++) { if (t >= thresholds[i]) rank = i + 1; }
+      const prestige = Math.max(0, Math.floor((rank - 30) / 5));
+
+      return {
+        id: b.brawler_id,
+        name: brawlerNames[b.brawler_id] || `#${b.brawler_id}`,
+        power: b.power_level,
+        rank,
+        prestige,
+        trophies: b.trophies,
+        highestTrophies: b.highest_trophies,
+        mastery: b.mastery_points || null,
+        starPowers: (b.star_powers || b.starPowers || []).map(sp => ({ id: sp.id || sp.star_power_id, name: sp.name })),
+        gadgets: (b.gadgets || []).map(g => ({ id: g.id || g.gadget_id, name: g.name })),
+        gears: (b.gears || []).map(g => ({ id: g.id || g.gear_id, name: g.name, level: g.level })),
+        hyperCharge: b.hyper_charge || b.hyperCharge || null,
+      };
+    }) || []
   };
 }
 
