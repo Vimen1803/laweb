@@ -1,72 +1,167 @@
 'use client';
+
 import Link from 'next/link';
-import { ShieldCheckIcon, UserGroupIcon, ArrowRightIcon, BookOpenIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/solid';
+import { 
+  ShieldCheckIcon, 
+  UserGroupIcon, 
+  ArrowRightIcon, 
+  BookOpenIcon, 
+  QuestionMarkCircleIcon,
+  ChatBubbleLeftRightIcon,
+  MegaphoneIcon,
+  CpuChipIcon,
+  UsersIcon,
+  TrophyIcon,
+  LifebuoyIcon
+} from '@heroicons/react/24/solid';
 
 export default function DCInfoPage() {
   return (
-    <section className="section" style={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 1rem' }}>
-      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-        <h1 className="hero-title" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>DC Info</h1>
-        <p className="text-muted" style={{ fontSize: '1.2rem' }}>Todo lo que necesitas saber sobre nuestra comunidad</p>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-        {/* NORMAS */}
-        <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderTop: '4px solid var(--gold)' }}>
-          <div style={{ background: 'rgba(201,168,76,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-            <ShieldCheckIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
-          </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.8rem', fontFamily: 'Outfit, sans-serif' }}>Normas</h2>
-          <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', lineHeight: '1.5', flexGrow: 1 }}>
-            Reglamento oficial. Mantener un ambiente sano es nuestra prioridad.
-          </p>
-          <Link href="/normas" className="btn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 700, fontSize: '0.9rem', background: 'rgba(255,255,255,0.05)'}}>
-            Reglas <ArrowRightIcon style={{ width: 14, height: 14 }} />
-          </Link>
+    <>
+      {/* Hero Section Premium */}
+      <header className="dc-info-hero">
+        <div className="dc-info-badge">
+          <span className="live-dot"></span>
+          Servidor Oficial Activo
         </div>
+        <h1 className="hero-title" style={{ fontSize: '3.6rem', marginBottom: '1.2rem', lineHeight: '1.1' }}>
+          Discord Info Hub
+        </h1>
+        <p className="hero-desc text-secondary" style={{ maxWidth: '650px', margin: '0 auto', fontSize: '1.1rem', lineHeight: '1.7' }}>
+          La central neurálgica de la comunidad de <span className="highlight">LA Spain</span>. Accede de forma directa a las guías, reglamentos oficiales y soporte del servidor.
+        </p>
+      </header>
 
-        {/* ROLES */}
-        <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderTop: '4px solid #3498db' }}>
-          <div style={{ background: 'rgba(52,152,219,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-            <UserGroupIcon style={{ width: 30, height: 30, color: '#3498db' }} />
+      {/* Main Container */}
+      <main className="dc-info-container">
+        
+        {/* Grid de Secciones Core */}
+        <section className="dc-info-grid">
+          
+          {/* NORMAS */}
+          <div className="dc-card-wrapper fade-in">
+            <div className="dc-card-custom gold">
+              <div className="dc-icon-box">
+                <ShieldCheckIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
+              </div>
+              <h2 className="dc-title-custom">Normas de Convivencia</h2>
+              <p className="dc-desc-custom">
+                Mantener un ambiente sano, competitivo y de mutuo respeto es la máxima prioridad de LA Spain. Consulta el reglamento oficial de conducta de la comunidad para evitar sanciones y contribuir al buen rollo.
+              </p>
+              <Link href="/normas" className="dc-btn-custom">
+                Ver Normas <ArrowRightIcon style={{ width: 14, height: 14 }} />
+              </Link>
+            </div>
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.8rem', fontFamily: 'Outfit, sans-serif' }}>Roles</h2>
-          <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', lineHeight: '1.5', flexGrow: 1 }}>
-            Descubre los rangos, medallas y roles especiales de la comunidad.
-          </p>
-          <Link href="/roles" className="btn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem' }}>
-            Ver Roles <ArrowRightIcon style={{ width: 14, height: 14 }} />
-          </Link>
-        </div>
 
-        {/* ABOUT US */}
-        <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderTop: '4px solid #e74c3c' }}>
-          <div style={{ background: 'rgba(231,76,60,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-            <BookOpenIcon style={{ width: 30, height: 30, color: '#e74c3c' }} />
+          {/* ROLES */}
+          <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="dc-card-custom blue">
+              <div className="dc-icon-box">
+                <UserGroupIcon style={{ width: 30, height: 30, color: '#3498db' }} />
+              </div>
+              <h2 className="dc-title-custom">Jerarquía y Roles</h2>
+              <p className="dc-desc-custom">
+                Descubre cómo funciona el sistema de roles automáticos, medallas de antigüedad y rangos especiales para miembros competitivos de Brawl Stars dentro de nuestro servidor de Discord.
+              </p>
+              <Link href="/roles" className="dc-btn-custom">
+                Ver Roles <ArrowRightIcon style={{ width: 14, height: 14 }} />
+              </Link>
+            </div>
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.8rem', fontFamily: 'Outfit, sans-serif' }}>About Us</h2>
-          <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', lineHeight: '1.5', flexGrow: 1 }}>
-            Conoce nuestra historia y los valores que nos definen desde 2019.
-          </p>
-          <Link href="/about" className="btn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem' }}>
-            Historia <ArrowRightIcon style={{ width: 14, height: 14 }} />
-          </Link>
-        </div>
 
-        {/* FAQ */}
-        <div className="card" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', borderTop: '4px solid #2ecc71' }}>
-          <div style={{ background: 'rgba(46,204,113,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.2rem' }}>
-            <QuestionMarkCircleIcon style={{ width: 30, height: 30, color: '#2ecc71' }} />
+          {/* ABOUT US */}
+          <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="dc-card-custom red">
+              <div className="dc-icon-box">
+                <BookOpenIcon style={{ width: 30, height: 30, color: '#e74c3c' }} />
+              </div>
+              <h2 className="dc-title-custom">Sobre Nosotros</h2>
+              <p className="dc-desc-custom">
+                Conoce la trayectoria de LA Spain. Desde nuestra fundación el 4 de mayo de 2019, nos hemos consolidado como la mayor estructura organizada de clubes eSports de la comunidad hispana.
+              </p>
+              <Link href="/about" className="dc-btn-custom">
+                Nuestra Historia <ArrowRightIcon style={{ width: 14, height: 14 }} />
+              </Link>
+            </div>
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.8rem', fontFamily: 'Outfit, sans-serif' }}>FAQ</h2>
-          <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', lineHeight: '1.5', flexGrow: 1 }}>
-            Resolvemos las dudas más frecuentes de los nuevos miembros.
+
+          {/* FAQ */}
+          <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="dc-card-custom green">
+              <div className="dc-icon-box">
+                <QuestionMarkCircleIcon style={{ width: 30, height: 30, color: '#2ecc71' }} />
+              </div>
+              <h2 className="dc-title-custom">Preguntas Frecuentes</h2>
+              <p className="dc-desc-custom">
+                ¿Cómo unirse a los clubes de Brawl Stars? ¿Cómo registrarse en los torneos? ¿Cómo usar LA Bot? Resolvemos todas las dudas más frecuentes de los nuevos miembros de la comunidad.
+              </p>
+              <Link href="/faq" className="dc-btn-custom">
+                Centro de Ayuda <ArrowRightIcon style={{ width: 14, height: 14 }} />
+              </Link>
+            </div>
+          </div>
+
+        </section>
+
+        {/* Blueprint del Servidor (Server Map) */}
+        <section className="dc-blueprint-card fade-in" style={{ animationDelay: '0.4s' }}>
+          <h2 className="dc-blueprint-title">Mapa de Canales Clave</h2>
+          <p className="dc-blueprint-desc">
+            Para facilitar tu navegación dentro del servidor, te presentamos los canales esenciales a los que debes prestar atención. ¡Sácale el máximo provecho a la comunidad!
           </p>
-          <Link href="/faq" className="btn" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', fontWeight: 700, fontSize: '0.9rem' }}>
-            Preguntas <ArrowRightIcon style={{ width: 14, height: 14 }} />
-          </Link>
-        </div>
-      </div>
-    </section>
+          
+          <div className="dc-blueprint-channels">
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">📢-anuncios</span>
+              <span className="dc-channel-desc">Noticias importantes, comunicados oficiales de clubes, torneos y sorteos de la comunidad.</span>
+            </div>
+            
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">💬-general</span>
+              <span className="dc-channel-desc">El chat principal del servidor. Un espacio de encuentro para conversar de Brawl Stars y pasar el rato.</span>
+            </div>
+            
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">🤖-la-bot</span>
+              <span className="dc-channel-desc">Canal habilitado para interactuar con LA Bot. Consulta tus estadísticas de Brawl Stars, juega a Wordle o Werewolf.</span>
+            </div>
+
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">⚔️-torneos</span>
+              <span className="dc-channel-desc">Información, inscripciones abiertas y avisos de competiciones competitivas y amistosas.</span>
+            </div>
+
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">👥-busco-equipo</span>
+              <span className="dc-channel-desc">¿No tienes equipo con quien jugar o competir? Anúnciate aquí y encuentra compañeros en tu rango de copas.</span>
+            </div>
+
+            <div className="dc-channel-item">
+              <span className="dc-channel-tag">#</span>
+              <span className="dc-channel-name">🎫-soporte</span>
+              <span className="dc-channel-desc">Abre un ticket para recibir atención personalizada por parte del staff ante cualquier duda o problema.</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Discord CTA Banner */}
+        <section className="dc-cta-banner fade-in" style={{ animationDelay: '0.5s' }}>
+          <h2 className="dc-cta-title">¿Aún no estás en nuestro Discord?</h2>
+          <p className="dc-cta-desc">
+            Únete a la mayor comunidad de Brawl Stars hispanohablante. Copas, torneos activos, minijuegos y gente genial con quien jugar te están esperando.
+          </p>
+          <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener noreferrer" className="dc-cta-btn">
+            Unirse al Servidor <ArrowRightIcon style={{ width: 18, height: 18 }} />
+          </a>
+        </section>
+
+      </main>
+    </>
   );
 }
