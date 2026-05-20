@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { 
-  StarIcon, 
-  CpuChipIcon, 
-  TrophyIcon, 
-  SparklesIcon,
-  ArrowRightIcon 
-} from '@heroicons/react/24/solid';
+import { StarIcon, TrophyIcon, ShieldCheckIcon, GlobeAltIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 
 export default function Home() {
   const [stats, setStats] = useState({ members: null, bsMembers: null, clubs: null });
@@ -36,186 +30,175 @@ export default function Home() {
 
   return (
     <>
-      {/* 1. HERO SECTION PREMIUM */}
-      <section className="hero">
-        <div className="hero-left">
-          <div className="hero-title-container">
-            <h1 style={{ letterSpacing: '-0.03em' }}>LA Spain</h1>
+      {/* 1. Hero Section principal (Introducción de marca) */}
+      <section className="hero" style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', padding: '6rem 1.5rem 4rem' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+          
+          {/* Fila de Título y Valoración */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
+            <h1 className="hero-title" style={{ fontSize: '4.5rem', margin: 0, lineHeight: '1.0' }}>
+              LA Spain
+            </h1>
+            
             {rating.average > 0 && (
               <Link href="/reviews" style={{ 
-                display: 'flex', 
+                display: 'inline-flex', 
                 alignItems: 'center', 
-                gap: '6px', 
-                padding: '6px 14px', 
-                borderRadius: '4px',
+                gap: '8px', 
+                padding: '8px 18px', 
+                borderRadius: '50px',
                 background: 'rgba(214, 175, 55, 0.08)',
-                border: '1px solid rgba(214, 175, 55, 0.2)',
-                textDecoration: 'none'
-              }}>
-                <StarIcon style={{ width: 16, height: 16, color: 'var(--gold)' }} />
-                <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '1.05rem' }}>{rating.average.toFixed(1)}</span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>({rating.total})</span>
+                border: '1px solid rgba(214, 175, 55, 0.25)',
+                textDecoration: 'none',
+                transition: 'var(--transition)'
+              }}
+              className="rating-badge-hover"
+              >
+                <StarIcon style={{ width: 18, height: 18, color: 'var(--gold)' }} />
+                <span style={{ color: 'var(--gold)', fontWeight: 800, fontSize: '1.1rem' }}>{rating.average.toFixed(1)}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>({rating.total} Valoraciones)</span>
               </Link>
             )}
           </div>
           
-          <div className="hero-desc">
+          {/* Esencia o Pitch Principal de la marca */}
+          <div className="hero-desc" style={{ fontSize: '1.2rem', lineHeight: '1.8', margin: '0 auto 3rem', color: 'var(--text-secondary)' }}>
             <p>
-              Fundada el <span className="highlight">4 de mayo de 2019</span>, <strong>LA Spain</strong> es la mayor alianza de clubes competitivos de Brawl Stars en la comunidad hispana. 
-            </p>
-            <p>
-              Impulsamos el ecosistema competitivo local y mundial de la mano de organizaciones emblemáticas, creando un espacio único de convivencia, minijuegos y torneos activos.
-            </p>
-            <p style={{ marginTop: '1.5rem', fontSize: '0.95rem' }}>
-              Parte de la plataforma internacional{' '}
-              <Link href="https://lagaming.com" target="_blank" rel="noopener" style={{ color: 'var(--gold)', fontWeight: 600, textDecoration: 'underline' }}>
-                LAGaming
-              </Link>
+              Establecida el <span className="highlight">4 de mayo de 2019</span>, LA Spain se ha consolidado orgánicamente como la <span className="highlight">comunidad hispana de clubes más grande y prestigiosa de Brawl Stars</span>, liderando rankings tanto a nivel local como mundial.
             </p>
           </div>
 
-          <div className="hero-buttons">
-            <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              Únete en Discord
+          {/* Botones de acción principales */}
+          <div className="hero-buttons" style={{ justifyContent: 'center', gap: '15px' }}>
+            <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ padding: '14px 32px' }}>
+              Comunidad de Discord
             </a>
-            <Link href="/brawlstars" className="btn btn-secondary">
-              Ver Clubes
+            <Link href="/about" className="btn btn-secondary" style={{ padding: '14px 28px' }}>
+              Nosotros
             </Link>
-            <Link href="/dc-info" className="btn btn-secondary">
-              Info del Servidor
+            <Link href="/faq" className="btn btn-secondary" style={{ padding: '14px 28px' }}>
+              FAQ
             </Link>
           </div>
-        </div>
 
-        {/* Rejilla de Métricas Industrial */}
-        <div>
-          <div className="stat-grid">
-            <div className="stat-item">
-              <span className="stat-value">{stats.members ? Number(stats.members).toLocaleString() : '6,500+'}</span>
+        </div>
+      </section>
+
+      {/* 2. Sección de Métricas (Showcase a ancho completo) */}
+      <section className="section" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.02)', background: 'var(--bg-secondary)', padding: '5rem 2rem' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <header style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <h2 className="section-title" style={{ justifyContent: 'center', fontSize: '2rem', fontWeight: 900 }}>
+              Nuestro Ecosistema en Números
+            </h2>
+            <p className="section-subtitle" style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+              Estadísticas activas que demuestran el alcance de nuestra organización
+            </p>
+          </header>
+
+          <div className="stat-grid" style={{ borderRadius: 'var(--radius-lg)' }}>
+            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
+              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.members ? Number(stats.members).toLocaleString() : '6,500+'}</span>
               <span className="stat-label">En Discord</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-value">{stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}</span>
+            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
+              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}</span>
               <span className="stat-label">Jugadores Activos</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-value">{stats.clubs ? stats.clubs : '15+'}</span>
+            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
+              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.clubs ? stats.clubs : '15+'}</span>
               <span className="stat-label">Clubes Compitiendo</span>
             </div>
-            <div className="stat-item">
-              <span className="stat-value">2019</span>
+            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
+              <span className="stat-value" style={{ fontSize: '3rem' }}>2019</span>
               <span className="stat-label">Trayectoria</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. ECOSISTEMA FEATURES SECTION */}
-      <section className="home-features-section">
-        <div className="home-section-header">
-          <h2 className="home-section-title">El Ecosistema de LA Spain</h2>
-          <p className="home-section-subtitle">
-            Mucho más que una alianza de clubes. Ofrecemos una experiencia totalmente integrada y conectada para jugadores de todos los niveles.
-          </p>
-        </div>
-
-        <div className="home-features-grid">
-          {/* FEATURE 1: LA BOT */}
-          <div className="home-feature-card">
-            <div className="home-feature-icon-box">
-              <CpuChipIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
-            </div>
-            <h3 className="home-feature-title">LA Bot Avanzado</h3>
-            <p className="home-feature-desc">
-              Interactúa con nuestra inteligencia artificial personalizada en Discord. Consulta estadísticas de tu perfil de Brawl Stars en tiempo real y juega minijuegos exclusivos como Wordle o Werewolf.
+      {/* 3. Sección de Historia & Columnas de Legado (Tarjetas estructuradas) */}
+      <section className="section" style={{ padding: '6rem 2rem' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            <h2 className="section-title" style={{ justifyContent: 'center', fontSize: '2rem', fontWeight: 900 }}>
+              Nuestra Trayectoria
+            </h2>
+            <p className="section-subtitle" style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+              La evolución y unión estratégica de clubes pioneros
             </p>
-            <Link href="/bot-stats" className="home-feature-link">
-              Ver Estadísticas <ArrowRightIcon style={{ width: 14, height: 14 }} />
-            </Link>
-          </div>
+          </header>
 
-          {/* FEATURE 2: CLUBES */}
-          <div className="home-feature-card">
-            <div className="home-feature-icon-box">
-              <TrophyIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
+          <div className="grid-2" style={{ gap: '2rem' }}>
+            {/* Tarjeta 1: Alianza Fundadora */}
+            <div className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <TrophyIcon style={{ width: 22, height: 22, color: 'var(--gold)' }} />
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
+                  Alianza Fundadora
+                </h3>
+              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.7', margin: 0 }}>
+                Nuestra historia comenzó con la unión de dos clubes legendarios y pioneros en el panorama hispano de Brawl Stars: <strong>S7VEN</strong> y <strong>Sanctum</strong>, logrando posicionar a la comunidad rápidamente en los puestos más altos de los rankings nacionales y globales.
+              </p>
             </div>
-            <h3 className="home-feature-title">Clubes de Élite</h3>
-            <p className="home-feature-desc">
-              Accede a una red unificada de clubes de primer nivel con rangos internos estructurados, participación coordinada en eventos competitivos y subida colectiva de copas en el top local y global.
-            </p>
-            <Link href="/brawlstars" className="home-feature-link">
-              Explorar Clubes <ArrowRightIcon style={{ width: 14, height: 14 }} />
-            </Link>
-          </div>
 
-          {/* FEATURE 3: COMANDOS */}
-          <div className="home-feature-card">
-            <div className="home-feature-icon-box">
-              <SparklesIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
+            {/* Tarjeta 2: Expansión */}
+            <div className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <ShieldCheckIcon style={{ width: 22, height: 22, color: 'var(--gold)' }} />
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
+                  Evolución y Consolidación
+                </h3>
+              </div>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.7', margin: 0 }}>
+                Con el paso del tiempo, grandes organizaciones de prestigio y peso competitivo como <strong>Exenze</strong>, <strong>DeRucula</strong> y <strong>Gladius Legion</strong> decidieron fusionarse e integrarse a nuestro ecosistema, consolidando así el proyecto definitivo de clubes de la escena.
+              </p>
             </div>
-            <h3 className="home-feature-title">Comunidad Activa</h3>
-            <p className="home-feature-desc">
-              Descubre y domina todos los comandos disponibles en nuestro servidor de Discord. Participa de forma directa en torneos, ligas competitivas y sorteos exclusivos organizados periódicamente.
-            </p>
-            <Link href="/comandos" className="home-feature-link">
-              Ver Comandos <ArrowRightIcon style={{ width: 14, height: 14 }} />
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* 3. LEYENDAS Y CLUBES FUNDADORES */}
-      <section className="home-clubs-section">
-        <div className="home-section-header">
-          <h2 className="home-section-title" style={{ fontSize: '2.2rem' }}>Los Pilares de la Alianza</h2>
-          <p className="home-section-subtitle">
-            Conoce a los clubes históricos y las marcas competitivas de renombre que conforman y fortalecen la identidad de LA Spain.
-          </p>
-        </div>
-
-        <div className="home-clubs-grid">
-          <div className="home-club-card">
-            <div className="home-club-logo-box">S</div>
-            <h4 className="home-club-name">S7VEN</h4>
-            <p className="home-club-desc">Club fundador. Sinónimo de constancia y alto nivel.</p>
+      {/* 4. Banner Alianza Internacional (LAGaming Hub) */}
+      <section className="section" style={{ padding: '0 2rem 6rem' }}>
+        <div style={{ 
+          maxWidth: '1100px', 
+          margin: '0 auto',
+          background: 'linear-gradient(135deg, rgba(214, 175, 55, 0.05) 0%, rgba(11, 12, 16, 0.8) 100%)',
+          border: '1px solid rgba(214, 175, 55, 0.15)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '3.5rem 3rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '2rem'
+        }}
+        className="alliance-banner"
+        >
+          <div style={{ flex: '1 1 600px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
+              <GlobeAltIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} />
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: '#fff', margin: 0 }}>
+                Plataforma Internacional
+              </h3>
+            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+              Formamos parte activa del ecosistema internacional de <strong>LA Gaming</strong>, una prestigiosa organización competitiva transfronteriza guiada bajo el lema <em>&quot;by gamers, for gamers&quot;</em>.
+            </p>
           </div>
 
-          <div className="home-club-card">
-            <div className="home-club-logo-box">S</div>
-            <h4 className="home-club-name">Sanctum</h4>
-            <p className="home-club-desc">Cuna de talentos y pilar competitivo fundamental.</p>
+          <div>
+            <Link 
+              href="https://lagaming.com" 
+              target="_blank" 
+              rel="noopener" 
+              className="btn btn-primary" 
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', whiteSpace: 'nowrap' }}
+            >
+              Visitar LAGaming <ArrowTopRightOnSquareIcon style={{ width: 16, height: 16 }} />
+            </Link>
           </div>
-
-          <div className="home-club-card">
-            <div className="home-club-logo-box">E</div>
-            <h4 className="home-club-name">Exenze</h4>
-            <p className="home-club-desc">Dedicación y pasión competitiva de élite.</p>
-          </div>
-
-          <div className="home-club-card">
-            <div className="home-club-logo-box">D</div>
-            <h4 className="home-club-name">DeRucula</h4>
-            <p className="home-club-desc">Historia pura y fuerza en cada enfrentamiento.</p>
-          </div>
-
-          <div className="home-club-card">
-            <div className="home-club-logo-box">G</div>
-            <h4 className="home-club-name">Gladius</h4>
-            <p className="home-club-desc">Dominancia absoluta y espíritu de lucha colectivo.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. FINAL CALL TO ACTION */}
-      <section className="home-cta-section">
-        <div className="home-cta-banner">
-          <h2 className="home-cta-title">Escribe tu Propia Leyenda</h2>
-          <p className="home-cta-desc">
-            Únete a la alianza más sólida de la comunidad hispana. Encuentra equipo para copas, participa en torneos exclusivos de Brawl Stars y domina con nosotros.
-          </p>
-          <a href="https://discord.gg/DbRUker" target="_blank" rel="noopener noreferrer" className="home-cta-btn">
-            Únete al Servidor de Discord
-          </a>
         </div>
       </section>
     </>
