@@ -122,7 +122,14 @@ export default function WordleStatsPage() {
               key={m}
               onClick={() => setMode(m)}
               className={`btn ${mode === m ? 'btn-primary' : ''}`}
-              style={{ padding: '10px 20px', textTransform: 'capitalize', fontWeight: 700 }}
+              style={{ 
+                padding: '10px 20px', 
+                textTransform: 'capitalize', 
+                fontWeight: 700,
+                color: mode === m ? 'var(--bg-primary)' : '#ffffff',
+                background: mode === m ? 'var(--gold)' : 'rgba(255, 255, 255, 0.05)',
+                border: mode === m ? '1px solid var(--gold)' : '1px solid rgba(255, 255, 255, 0.15)'
+              }}
             >
               {m}
             </button>

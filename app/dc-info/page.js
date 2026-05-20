@@ -1,29 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { 
-  ShieldCheckIcon, 
-  UserGroupIcon, 
-  ArrowRightIcon, 
-  BookOpenIcon, 
-  QuestionMarkCircleIcon,
-  ChatBubbleLeftRightIcon,
-  MegaphoneIcon,
-  CpuChipIcon,
-  UsersIcon,
-  TrophyIcon,
-  LifebuoyIcon
-} from '@heroicons/react/24/solid';
+import { ArrowRightIcon } from '@heroicons/react/24/solid';
 
 export default function DCInfoPage() {
   return (
     <>
       {/* Hero Section Premium */}
-      <header className="dc-info-hero">
-        <div className="dc-info-badge">
-          <span className="live-dot"></span>
-          Servidor Oficial Activo
-        </div>
+      <header className="dc-info-hero" style={{ paddingTop: '8rem' }}>
         <h1 className="hero-title" style={{ fontSize: '3.6rem', marginBottom: '1.2rem', lineHeight: '1.1' }}>
           Discord Info Hub
         </h1>
@@ -41,9 +25,6 @@ export default function DCInfoPage() {
           {/* NORMAS */}
           <div className="dc-card-wrapper fade-in">
             <div className="dc-card-custom gold">
-              <div className="dc-icon-box">
-                <ShieldCheckIcon style={{ width: 30, height: 30, color: 'var(--gold)' }} />
-              </div>
               <h2 className="dc-title-custom">Normas de Convivencia</h2>
               <p className="dc-desc-custom">
                 Mantener un ambiente sano, competitivo y de mutuo respeto es la máxima prioridad de LA Spain. Consulta el reglamento oficial de conducta de la comunidad para evitar sanciones y contribuir al buen rollo.
@@ -57,9 +38,6 @@ export default function DCInfoPage() {
           {/* ROLES */}
           <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.1s' }}>
             <div className="dc-card-custom blue">
-              <div className="dc-icon-box">
-                <UserGroupIcon style={{ width: 30, height: 30, color: '#3498db' }} />
-              </div>
               <h2 className="dc-title-custom">Jerarquía y Roles</h2>
               <p className="dc-desc-custom">
                 Descubre cómo funciona el sistema de roles automáticos, medallas de antigüedad y rangos especiales para miembros competitivos de Brawl Stars dentro de nuestro servidor de Discord.
@@ -73,9 +51,6 @@ export default function DCInfoPage() {
           {/* ABOUT US */}
           <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="dc-card-custom red">
-              <div className="dc-icon-box">
-                <BookOpenIcon style={{ width: 30, height: 30, color: '#e74c3c' }} />
-              </div>
               <h2 className="dc-title-custom">Sobre Nosotros</h2>
               <p className="dc-desc-custom">
                 Conoce la trayectoria de LA Spain. Desde nuestra fundación el 4 de mayo de 2019, nos hemos consolidado como la mayor estructura organizada de clubes eSports de la comunidad hispana.
@@ -89,9 +64,6 @@ export default function DCInfoPage() {
           {/* FAQ */}
           <div className="dc-card-wrapper fade-in" style={{ animationDelay: '0.3s' }}>
             <div className="dc-card-custom green">
-              <div className="dc-icon-box">
-                <QuestionMarkCircleIcon style={{ width: 30, height: 30, color: '#2ecc71' }} />
-              </div>
               <h2 className="dc-title-custom">Preguntas Frecuentes</h2>
               <p className="dc-desc-custom">
                 ¿Cómo unirse a los clubes de Brawl Stars? ¿Cómo registrarse en los torneos? ¿Cómo usar LA Bot? Resolvemos todas las dudas más frecuentes de los nuevos miembros de la comunidad.
@@ -126,7 +98,7 @@ export default function DCInfoPage() {
             
             <div className="dc-channel-item">
               <span className="dc-channel-tag">#</span>
-              <span className="dc-channel-name">🤖-la-bot</span>
+              <span className="dc-channel-name">🤖-comandos</span>
               <span className="dc-channel-desc">Canal habilitado para interactuar con LA Bot. Consulta tus estadísticas de Brawl Stars, juega a Wordle o Werewolf.</span>
             </div>
 
