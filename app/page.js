@@ -83,25 +83,30 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Columna Derecha: Bloque de Estadísticas en Rejilla Industrial */}
-        <div>
-          <div className="stat-grid">
-            <div className="stat-item">
-              <span className="stat-value">{stats.members ? Number(stats.members).toLocaleString() : '6,500+'}</span>
-              <span className="stat-label">En Discord</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">{stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}</span>
-              <span className="stat-label">Jugadores Activos</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">{stats.clubs ? stats.clubs : '15+'}</span>
-              <span className="stat-label">Clubes Compitiendo</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">2019</span>
-              <span className="stat-label">Trayectoria</span>
-            </div>
+        {/* Columna Derecha: GIF Animado Premium */}
+        <div className="hero-right">
+          <div className="hero-image-container">
+            <img src="https://i.imgur.com/eFcIwbe.gif" alt="LA Spain Comunidad" className="hero-gif" />
+          </div>
+        </div>
+
+        {/* Bloque de Estadísticas en Rejilla Industrial (Abajo, ancho completo) */}
+        <div className="stat-grid">
+          <div className="stat-item">
+            <span className="stat-value">{stats.members ? Number(stats.members).toLocaleString() : '6,500+'}</span>
+            <span className="stat-label">En Discord</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">{stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}</span>
+            <span className="stat-label">Jugadores Activos</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">{stats.clubs ? stats.clubs : '15+'}</span>
+            <span className="stat-label">Clubes Compitiendo</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-value">2019</span>
+            <span className="stat-label">Trayectoria</span>
           </div>
         </div>
       </section>
