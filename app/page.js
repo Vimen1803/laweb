@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { StarIcon, TrophyIcon, ShieldCheckIcon, GlobeAltIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
+import { StarIcon, GlobeAltIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 
 export default function Home() {
   const [stats, setStats] = useState({ members: null, bsMembers: null, clubs: null });
@@ -30,9 +30,9 @@ export default function Home() {
 
   return (
     <>
-      {/* 1. Hero Section principal (Introducción de marca) */}
-      <section className="hero" style={{ minHeight: '65vh', display: 'flex', alignItems: 'center', padding: '6rem 1.5rem 4rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+      {/* 1. Hero Section principal (Introducción de marca y legacy) */}
+      <section className="hero" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', padding: '6rem 1.5rem 4rem' }}>
+        <div style={{ maxWidth: '850px', margin: '0 auto', textAlign: 'center' }}>
           
           {/* Fila de Título y Valoración */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -61,10 +61,16 @@ export default function Home() {
             )}
           </div>
           
-          {/* Esencia o Pitch Principal de la marca */}
-          <div className="hero-desc" style={{ fontSize: '1.2rem', lineHeight: '1.8', margin: '0 auto 3rem', color: 'var(--text-secondary)' }}>
+          {/* Esencia e Historia Original */}
+          <div className="hero-desc" style={{ fontSize: '1.05rem', lineHeight: '1.8', margin: '0 auto 3rem', color: 'var(--text-secondary)' }}>
+            <p style={{ marginBottom: '1.2rem' }}>
+              <strong>LA Spain</strong> nació el <span className="highlight">4 de mayo de 2019</span> de la mano 
+              de dos clubes pioneros: <strong>S7VEN</strong> y <strong>Sanctum</strong>, alcanzando 
+              orgánicamente la cima del ranking local y mundial.
+            </p>
             <p>
-              Establecida el <span className="highlight">4 de mayo de 2019</span>, LA Spain se ha consolidado orgánicamente como la <span className="highlight">comunidad hispana de clubes más grande y prestigiosa de Brawl Stars</span>, liderando rankings tanto a nivel local como mundial.
+              A lo largo del tiempo, grandes organizaciones como <strong>Exenze</strong>, <strong>DeRucula</strong> y <strong>Gladius Legion</strong> se 
+              han unido al ecosistema, consolidando a LA Spain como la <span className="highlight">comunidad hispana de clubes más grande de Brawl Stars</span>.
             </p>
           </div>
 
@@ -84,102 +90,74 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Sección de Métricas (Showcase a ancho completo) */}
-      <section className="section" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.02)', background: 'var(--bg-secondary)', padding: '5rem 2rem' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <header style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <h2 className="section-title" style={{ justifyContent: 'center', fontSize: '2rem', fontWeight: 900 }}>
-              Nuestro Ecosistema en Números
-            </h2>
-            <p className="section-subtitle" style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-              Estadísticas activas que demuestran el alcance de nuestra organización
-            </p>
-          </header>
-
-          <div className="stat-grid" style={{ borderRadius: 'var(--radius-lg)' }}>
-            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
-              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.members ? Number(stats.members).toLocaleString() : '6,500+'}</span>
-              <span className="stat-label">En Discord</span>
-            </div>
-            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
-              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}</span>
-              <span className="stat-label">Jugadores Activos</span>
-            </div>
-            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
-              <span className="stat-value" style={{ fontSize: '3rem' }}>{stats.clubs ? stats.clubs : '15+'}</span>
-              <span className="stat-label">Clubes Compitiendo</span>
-            </div>
-            <div className="stat-item" style={{ padding: '2.5rem 1.5rem' }}>
-              <span className="stat-value" style={{ fontSize: '3rem' }}>2019</span>
-              <span className="stat-label">Trayectoria</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Sección de Historia & Columnas de Legado (Tarjetas estructuradas) */}
-      <section className="section" style={{ padding: '6rem 2rem' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            <h2 className="section-title" style={{ justifyContent: 'center', fontSize: '2rem', fontWeight: 900 }}>
-              Nuestra Trayectoria
-            </h2>
-            <p className="section-subtitle" style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-              La evolución y unión estratégica de clubes pioneros
-            </p>
-          </header>
-
-          <div className="grid-2" style={{ gap: '2rem' }}>
-            {/* Tarjeta 1: Alianza Fundadora */}
-            <div className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <TrophyIcon style={{ width: 22, height: 22, color: 'var(--gold)' }} />
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
-                  Alianza Fundadora
-                </h3>
-              </div>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.7', margin: 0 }}>
-                Nuestra historia comenzó con la unión de dos clubes legendarios y pioneros en el panorama hispano de Brawl Stars: <strong>S7VEN</strong> y <strong>Sanctum</strong>, logrando posicionar a la comunidad rápidamente en los puestos más altos de los rankings nacionales y globales.
-              </p>
-            </div>
-
-            {/* Tarjeta 2: Expansión */}
-            <div className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <ShieldCheckIcon style={{ width: 22, height: 22, color: 'var(--gold)' }} />
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
-                  Evolución y Consolidación
-                </h3>
-              </div>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.7', margin: 0 }}>
-                Con el paso del tiempo, grandes organizaciones de prestigio y peso competitivo como <strong>Exenze</strong>, <strong>DeRucula</strong> y <strong>Gladius Legion</strong> decidieron fusionarse e integrarse a nuestro ecosistema, consolidando así el proyecto definitivo de clubes de la escena.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Banner Alianza Internacional (LAGaming Hub) */}
-      <section className="section" style={{ padding: '0 2rem 6rem' }}>
+      {/* 2. Sección de Estadísticas (Sin container, en una sola fila) */}
+      <section className="section" style={{ padding: '4rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
         <div style={{ 
-          maxWidth: '1100px', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center', 
+          flexWrap: 'wrap', 
+          gap: '2.5rem', 
+          maxWidth: '1000px', 
+          margin: '0 auto' 
+        }}>
+          {/* Stat 1 */}
+          <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+            <span style={{ fontSize: '3.6rem', fontWeight: 900, color: 'var(--gold)', fontFamily: 'Outfit, sans-serif', display: 'block', lineHeight: 1, marginBottom: '8px' }}>
+              {stats.members ? Number(stats.members).toLocaleString() : '6,500+'}
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              En Discord
+            </span>
+          </div>
+
+          {/* Stat 2 */}
+          <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+            <span style={{ fontSize: '3.6rem', fontWeight: 900, color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif', display: 'block', lineHeight: 1, marginBottom: '8px' }}>
+              {stats.bsMembers ? Number(stats.bsMembers).toLocaleString() : '—'}
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              Jugadores Activos
+            </span>
+          </div>
+
+          {/* Stat 3 */}
+          <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+            <span style={{ fontSize: '3.6rem', fontWeight: 900, color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif', display: 'block', lineHeight: 1, marginBottom: '8px' }}>
+              {stats.clubs ? stats.clubs : '15+'}
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              Clubes Compitiendo
+            </span>
+          </div>
+
+          {/* Stat 4 */}
+          <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
+            <span style={{ fontSize: '3.6rem', fontWeight: 900, color: 'var(--gold)', fontFamily: 'Outfit, sans-serif', display: 'block', lineHeight: 1, marginBottom: '8px' }}>
+              2019
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+              Trayectoria
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Banner Alianza Internacional (Sin borde ni color de fondo) */}
+      <section className="section" style={{ padding: '5rem 1.5rem 6rem' }}>
+        <div style={{ 
+          maxWidth: '1000px', 
           margin: '0 auto',
-          background: 'linear-gradient(135deg, rgba(214, 175, 55, 0.05) 0%, rgba(11, 12, 16, 0.8) 100%)',
-          border: '1px solid rgba(214, 175, 55, 0.15)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '3.5rem 3rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '2rem'
-        }}
-        className="alliance-banner"
-        >
-          <div style={{ flex: '1 1 600px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
-              <GlobeAltIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} />
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: '#fff', margin: 0 }}>
+        }}>
+          <div style={{ flex: '1 1 500px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.8rem' }}>
+              <GlobeAltIcon style={{ width: 22, height: 22, color: 'var(--gold)' }} />
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', margin: 0 }}>
                 Plataforma Internacional
               </h3>
             </div>
