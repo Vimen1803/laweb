@@ -155,7 +155,7 @@ a:hover { color: var(--gold-light); }
   transition: var(--transition); border: none; background: none; text-decoration: none;
 }
 .btn-primary { background: var(--gold); color: var(--bg-primary); }
-.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: var(--shadow); color: var(--text-primary); }
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: var(--shadow); }
 .btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
 .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--border-light); }
 
