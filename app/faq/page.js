@@ -1,9 +1,7 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
-  QuestionMarkCircleIcon,
   ChevronDownIcon,
-  MagnifyingGlassIcon,
   ChatBubbleLeftRightIcon,
   UserGroupIcon,
   CommandLineIcon,
@@ -13,14 +11,6 @@ import {
   SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
-
-const CATEGORIES = [
-  { id: 'all', label: 'Todo', icon: SparklesIcon },
-  { id: 'general', label: 'General', icon: UserGroupIcon },
-  { id: 'commands', label: 'Comandos', icon: CommandLineIcon },
-  { id: 'games', label: 'Minijuegos', icon: PuzzlePieceIcon },
-  { id: 'community', label: 'Comunidad', icon: ShieldCheckIcon },
-];
 
 const FAQS = [
   {
@@ -66,12 +56,6 @@ const FAQS = [
     icon: SparklesIcon,
   },
   {
-    q: '¿Cómo funcionan las mascotas?',
-    a: 'Puedes adoptar una mascota virtual con otro usuario usando ,pet adopt @usuario animal nombre. Las mascotas tienen estadísticas de hambre, sueño y humor que decaen con el tiempo. ¡Cuídalas usando ,pet feed, ,pet sleep y ,pet play!',
-    category: 'games',
-    icon: PuzzlePieceIcon,
-  },
-  {
     q: '¿Cómo puedo ver mi perfil de Brawl Stars?',
     a: 'Después de guardar tu tag con ,save, usa ,profile para ver tus estadísticas. También puedes ver el perfil de otros usuarios con ,profile @usuario.',
     category: 'commands',
@@ -109,23 +93,15 @@ const FAQS = [
   },
 ];
 
+const CATEGORY_LABELS = {
+  general: 'General',
+  commands: 'Comandos',
+  games: 'Minijuegos',
+  community: 'Comunidad',
+};
+
 export default function FAQPage() {
   const [openId, setOpenId] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredFaqs = useMemo(() => {
-    return FAQS.filter((faq) => {
-      const matchesCategory = activeCategory === 'all' || faq.category === activeCategory;
-      const matchesSearch =
-        !searchQuery ||
-        faq.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.a.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
-    });
-  }, [activeCategory, searchQuery]);
-
-  const categoryLabel = (cat) => CATEGORIES.find((c) => c.id === cat)?.label || cat;
 
   return (
     <>
@@ -133,38 +109,10 @@ export default function FAQPage() {
       <section className="faq-hero">
         <div className="faq-hero-glow" />
         <div className="faq-hero-inner">
-          <div className="faq-hero-badge">
-            <QuestionMarkCircleIcon style={{ width: 16, height: 16 }} />
-            Centro de Ayuda
-          </div>
           <h1 className="faq-hero-title">Preguntas Frecuentes</h1>
           <p className="faq-hero-desc">
             Encuentra respuestas rápidas sobre LA Spain, nuestros comandos, minijuegos y comunidad.
           </p>
-
-          {/* Search Bar */}
-          <div className="faq-search-wrapper">
-            <MagnifyingGlassIcon className="faq-search-icon" />
-            <input
-              type="text"
-              className="faq-search-input"
-              placeholder="Buscar en las preguntas..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setOpenId(null);
-              }}
-            />
-            {searchQuery && (
-              <button
-                className="faq-search-clear"
-                onClick={() => setSearchQuery('')}
-                aria-label="Limpiar búsqueda"
-              >
-                ✕
-              </button>
-            )}
-          </div>
         </div>
       </section>
 
@@ -172,54 +120,20 @@ export default function FAQPage() {
       <section className="faq-content-section">
         <div className="faq-container">
 
-          {/* Category Pills */}
-          <div className="faq-categories">
-            {CATEGORIES.map((cat) => {
-              const Icon = cat.icon;
-              const count = cat.id === 'all'
-                ? FAQS.length
-                : FAQS.filter((f) => f.category === cat.id).length;
-              return (
-                <button
-                  key={cat.id}
-                  className={`faq-category-pill ${activeCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setActiveCategory(cat.id);
-                    setOpenId(null);
-                  }}
-                >
-                  <Icon style={{ width: 16, height: 16 }} />
-                  <span>{cat.label}</span>
-                  <span className="faq-category-count">{count}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Results count */}
-          {searchQuery && (
-            <div className="faq-results-info">
-              {filteredFaqs.length === 0
-                ? 'No se encontraron resultados'
-                : `${filteredFaqs.length} resultado${filteredFaqs.length !== 1 ? 's' : ''} encontrado${filteredFaqs.length !== 1 ? 's' : ''}`}
-            </div>
-          )}
-
           {/* FAQ Accordion */}
           <div className="faq-accordion">
-            {filteredFaqs.map((faq, i) => {
-              const globalIndex = FAQS.indexOf(faq);
-              const isOpen = openId === globalIndex;
+            {FAQS.map((faq, i) => {
+              const isOpen = openId === i;
               const Icon = faq.icon;
               return (
                 <div
-                  key={globalIndex}
+                  key={i}
                   className={`faq-accordion-item ${isOpen ? 'open' : ''}`}
                   style={{ animationDelay: `${i * 0.04}s` }}
                 >
                   <button
                     className="faq-accordion-trigger"
-                    onClick={() => setOpenId(isOpen ? null : globalIndex)}
+                    onClick={() => setOpenId(isOpen ? null : i)}
                     aria-expanded={isOpen}
                   >
                     <div className="faq-accordion-left">
@@ -229,7 +143,7 @@ export default function FAQPage() {
                       <div className="faq-question-content">
                         <span className="faq-question-text">{faq.q}</span>
                         <span className={`faq-category-tag faq-tag-${faq.category}`}>
-                          {categoryLabel(faq.category)}
+                          {CATEGORY_LABELS[faq.category]}
                         </span>
                       </div>
                     </div>
@@ -246,24 +160,6 @@ export default function FAQPage() {
               );
             })}
           </div>
-
-          {/* Empty State */}
-          {filteredFaqs.length === 0 && (
-            <div className="faq-empty-state">
-              <QuestionMarkCircleIcon style={{ width: 48, height: 48, color: 'var(--text-muted)' }} />
-              <h3>Sin resultados</h3>
-              <p>Intenta con otra búsqueda o categoría diferente.</p>
-              <button
-                className="btn btn-secondary"
-                onClick={() => {
-                  setSearchQuery('');
-                  setActiveCategory('all');
-                }}
-              >
-                Mostrar todo
-              </button>
-            </div>
-          )}
 
           {/* CTA Banner */}
           <div className="faq-cta-banner">
