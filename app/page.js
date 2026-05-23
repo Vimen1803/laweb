@@ -91,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* 2. Sección de Estadísticas (Sin container, en una sola fila) */}
-      <section className="section" style={{ padding: '4rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
+      <section className="section" style={{ padding: '0rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
         <div style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
