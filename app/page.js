@@ -18,14 +18,14 @@ export default function Home() {
           clubs: d.clubCount || null,
         });
       })
-      .catch(() => {});
+      .catch(() => { });
 
     fetch('/api/reviews')
       .then(r => r.json())
       .then(d => {
         setRating({ average: d.average || 0, total: d.total || 0 });
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (
@@ -33,26 +33,26 @@ export default function Home() {
       {/* 1. Hero Section principal (Introducción de marca y legacy) */}
       <section className="hero" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', padding: '3rem 1.5rem 4rem' }}>
         <div style={{ maxWidth: '850px', margin: '0 auto', textAlign: 'center' }}>
-          
+
           {/* Fila de Título y Valoración */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
             <h1 className="hero-title" style={{ fontSize: '4.5rem', margin: 0, lineHeight: '1.0' }}>
               LA Spain
             </h1>
-            
+
             {rating.average > 0 && (
-              <Link href="/reviews" style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                padding: '8px 18px', 
+              <Link href="/reviews" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 18px',
                 borderRadius: '50px',
                 background: 'rgba(214, 175, 55, 0.08)',
                 border: '1px solid rgba(214, 175, 55, 0.25)',
                 textDecoration: 'none',
                 transition: 'var(--transition)'
               }}
-              className="rating-badge-hover"
+                className="rating-badge-hover"
               >
                 <StarIcon style={{ width: 18, height: 18, color: 'var(--gold)' }} />
                 <span style={{ color: 'var(--gold)', fontWeight: 800, fontSize: '1.1rem' }}>{rating.average.toFixed(1)}</span>
@@ -60,16 +60,16 @@ export default function Home() {
               </Link>
             )}
           </div>
-          
+
           {/* Esencia e Historia Original */}
           <div className="hero-desc" style={{ fontSize: '1.05rem', lineHeight: '1.8', margin: '0 auto 3rem', color: 'var(--text-secondary)' }}>
             <p style={{ marginBottom: '1.2rem' }}>
-              <strong>LA Spain</strong> nació el <span className="highlight">4 de mayo de 2019</span> de la mano 
-              de dos clubes pioneros: <strong>S7VEN</strong> y <strong>Sanctum</strong>, alcanzando 
+              <strong>LA Spain</strong> nació el <span className="highlight">4 de mayo de 2019</span> de la mano
+              de dos clubes pioneros: <strong>S7VEN</strong> y <strong>Sanctum</strong>, alcanzando
               orgánicamente la cima del ranking local y mundial.
             </p>
             <p>
-              A lo largo del tiempo, grandes organizaciones como <strong>Exenze</strong>, <strong>DeRucula</strong> y <strong>Gladius Legion</strong> se 
+              A lo largo del tiempo, grandes organizaciones como <strong>Exenze</strong>, <strong>DeRucula</strong> y <strong>Gladius Legion</strong> se
               han unido al ecosistema, consolidando a LA Spain como la <span className="highlight">comunidad hispana de clubes más grande de Brawl Stars</span>.
             </p>
           </div>
@@ -92,14 +92,14 @@ export default function Home() {
 
       {/* 2. Sección de Estadísticas (Sin container, en una sola fila) */}
       <section className="section" style={{ padding: '0rem 1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.03)', borderBottom: '1px solid rgba(255, 255, 255, 0.03)' }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          flexWrap: 'wrap', 
-          gap: '2.5rem', 
-          maxWidth: '1000px', 
-          margin: '0 auto' 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '2.5rem',
+          maxWidth: '1000px',
+          margin: '0 auto'
         }}>
           {/* Stat 1 */}
           <div style={{ textAlign: 'center', flex: '1 1 200px' }}>
@@ -145,8 +145,8 @@ export default function Home() {
 
       {/* 3. Banner Alianza Internacional (Sin borde ni color de fondo) */}
       <section className="section" style={{ padding: '5rem 1.5rem 6rem' }}>
-        <div style={{ 
-          maxWidth: '1000px', 
+        <div style={{
+          maxWidth: '1000px',
           margin: '0 auto',
           display: 'flex',
           justifyContent: 'space-between',
@@ -167,11 +167,11 @@ export default function Home() {
           </div>
 
           <div>
-            <Link 
-              href="https://lagaming.com" 
-              target="_blank" 
-              rel="noopener" 
-              className="btn btn-primary" 
+            <Link
+              href="https://lagaming.com"
+              target="_blank"
+              rel="noopener"
+              className="btn btn-primary"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', whiteSpace: 'nowrap' }}
             >
               Visitar LAGaming <ArrowTopRightOnSquareIcon style={{ width: 16, height: 16 }} />
