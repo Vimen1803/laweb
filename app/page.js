@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <>
       {/* 1. Hero Section principal (Introducción de marca y legacy) */}
-      <section className="hero" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', padding: '6rem 1.5rem 4rem' }}>
+      <section className="hero" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', padding: '3rem 1.5rem 4rem' }}>
         <div style={{ maxWidth: '850px', margin: '0 auto', textAlign: 'center' }}>
           
           {/* Fila de Título y Valoración */}
