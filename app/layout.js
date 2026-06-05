@@ -1,9 +1,8 @@
 import './globals.css';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import AppFrame from './components/AppFrame';
 
 export const metadata = {
-  title: 'LA Spain',
+  title: { default: 'LA Spain', template: '%s · LA Spain' },
   description: 'La comunidad hispana de clubes más grande de Brawl Stars. Fundada el 4 de mayo de 2019. Únete a nuestra familia de más de 15 clubes y compite al más alto nivel.',
   metadataBase: new URL('https://laweb-eta.vercel.app'),
   alternates: {
@@ -39,11 +38,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body>
-        <Navbar />
-        <main className="main-content">
-          {children}
-        </main>
-        <Footer />
+        <AppFrame>{children}</AppFrame>
       </body>
     </html>
   );

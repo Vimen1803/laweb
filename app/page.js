@@ -36,7 +36,7 @@ export default function Home() {
 
           {/* Fila de Título y Valoración */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
-            <h1 className="hero-title" style={{ fontSize: '4.5rem', margin: 0, lineHeight: '1.0' }}>
+            <h1 className="hero-title" style={{ fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', margin: 0, lineHeight: '1.0' }}>
               LA Spain
             </h1>
 

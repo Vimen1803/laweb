@@ -26,7 +26,8 @@ export async function GET() {
       console.warn('werewolf connection failed:', e.message);
     }
 
-    const GUILD_ID = "460550486257565697"; // LA Spain
+    // LA Spain — centralizado en variable de entorno (con respaldo al ID conocido)
+    const GUILD_ID = process.env.DISCORD_GUILD_ID || "460550486257565697";
     const guildIdLong = Long.fromString(GUILD_ID);
 
     let wordle = null;

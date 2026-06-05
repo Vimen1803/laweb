@@ -1,8 +1,19 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { Long } from 'mongodb';
+import { auth } from '@/lib/auth';
+
+// Verifica que quien llama es administrador. El panel /admin comprueba esto en
+// el cliente, pero la API DEBE protegerse también en el servidor.
+async function ensureAdmin() {
+  const session = await auth();
+  return !!session?.isAdmin;
+}
 
 export async function GET(request) {
+  if (!(await ensureAdmin())) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
+  }
   const { searchParams } = new URL(request.url);
   const section = searchParams.get('section') || 'overview';
   const userId = searchParams.get('userId');
@@ -37,6 +48,8 @@ export async function GET(request) {
     }
 
     if (section === 'blacklist') {
+      // NOTA: la blacklist usa intencionadamente este server_id fijo (servidor
+      // distinto al principal); no debe sustituirse por DISCORD_GUILD_ID.
       const bl = await db.collection('blacklist')
         .find({ server_id: Long.fromString('724202847822151680') })
         .toArray();
@@ -158,6 +171,9 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  if (!(await ensureAdmin())) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
+  }
   try {
     const body = await request.json();
     const { action, tag, key } = body;

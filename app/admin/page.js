@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  ChartBarIcon, ClipboardDocumentListIcon, MagnifyingGlassIcon, 
-  Cog6ToothIcon, UsersIcon, ShieldExclamationIcon, SpeakerWaveIcon, 
-  SpeakerXMarkIcon, ExclamationTriangleIcon, FlagIcon, 
-  NoSymbolIcon, WrenchScrewdriverIcon, QuestionMarkCircleIcon, 
-  IdentificationIcon, ScaleIcon, ClockIcon, LockClosedIcon, DocumentTextIcon,
-  BuildingLibraryIcon, TrashIcon
+import {
+  ChartBarIcon, ClipboardDocumentListIcon, MagnifyingGlassIcon,
+  Cog6ToothIcon, UsersIcon, ShieldExclamationIcon, SpeakerWaveIcon,
+  SpeakerXMarkIcon, ExclamationTriangleIcon, FlagIcon,
+  NoSymbolIcon, WrenchScrewdriverIcon,
+  ScaleIcon, ClockIcon, LockClosedIcon,
+  BuildingLibraryIcon, TrashIcon, CheckCircleIcon, XCircleIcon, XMarkIcon
 } from '@heroicons/react/24/solid';
 
 const iconMap = { 
@@ -33,7 +33,24 @@ export default function AdminPage() {
   const [isAddingClub, setIsAddingClub] = useState(false);
   const [adminSidebarOpen, setAdminSidebarOpen] = useState(false);
   const [isAddingBlacklist, setIsAddingBlacklist] = useState(false);
-  
+  const [toasts, setToasts] = useState([]);
+  const [confirmState, setConfirmState] = useState(null);
+
+  // --- Sistema de notificaciones (toasts) ---
+  function showToast(type, title, message) {
+    const id = Date.now() + Math.random();
+    setToasts(prev => [...prev, { id, type, title, message }]);
+    setTimeout(() => dismissToast(id), 4500);
+  }
+  function dismissToast(id) {
+    setToasts(prev => prev.map(t => (t.id === id ? { ...t, closing: true } : t)));
+    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 280);
+  }
+  // --- Modal de confirmación (sustituye al confirm() nativo) ---
+  function askConfirm({ title, message, confirmLabel = 'Eliminar', onConfirm }) {
+    setConfirmState({ title, message, confirmLabel, onConfirm });
+  }
+
   useEffect(() => {
     fetch('/api/session')
       .then(r => r.json())
@@ -112,6 +129,8 @@ export default function AdminPage() {
     { id: 'clubesla', icon: <BuildingLibraryIcon style={{ width: 18, height: 18 }} />, label: 'Clubes de LA' },
     { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
+    { id: 'users', icon: <UsersIcon style={{ width: 18, height: 18 }} />, label: 'Usuarios BS' },
+    { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
   ];
 
   async function handleAddClub(e) {
@@ -119,31 +138,53 @@ export default function AdminPage() {
     const tag = document.getElementById('newClubTag').value.trim();
     const key = document.getElementById('newClubKey').value.trim();
     if (!tag || !key) return;
-    
+
     setIsAddingClub(true);
     try {
-      await fetch('/api/admin', {
+      const res = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'addClub', tag, key })
       });
-      document.getElementById('newClubTag').value = '';
-      document.getElementById('newClubKey').value = '';
-      loadSection('clubesla');
-    } catch {}
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
+        document.getElementById('newClubTag').value = '';
+        document.getElementById('newClubKey').value = '';
+        showToast('success', 'Club añadido', `El club ${tag} se ha guardado en la base de datos.`);
+        loadSection('clubesla');
+      } else {
+        showToast('error', 'No se pudo añadir', data.error || 'Ha ocurrido un error al guardar el club.');
+      }
+    } catch {
+      showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+    }
     setIsAddingClub(false);
   }
 
-  async function handleRemoveClub(tag) {
-    if (!confirm(`¿Eliminar club ${tag}?`)) return;
-    try {
-      await fetch('/api/admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'removeClub', tag })
-      });
-      loadSection('clubesla');
-    } catch {}
+  function handleRemoveClub(tag) {
+    askConfirm({
+      title: 'Eliminar club',
+      message: `¿Seguro que quieres eliminar el club ${tag} de la base de datos? Esta acción no se puede deshacer.`,
+      confirmLabel: 'Eliminar club',
+      onConfirm: async () => {
+        try {
+          const res = await fetch('/api/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'removeClub', tag })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.success) {
+            showToast('success', 'Club eliminado', `El club ${tag} se ha eliminado correctamente.`);
+            loadSection('clubesla');
+          } else {
+            showToast('error', 'No se pudo eliminar', data.error || 'Ha ocurrido un error al eliminar el club.');
+          }
+        } catch {
+          showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+        }
+      }
+    });
   }
 
   async function handleAddBlacklist(e) {
@@ -151,31 +192,53 @@ export default function AdminPage() {
     const tag = document.getElementById('newBlTag').value.trim();
     const razon = document.getElementById('newBlReason').value.trim();
     if (!tag || !razon) return;
-    
+
     setIsAddingBlacklist(true);
     try {
-      await fetch('/api/admin', {
+      const res = await fetch('/api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'addBlacklist', tag, razon })
       });
-      document.getElementById('newBlTag').value = '';
-      document.getElementById('newBlReason').value = '';
-      loadSection('blacklist');
-    } catch {}
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success) {
+        document.getElementById('newBlTag').value = '';
+        document.getElementById('newBlReason').value = '';
+        showToast('success', 'Añadido a la blacklist', `${tag} se ha añadido correctamente.`);
+        loadSection('blacklist');
+      } else {
+        showToast('error', 'No se pudo añadir', data.error || 'Ha ocurrido un error al añadir a la blacklist.');
+      }
+    } catch {
+      showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+    }
     setIsAddingBlacklist(false);
   }
 
-  async function handleRemoveBlacklist(tag) {
-    if (!confirm(`¿Eliminar de blacklist ${tag}?`)) return;
-    try {
-      await fetch('/api/admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'removeBlacklist', tag })
-      });
-      loadSection('blacklist');
-    } catch {}
+  function handleRemoveBlacklist(tag) {
+    askConfirm({
+      title: 'Eliminar de la blacklist',
+      message: `¿Seguro que quieres quitar a ${tag} de la blacklist? El usuario podrá volver a participar.`,
+      confirmLabel: 'Eliminar',
+      onConfirm: async () => {
+        try {
+          const res = await fetch('/api/admin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'removeBlacklist', tag })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.success) {
+            showToast('success', 'Eliminado de la blacklist', `${tag} se ha eliminado correctamente.`);
+            loadSection('blacklist');
+          } else {
+            showToast('error', 'No se pudo eliminar', data.error || 'Ha ocurrido un error al eliminar de la blacklist.');
+          }
+        } catch {
+          showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+        }
+      }
+    });
   }
 
   if (authStatus === 'loading' || !session?.isAdmin) {
@@ -189,6 +252,53 @@ export default function AdminPage() {
 
   return (
     <div style={{ paddingTop: '1rem' }}>
+      {/* Notificaciones (toasts) */}
+      <div className="toast-container" aria-live="polite" aria-atomic="false">
+        {toasts.map(t => (
+          <div key={t.id} className={`toast toast-${t.type}${t.closing ? ' toast-closing' : ''}`} role="status">
+            <span className="toast-icon">
+              {t.type === 'success'
+                ? <CheckCircleIcon style={{ width: 20, height: 20 }} />
+                : t.type === 'error'
+                  ? <XCircleIcon style={{ width: 20, height: 20 }} />
+                  : <ExclamationTriangleIcon style={{ width: 20, height: 20 }} />}
+            </span>
+            <div className="toast-body">
+              <div className="toast-title">{t.title}</div>
+              {t.message && <div className="toast-msg">{t.message}</div>}
+            </div>
+            <button className="toast-close" onClick={() => dismissToast(t.id)} aria-label="Cerrar notificación">
+              <XMarkIcon style={{ width: 16, height: 16 }} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* Modal de confirmación */}
+      {confirmState && (
+        <div className="confirm-overlay" onClick={() => setConfirmState(null)} role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+          <div className="confirm-box" onClick={e => e.stopPropagation()}>
+            <div className="confirm-icon-wrap">
+              <ExclamationTriangleIcon style={{ width: 26, height: 26 }} />
+            </div>
+            <h3 className="confirm-title" id="confirm-title">{confirmState.title}</h3>
+            <p className="confirm-msg">{confirmState.message}</p>
+            <div className="confirm-actions">
+              <button className="confirm-btn confirm-btn-cancel" onClick={() => setConfirmState(null)}>
+                Cancelar
+              </button>
+              <button
+                className="confirm-btn confirm-btn-danger"
+                onClick={() => { const fn = confirmState.onConfirm; setConfirmState(null); fn && fn(); }}
+                autoFocus
+              >
+                {confirmState.confirmLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="admin-layout">
         {/* Sidebar */}
         <aside className={`admin-sidebar ${!adminSidebarOpen ? 'collapsed' : ''}`}>
@@ -527,7 +637,10 @@ export default function AdminPage() {
                   <tbody>
                     {data.map((u, i) => (
                       <tr key={i} style={{ cursor: 'pointer' }}
-                        onClick={() => { setUserId(String(u.member_id)); setSection('usercheck'); }}>
+                        tabIndex={0} role="button"
+                        aria-label={`Ver usuario ${u.member_id}`}
+                        onClick={() => { setUserId(String(u.member_id)); setSection('usercheck'); }}
+                        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setUserId(String(u.member_id)); setSection('usercheck'); } }}>
                         <td>{u.member_id}</td>
                         <td style={{ color: 'var(--gold)' }}>{u.bs_tag || '—'}</td>
                         <td>{u.bs_alt_tag || '—'}</td>

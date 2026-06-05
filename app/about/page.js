@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { 
-  BookOpenIcon, SparklesIcon, PuzzlePieceIcon, GlobeAltIcon, 
+import Link from 'next/link';
+import {
+  BookOpenIcon, SparklesIcon, PuzzlePieceIcon, GlobeAltIcon,
   MoonIcon, BanknotesIcon, CurrencyDollarIcon, PaperAirplaneIcon, 
   QuestionMarkCircleIcon, ChartBarIcon, CpuChipIcon, GiftIcon 
 } from '@heroicons/react/24/solid';
@@ -158,9 +159,9 @@ export default function AboutPage() {
                 {game.desc}
               </p>
               {game.link && (
-                <a href={game.link} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '0.8rem', marginTop: '1rem', background: game.color, borderColor: game.color, color: '#000', fontWeight: 700 }}>
+                <Link href={game.link} className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 12px', fontSize: '0.8rem', marginTop: '1rem', background: game.color, borderColor: game.color, color: '#000', fontWeight: 700 }}>
                   Ver Documentación
-                </a>
+                </Link>
               )}
             </div>
           ))}

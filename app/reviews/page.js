@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 import { StarIcon, UserIcon, ChatBubbleBottomCenterTextIcon, SparklesIcon, ArrowLeftIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutline } from '@heroicons/react/24/outline';
 
@@ -58,7 +59,7 @@ export default function ReviewsPage() {
 
   const handleOpenForm = () => {
     if (!session?.user) {
-      window.location.href = '/api/auth/signin?callbackUrl=/reviews';
+      signIn('discord', { callbackUrl: '/reviews' });
       return;
     }
     setView('form');

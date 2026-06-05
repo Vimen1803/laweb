@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="footer-content">
         <div>
           <div className="footer-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src="/favicon.ico" alt="LA Spain" width={28} height={28} style={{ borderRadius: '50%' }} />
+            <Image src="/favicon.ico" alt="LA Spain" width={28} height={28} style={{ borderRadius: '50%' }} />
             LA Spain
           </div>
           <p className="footer-desc">

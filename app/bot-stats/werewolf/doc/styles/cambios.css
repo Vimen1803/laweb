@@ -1,0 +1,13 @@
+/* Estilos del changelog (originalmente inline en cambios/index.html) */
+.changelog-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.changelog-content { display: none; margin-top: 1rem; }
+.changelog-item.open .changelog-content { display: block; }
+.changelog-item .chevron { font-size: 0.9rem; transition: transform 0.25s; display: inline-block; color: var(--text-muted); }
+.changelog-item.open .chevron { transform: rotate(180deg); }
+.changelog-date { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+.changelog-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
+.changelog-list { padding-left: 1.4rem; color: var(--text-muted); line-height: 1.7; }
+.changelog-list li { margin-bottom: 6px; }
+.changelog-item { margin-bottom: 1rem; }
+.changelog-container h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin: 1rem 0 0.5rem; }
+.changelog-container code { background: rgba(255, 255, 255, 0.08); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }

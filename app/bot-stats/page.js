@@ -62,6 +62,7 @@ export default function BotStatsPage() {
 
   const wordle = data.wordle || null;
   const werewolf = data.werewolf || null;
+  const wordlePlayed = wordle && (Number(wordle.normal?.played) || Number(wordle.double?.played) || Number(wordle.triple?.played) || Number(wordle.ladder?.played));
 
 
   return (
@@ -91,7 +92,7 @@ export default function BotStatsPage() {
                 </Link>
               </div>
             </div>
-          ) : (!wordle || wordle.normal.played === 0) ? (
+          ) : (!wordlePlayed) ? (
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
               <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has jugado ninguna partida de Wordle.</p>
               <a href="https://discord.gg/DbRUker" target="_blank" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
@@ -183,7 +184,7 @@ export default function BotStatsPage() {
                 <Link href="/bot-stats/wordle" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
-                <a href="/bot-stats/wordle/doc/index" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                <a href="/bot-stats/wordle/doc" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
                   Documentaci&#243;n
                 </a>
               </div>
@@ -205,7 +206,7 @@ export default function BotStatsPage() {
                 <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Iniciar Sesión
                 </a>
-                <a href="/bot-stats/werewolf/doc/index" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
+                <a href="/bot-stats/werewolf/doc" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>
                   Ver Documentación
                 </a>
               </div>
@@ -259,7 +260,7 @@ export default function BotStatsPage() {
                 <Link href="/bot-stats/werewolf" className="btn btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
                   Estadísticas <ArrowRightIcon style={{ width: 16, height: 16 }} />
                 </Link>
-                <a href="/bot-stats/werewolf/doc/index" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
+                <a href="/bot-stats/werewolf/doc" className="btn" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 700 }}>
                   Documentación
                 </a>
               </div>

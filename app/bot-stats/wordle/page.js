@@ -45,8 +45,9 @@ export default function WordleStatsPage() {
   );
 
   const wordle = data?.wordle || null;
+  const wordlePlayed = wordle && (Number(wordle.normal?.played) || Number(wordle.double?.played) || Number(wordle.triple?.played) || Number(wordle.ladder?.played));
 
-  if (!wordle || wordle.normal.played === 0) return (
+  if (!wordlePlayed) return (
     <section className="section" style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '4rem 1rem' }}>
       <div className="card" style={{ padding: '3rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--gold-darker)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '1rem' }}>Wordle Stats</h2>
@@ -102,7 +103,7 @@ export default function WordleStatsPage() {
         <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px' }}>
           <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
         </Link>
-        <a href="/bot-stats/wordle/doc/index" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
+        <a href="/bot-stats/wordle/doc" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 15px', background: 'var(--gold)', borderColor: 'var(--gold)', color: '#000', fontWeight: 700 }}>
           Ver Documentación
         </a>
       </div>
