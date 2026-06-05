@@ -4,20 +4,20 @@ import { usePathname } from 'next/navigation';
 import './styles/global.css';
 
 const NAV = [
-  { href: '/bot-stats/werewolf/doc', emoji: '🏠', label: 'Inicio', exact: true },
-  { href: '/bot-stats/werewolf/doc/normas', emoji: '📏', label: 'Normas' },
-  { href: '/bot-stats/werewolf/doc/roles', emoji: '🎭', label: 'Roles' },
-  { href: '/bot-stats/werewolf/doc/logros', emoji: '🏅', label: 'Logros' },
-  { href: '/bot-stats/werewolf/doc/comandos', emoji: '⌨️', label: 'Comandos' },
-  { href: '/bot-stats/werewolf/doc/presets', emoji: '📊', label: 'Presets' },
-  { href: '/bot-stats/werewolf/doc/cambios', emoji: '📋', label: 'Cambios' },
+  { href: '/bot-stats/werewolf/doc', label: 'Inicio', exact: true },
+  { href: '/bot-stats/werewolf/doc/normas', label: 'Normas' },
+  { href: '/bot-stats/werewolf/doc/roles', label: 'Roles' },
+  { href: '/bot-stats/werewolf/doc/logros', label: 'Logros' },
+  { href: '/bot-stats/werewolf/doc/comandos', label: 'Comandos' },
+  { href: '/bot-stats/werewolf/doc/presets', label: 'Presets' },
+  { href: '/bot-stats/werewolf/doc/cambios', label: 'Cambios' },
 ];
 
 export default function WerewolfDocLayout({ children }) {
   const path = usePathname();
 
   return (
-    <>
+    <div className="ww-doc">
       <header className="site-header">
         <Link href="/" className="header-branding">
           <img src="/la-icon.png" alt="LA Logo" className="brand-logo" />
@@ -37,7 +37,7 @@ export default function WerewolfDocLayout({ children }) {
           const active = n.exact ? path === n.href : path === n.href || path?.startsWith(n.href + '/');
           return (
             <Link key={n.href} href={n.href} className={active ? 'active' : ''}>
-              {n.emoji} {n.label}
+              {n.label}
             </Link>
           );
         })}
@@ -48,6 +48,6 @@ export default function WerewolfDocLayout({ children }) {
       <footer className="site-footer">
         <p>© 2026 Todos los derechos reservados <Link href="/" style={{ color: 'purple', textDecoration: 'none' }}>LA Spain</Link>.<br /><br />Desarrollado por Vimen.</p>
       </footer>
-    </>
+    </div>
   );
 }

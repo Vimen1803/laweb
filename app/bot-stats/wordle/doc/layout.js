@@ -4,11 +4,11 @@ import { usePathname } from 'next/navigation';
 import './styles/wordle-doc.css';
 
 const NAV = [
-  { href: '/bot-stats/wordle/doc', emoji: '🏠', label: 'Inicio', exact: true },
-  { href: '/bot-stats/wordle/doc/modos', emoji: '🎮', label: 'Modos' },
-  { href: '/bot-stats/wordle/doc/puntuacion', emoji: '⭐', label: 'Puntuación' },
-  { href: '/bot-stats/wordle/doc/comandos', emoji: '⌨️', label: 'Comandos' },
-  { href: '/bot-stats/wordle/doc/normas', emoji: '📜', label: 'Normas' },
+  { href: '/bot-stats/wordle/doc', label: 'Inicio', exact: true },
+  { href: '/bot-stats/wordle/doc/modos', label: 'Modos' },
+  { href: '/bot-stats/wordle/doc/puntuacion', label: 'Puntuación' },
+  { href: '/bot-stats/wordle/doc/comandos', label: 'Comandos' },
+  { href: '/bot-stats/wordle/doc/normas', label: 'Normas' },
 ];
 
 // W O R D L E con la combinación de colores característica
@@ -42,7 +42,7 @@ export default function WordleDocLayout({ children }) {
           const active = n.exact ? path === n.href : path === n.href || path?.startsWith(n.href + '/');
           return (
             <Link key={n.href} href={n.href} className={active ? 'active' : ''}>
-              <span aria-hidden="true">{n.emoji}</span> {n.label}
+              {n.label}
             </Link>
           );
         })}

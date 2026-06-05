@@ -1,25 +1,25 @@
-.filter-bar { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
-.filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border-medium); background: transparent; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
-.filter-btn:hover { border-color: var(--accent-wolf); color: var(--text-primary); }
-.filter-btn.active { background: var(--accent-wolf); border-color: var(--accent-wolf); color: #fff; }
-.team-section { margin-bottom: 2.5rem; }
-.team-section.hidden { display: none; }
-.roles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; align-items: flex-start; }
-.role-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: all var(--transition); }
-.role-card:hover { border-color: var(--border-medium); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.role-card-header { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem; }
-.role-emoji { font-size: 1.75rem; flex-shrink: 0; }
-.role-name { font-size: 1rem; font-weight: 600; flex: 1; }
-.role-night { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
-.role-night.yes { background: rgba(29,158,117,0.15); color: var(--accent-village); }
-.role-night.no { background: rgba(90,90,106,0.15); color: var(--text-muted); }
-.role-card-body { padding: 0 1.25rem 1.25rem; display: none; border-top: 1px solid var(--border-subtle); }
-.role-card.open .role-card-body { display: block; padding-top: 1rem; }
-.role-card-body p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; white-space: pre-line; }
-.role-card .chevron { transition: transform var(--transition); color: var(--text-muted); font-size: 0.8rem; }
-.role-card.open .chevron { transform: rotate(180deg); }
-@media (max-width: 768px) { 
-  .roles-grid { grid-template-columns: 1fr; } 
-  .filter-bar { justify-content: center; gap: 6px; }
-  .filter-btn { padding: 6px 14px; font-size: 0.75rem; }
+.ww-doc .filter-bar { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+.ww-doc .filter-btn { padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border-medium); background: transparent; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all var(--transition); font-family: var(--font-body); }
+.ww-doc .filter-btn:hover { border-color: var(--accent-wolf); color: var(--text-primary); }
+.ww-doc .filter-btn.active { background: var(--accent-wolf); border-color: var(--accent-wolf); color: #fff; }
+.ww-doc .team-section { margin-bottom: 2.5rem; }
+.ww-doc .team-section.hidden { display: none; }
+.ww-doc .roles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; align-items: flex-start; }
+.ww-doc .role-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; cursor: pointer; transition: all var(--transition); }
+.ww-doc .role-card:hover { border-color: var(--border-medium); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.ww-doc .role-card-header { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem; }
+.ww-doc .role-emoji { font-size: 1.75rem; flex-shrink: 0; }
+.ww-doc .role-name { font-size: 1rem; font-weight: 600; flex: 1; }
+.ww-doc .role-night { font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; font-weight: 600; }
+.ww-doc .role-night.yes { background: rgba(29,158,117,0.15); color: var(--accent-village); }
+.ww-doc .role-night.no { background: rgba(90,90,106,0.15); color: var(--text-muted); }
+.ww-doc .role-card-body { padding: 0 1.25rem 1.25rem; display: none; border-top: 1px solid var(--border-subtle); }
+.ww-doc .role-card.open .role-card-body { display: block; padding-top: 1rem; }
+.ww-doc .role-card-body p { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.7; white-space: pre-line; }
+.ww-doc .role-card .chevron { transition: transform var(--transition); color: var(--text-muted); font-size: 0.8rem; }
+.ww-doc .role-card.open .chevron { transform: rotate(180deg); }
+@media (max-width: 768px) {
+  .ww-doc .roles-grid { grid-template-columns: 1fr; }
+  .ww-doc .filter-bar { justify-content: center; gap: 6px; }
+  .ww-doc .filter-btn { padding: 6px 14px; font-size: 0.75rem; }
 }
