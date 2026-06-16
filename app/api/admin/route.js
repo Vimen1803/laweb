@@ -121,8 +121,12 @@ export async function GET(request) {
     }
 
     if (section === 'config') {
-      // La configuración del servidor vive en la colección `servers`.
+      // La mayoría de ajustes viven en `servers`, pero `modlog` y `punishments`
+      // los lee el bot de `mod_config`.
       const server = await db.collection('servers').findOne({
+        guild_id: { $in: [Long.fromString(guildId), guildId] },
+      }) || {};
+      const modConfig = await db.collection('mod_config').findOne({
         guild_id: { $in: [Long.fromString(guildId), guildId] },
       }) || {};
 
@@ -172,12 +176,12 @@ export async function GET(request) {
         global: server.global ?? null,
         blchannel: str(server.blchannel),
         sync: Array.isArray(server.sync) ? server.sync.map(String) : (server.sync != null ? [String(server.sync)] : []),
-        modlog: str(server.modlog),
+        modlog: str(modConfig.modlog),
         nick: server.nick ?? null,
         whitelist: str(server.whitelist),
         welcome: str(server.welcome),
         clubsview: str(server.clubsview),
-        punishments: server.punishments || {},
+        punishments: modConfig.punishments || {},
         cumch: str(server.cumch),
         cumrole: str(server.cumrole),
         eventsrol: str(server.eventsrol),
@@ -312,7 +316,9 @@ export async function POST(request) {
           return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
         }
       }
-      const res = await db.collection('servers').updateOne(
+      // `modlog` vive en mod_config; el resto en servers.
+      const collection = field === 'modlog' ? 'mod_config' : 'servers';
+      const res = await db.collection(collection).updateOne(
         { guild_id: { $in: [Long.fromString(guildId), guildId] } },
         { $set: { [field]: newVal } }
       );
@@ -335,7 +341,8 @@ export async function POST(request) {
         }
         clean[String(n)] = { type: v.type, duration: dur === null ? null : new Int32(dur) };
       }
-      const res = await db.collection('servers').updateOne(
+      // Las sanciones por strike las lee el bot de mod_config.
+      const res = await db.collection('mod_config').updateOne(
         { guild_id: { $in: [Long.fromString(guildId), guildId] } },
         { $set: { punishments: clean } }
       );
