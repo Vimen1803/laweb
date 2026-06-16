@@ -303,7 +303,7 @@ export async function POST(request) {
     // ── Configuración del servidor (colección `servers`) ───────────────────
     if (action === 'setServerConfig') {
       const { field, value } = body;
-      const editable = ['modlog', 'clubsview', 'cumch', 'cumrole', 'eventsrol'];
+      const editable = ['modlog', 'welcome', 'clubsview', 'cumch', 'cumrole', 'eventsrol'];
       if (!editable.includes(field)) {
         return NextResponse.json({ error: 'Campo no editable' }, { status: 400 });
       }

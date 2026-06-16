@@ -89,6 +89,7 @@ export default function AdminPage() {
       setDrafts({
         nickname: data.nickname || '',
         modlog: data.modlog || '',
+        welcome: data.welcome || '',
         clubsview: data.clubsview || '',
         cumch: data.cumch || '',
         cumrole: data.cumrole || '',
@@ -717,6 +718,7 @@ export default function AdminPage() {
               {/* Canales y roles editables */}
               <div className="grid-2" style={{ marginBottom: '1rem' }}>
                 {renderConfigSelect('modlog', 'Canal de ModLog', <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} />, 'channel')}
+                {renderConfigSelect('welcome', 'Canal de LA Bot Log', <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} />, 'channel')}
                 {renderConfigSelect('clubsview', 'Canal del Embed de Clubes', <BuildingLibraryIcon style={{ width: 20, height: 20 }} />, 'channel')}
                 {renderConfigSelect('cumch', 'Canal de Cumpleaños', <CakeIcon style={{ width: 20, height: 20 }} />, 'channel')}
                 {renderConfigSelect('cumrole', 'Rol de Cumpleañero', <CakeIcon style={{ width: 20, height: 20 }} />, 'role')}
@@ -732,7 +734,6 @@ export default function AdminPage() {
                   {[
                     ['Global', data.global === null ? '—' : (data.global ? 'Sí' : 'No')],
                     ['Apodo automático (nick)', data.nick === null ? '—' : (data.nick ? 'Sí' : 'No')],
-                    ['Canal de Welcome', data.welcome ? `#${cfgChannelName(data.welcome) || data.welcome}` : '—'],
                     ['Canal de Blacklist', data.blchannel ? `#${cfgChannelName(data.blchannel) || data.blchannel}` : '—'],
                     ['Whitelist', data.whitelist ? (cfgRoleName(data.whitelist) ? `@${cfgRoleName(data.whitelist)}` : data.whitelist) : '—'],
                     ['Servidores sincronizados', (data.sync && data.sync.length) ? data.sync.join(', ') : '—'],
