@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { Long } from 'mongodb';
+import { Long, Int32 } from 'mongodb';
 import { auth } from '@/lib/auth';
 
 // Verifica que quien llama es administrador. El panel /admin comprueba esto en
@@ -121,45 +121,68 @@ export async function GET(request) {
     }
 
     if (section === 'config') {
-      const config = await db.collection('mod_config').findOne({
-        guild_id: parseInt(guildId) || guildId,
+      // La configuración del servidor vive en la colección `servers`.
+      const server = await db.collection('servers').findOne({
+        guild_id: { $in: [Long.fromString(guildId), guildId] },
       }) || {};
 
-      // Resolvemos los IDs a nombres legibles vía la API de Discord.
       const token = process.env.DISCORD_BOT_TOKEN;
-      let modlogName = null;
-      let muteroleName = null;
+      let channels = [];
+      let roles = [];
+      let nickname = null;
+
       if (token) {
-        if (config.modlog) {
-          try {
-            const r = await fetch(`https://discord.com/api/v10/channels/${config.modlog}`, {
-              headers: { Authorization: `Bot ${token}` },
-              next: { revalidate: 600 },
-            });
-            if (r.ok) modlogName = (await r.json()).name || null;
-          } catch {}
-        }
-        if (config.muterole) {
-          try {
-            const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/roles`, {
-              headers: { Authorization: `Bot ${token}` },
-              next: { revalidate: 600 },
-            });
-            if (r.ok) {
-              const roles = await r.json();
-              const role = (roles || []).find(x => String(x.id) === String(config.muterole));
-              if (role) muteroleName = role.name;
+        const headers = { Authorization: `Bot ${token}` };
+        // Canales de texto/anuncios/foro para los desplegables.
+        try {
+          const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, { headers, next: { revalidate: 300 } });
+          if (r.ok) {
+            channels = (await r.json())
+              .filter(c => [0, 5, 15].includes(c.type))
+              .map(c => ({ id: String(c.id), name: c.name }));
+          }
+        } catch {}
+        // Roles para los desplegables (de mayor a menor jerarquía, sin @everyone).
+        try {
+          const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/roles`, { headers, next: { revalidate: 300 } });
+          if (r.ok) {
+            roles = (await r.json())
+              .filter(x => x.name !== '@everyone')
+              .sort((a, b) => (b.position || 0) - (a.position || 0))
+              .map(x => ({ id: String(x.id), name: x.name }));
+          }
+        } catch {}
+        // Apodo actual del bot en el servidor.
+        try {
+          const me = await fetch('https://discord.com/api/v10/users/@me', { headers, cache: 'no-store' });
+          if (me.ok) {
+            const botId = (await me.json()).id;
+            const m = await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${botId}`, { headers, cache: 'no-store' });
+            if (m.ok) {
+              const member = await m.json();
+              nickname = member.nick || member.user?.global_name || member.user?.username || null;
             }
-          } catch {}
-        }
+          }
+        } catch {}
       }
 
+      const str = v => (v === null || v === undefined) ? null : String(v);
       return NextResponse.json({
-        modlog: config.modlog ? String(config.modlog) : null,
-        muterole: config.muterole ? String(config.muterole) : null,
-        punishments: config.punishments || {},
-        modlogName,
-        muteroleName,
+        nickname,
+        global: server.global ?? null,
+        blchannel: str(server.blchannel),
+        sync: Array.isArray(server.sync) ? server.sync.map(String) : (server.sync != null ? [String(server.sync)] : []),
+        modlog: str(server.modlog),
+        nick: server.nick ?? null,
+        whitelist: str(server.whitelist),
+        welcome: str(server.welcome),
+        clubsview: str(server.clubsview),
+        punishments: server.punishments || {},
+        cumch: str(server.cumch),
+        cumrole: str(server.cumrole),
+        eventsrol: str(server.eventsrol),
+        channels,
+        roles,
       });
     }
 
@@ -271,6 +294,73 @@ export async function POST(request) {
       
       await db.collection('blacklist').deleteOne({ tag: formattedTag, server_id: Long.fromString(serverIdStr) });
       return NextResponse.json({ success: true });
+    }
+
+    // ── Configuración del servidor (colección `servers`) ───────────────────
+    if (action === 'setServerConfig') {
+      const { field, value } = body;
+      const editable = ['modlog', 'clubsview', 'cumch', 'cumrole', 'eventsrol'];
+      if (!editable.includes(field)) {
+        return NextResponse.json({ error: 'Campo no editable' }, { status: 400 });
+      }
+      const guildId = process.env.DISCORD_GUILD_ID;
+      let newVal = null;
+      if (value !== null && value !== undefined && String(value).trim() !== '') {
+        try {
+          newVal = Long.fromString(String(value).trim());
+        } catch {
+          return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
+        }
+      }
+      const res = await db.collection('servers').updateOne(
+        { guild_id: { $in: [Long.fromString(guildId), guildId] } },
+        { $set: { [field]: newVal } }
+      );
+      return NextResponse.json({ success: res.matchedCount > 0 });
+    }
+
+    if (action === 'setPunishments') {
+      const { punishments } = body;
+      const guildId = process.env.DISCORD_GUILD_ID;
+      const clean = {};
+      for (const [k, v] of Object.entries(punishments || {})) {
+        const n = parseInt(k, 10);
+        if (!Number.isInteger(n) || n < 1) continue;
+        if (!v || !['mute', 'ban'].includes(v.type)) continue;
+        let dur = v.duration;
+        if (dur === '' || dur === undefined) dur = null;
+        if (dur !== null) {
+          dur = parseInt(dur, 10);
+          if (Number.isNaN(dur) || dur < 0) dur = null;
+        }
+        clean[String(n)] = { type: v.type, duration: dur === null ? null : new Int32(dur) };
+      }
+      const res = await db.collection('servers').updateOne(
+        { guild_id: { $in: [Long.fromString(guildId), guildId] } },
+        { $set: { punishments: clean } }
+      );
+      return NextResponse.json({ success: res.matchedCount > 0 });
+    }
+
+    if (action === 'setNickname') {
+      const { value } = body;
+      const token = process.env.DISCORD_BOT_TOKEN;
+      const guildId = process.env.DISCORD_GUILD_ID;
+      if (!token) return NextResponse.json({ error: 'Falta el token del bot' }, { status: 500 });
+      try {
+        const me = await fetch('https://discord.com/api/v10/users/@me', { headers: { Authorization: `Bot ${token}` } });
+        if (!me.ok) return NextResponse.json({ error: 'No se pudo identificar al bot' }, { status: 502 });
+        const botId = (await me.json()).id;
+        const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${botId}`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nick: (value && value.trim()) ? value.trim() : null }),
+        });
+        if (!r.ok) return NextResponse.json({ error: 'Discord rechazó el cambio de apodo (revisa los permisos del bot)' }, { status: 502 });
+        return NextResponse.json({ success: true });
+      } catch {
+        return NextResponse.json({ error: 'Error al cambiar el apodo' }, { status: 500 });
+      }
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

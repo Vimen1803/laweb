@@ -7,7 +7,8 @@ import {
   SpeakerXMarkIcon, ExclamationTriangleIcon, FlagIcon,
   NoSymbolIcon, WrenchScrewdriverIcon,
   ScaleIcon, ClockIcon, LockClosedIcon,
-  BuildingLibraryIcon, TrashIcon, CheckCircleIcon, XCircleIcon, XMarkIcon
+  BuildingLibraryIcon, TrashIcon, CheckCircleIcon, XCircleIcon, XMarkIcon,
+  PencilSquareIcon, CakeIcon, SparklesIcon, GlobeAltIcon, PlusIcon
 } from '@heroicons/react/24/solid';
 
 const iconMap = { 
@@ -35,6 +36,10 @@ export default function AdminPage() {
   const [isAddingBlacklist, setIsAddingBlacklist] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [confirmState, setConfirmState] = useState(null);
+  // --- Edición de configuración del servidor ---
+  const [drafts, setDrafts] = useState({});
+  const [savingField, setSavingField] = useState(null);
+  const [punish, setPunish] = useState([]);
 
   // --- Sistema de notificaciones (toasts) ---
   function showToast(type, title, message) {
@@ -72,11 +77,113 @@ export default function AdminPage() {
       });
   }, [router]);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (authStatus === 'authenticated' && session?.isAdmin) {
-      loadSection(section); 
+      loadSection(section);
     }
   }, [section, authStatus, session]);
+
+  // Inicializa los borradores editables al cargar la configuración.
+  useEffect(() => {
+    if (section === 'config' && data && !Array.isArray(data)) {
+      setDrafts({
+        nickname: data.nickname || '',
+        modlog: data.modlog || '',
+        clubsview: data.clubsview || '',
+        cumch: data.cumch || '',
+        cumrole: data.cumrole || '',
+        eventsrol: data.eventsrol || '',
+      });
+      setPunish(
+        Object.entries(data.punishments || {})
+          .map(([k, v]) => ({ strike: String(k), type: v.type || 'mute', hours: v.duration ? Math.round(v.duration / 3600) : '' }))
+          .sort((a, b) => parseInt(a.strike) - parseInt(b.strike))
+      );
+    }
+  }, [section, data]);
+
+  async function saveConfigField(field) {
+    setSavingField(field);
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'setServerConfig', field, value: drafts[field] }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.success) { showToast('success', 'Guardado', 'Configuración actualizada.'); loadSection('config'); }
+      else showToast('error', 'No se pudo guardar', d.error || 'Ha ocurrido un error.');
+    } catch { showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.'); }
+    setSavingField(null);
+  }
+
+  async function saveNickname() {
+    setSavingField('nickname');
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'setNickname', value: drafts.nickname }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.success) { showToast('success', 'Apodo actualizado', `El bot ahora se llama "${drafts.nickname || ''}".`); loadSection('config'); }
+      else showToast('error', 'No se pudo cambiar el apodo', d.error || 'Ha ocurrido un error.');
+    } catch { showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.'); }
+    setSavingField(null);
+  }
+
+  async function savePunishments() {
+    setSavingField('punishments');
+    const obj = {};
+    for (const row of (punish || [])) {
+      if (!row.strike) continue;
+      obj[String(row.strike)] = {
+        type: row.type,
+        duration: (row.hours === '' || row.hours === null || row.hours === undefined) ? null : Math.round(Number(row.hours) * 3600),
+      };
+    }
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'setPunishments', punishments: obj }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.success) { showToast('success', 'Sanciones guardadas', 'Se actualizaron los castigos por strike.'); loadSection('config'); }
+      else showToast('error', 'No se pudo guardar', d.error || 'Ha ocurrido un error.');
+    } catch { showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.'); }
+    setSavingField(null);
+  }
+
+  const addPunishRow = () => {
+    const next = (punish && punish.length) ? Math.max(...punish.map(r => parseInt(r.strike) || 0)) + 1 : 1;
+    setPunish([...(punish || []), { strike: String(next), type: 'mute', hours: '' }]);
+  };
+  const removePunishRow = (i) => setPunish(punish.filter((_, idx) => idx !== i));
+  const updatePunishRow = (i, key, val) => setPunish(punish.map((r, idx) => idx === i ? { ...r, [key]: val } : r));
+
+  const cfgChannelName = (id) => (data?.channels || []).find(c => c.id === String(id))?.name;
+  const cfgRoleName = (id) => (data?.roles || []).find(r => r.id === String(id))?.name;
+
+  function renderConfigSelect(field, label, icon, kind) {
+    const options = kind === 'channel' ? (data?.channels || []) : (data?.roles || []);
+    const prefix = kind === 'channel' ? '#' : '@';
+    const current = data?.[field] || '';
+    const draft = drafts[field] ?? '';
+    const changed = String(draft) !== String(current);
+    return (
+      <div className="admin-card" style={{ borderLeft: `4px solid ${current ? '#3498db' : 'var(--border)'}` }}>
+        <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>{icon} {label}</div>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
+          <select value={draft} onChange={e => setDrafts(d => ({ ...d, [field]: e.target.value }))}
+            style={{ flex: 1, minWidth: '160px', padding: '10px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+            <option value="">— Sin configurar —</option>
+            {options.map(o => <option key={o.id} value={o.id}>{prefix}{o.name}</option>)}
+          </select>
+          <button className="btn-primary" disabled={!changed || savingField === field} onClick={() => saveConfigField(field)} style={{ padding: '10px 18px', borderRadius: '8px', margin: 0 }}>
+            {savingField === field ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   async function loadSection(sec) {
     setLoading(true); setData(null);
@@ -586,81 +693,106 @@ export default function AdminPage() {
           {section === 'config' && data && !loading && (
             <>
               <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Cog6ToothIcon style={{ width: 28, height: 28 }} /> Configuración
+                <Cog6ToothIcon style={{ width: 28, height: 28 }} /> Configuración del Servidor
               </h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                Configuración de moderación del servidor. Estos valores se ajustan desde Discord con los comandos <code style={{ color: 'var(--gold)' }}>,modlog</code>, <code style={{ color: 'var(--gold)' }}>,muterole</code> y <code style={{ color: 'var(--gold)' }}>,punishments</code>.
+                Ajustes del bot en LA Spain. Los campos editables se guardan al instante (el apodo se cambia en Discord; el resto en la base de datos).
               </p>
 
-              <div className="grid-2" style={{ marginBottom: '1rem' }}>
-                {/* Canal ModLog */}
-                <div className="admin-card" style={{ borderLeft: `4px solid ${data.modlog ? '#3498db' : 'var(--border)'}` }}>
-                  <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Canal de ModLog
-                  </div>
-                  {data.modlog ? (
-                    <>
-                      <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: '4px 0' }}>
-                        #{data.modlogName || 'canal-desconocido'}
-                      </p>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'monospace' }}>ID: {data.modlog}</p>
-                    </>
-                  ) : (
-                    <span style={{ display: 'inline-block', marginTop: '6px', padding: '3px 10px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(231,76,60,0.12)', color: '#e74c3c' }}>
-                      No configurado
-                    </span>
-                  )}
+              {/* Apodo del bot */}
+              <div className="admin-card" style={{ marginBottom: '1rem', borderLeft: '4px solid var(--gold)' }}>
+                <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <PencilSquareIcon style={{ width: 20, height: 20 }} /> Apodo del bot
                 </div>
-
-                {/* Rol Mute */}
-                <div className="admin-card" style={{ borderLeft: `4px solid ${data.muterole ? '#9b59b6' : 'var(--border)'}` }}>
-                  <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <SpeakerXMarkIcon style={{ width: 20, height: 20 }} /> Rol de Silencio (Mute)
-                  </div>
-                  {data.muterole ? (
-                    <>
-                      <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: '4px 0' }}>
-                        @{data.muteroleName || 'rol-desconocido'}
-                      </p>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'monospace' }}>ID: {data.muterole}</p>
-                    </>
-                  ) : (
-                    <span style={{ display: 'inline-block', marginTop: '6px', padding: '3px 10px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(231,76,60,0.12)', color: '#e74c3c' }}>
-                      No configurado
-                    </span>
-                  )}
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '6px 0 10px' }}>Nombre que muestra el bot dentro del servidor.</p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  <input value={drafts.nickname ?? ''} onChange={e => setDrafts(d => ({ ...d, nickname: e.target.value }))} placeholder="Apodo del bot" maxLength={32}
+                    style={{ flex: 1, minWidth: '180px', padding: '10px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                  <button className="btn-primary" disabled={savingField === 'nickname' || (drafts.nickname || '') === (data.nickname || '')} onClick={saveNickname} style={{ padding: '10px 18px', borderRadius: '8px', margin: 0 }}>
+                    {savingField === 'nickname' ? 'Guardando...' : 'Guardar'}
+                  </button>
                 </div>
               </div>
 
-              <div className="admin-card">
-                <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ScaleIcon style={{ width: 20, height: 20 }} /> Sanciones Automáticas
-                  </span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                    {data.punishments ? Object.keys(data.punishments).length : 0} configuradas
-                  </span>
+              {/* Canales y roles editables */}
+              <div className="grid-2" style={{ marginBottom: '1rem' }}>
+                {renderConfigSelect('modlog', 'Canal de ModLog', <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} />, 'channel')}
+                {renderConfigSelect('clubsview', 'Canal del Embed de Clubes', <BuildingLibraryIcon style={{ width: 20, height: 20 }} />, 'channel')}
+                {renderConfigSelect('cumch', 'Canal de Cumpleaños', <CakeIcon style={{ width: 20, height: 20 }} />, 'channel')}
+                {renderConfigSelect('cumrole', 'Rol de Cumpleañero', <CakeIcon style={{ width: 20, height: 20 }} />, 'role')}
+                {renderConfigSelect('eventsrol', 'Rol del Dpto. de Eventos', <SparklesIcon style={{ width: 20, height: 20 }} />, 'role')}
+              </div>
+
+              {/* Información (solo lectura) */}
+              <div className="admin-card" style={{ marginBottom: '1rem' }}>
+                <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <GlobeAltIcon style={{ width: 20, height: 20 }} /> Información (solo lectura)
                 </div>
-                {data.punishments && Object.keys(data.punishments).length > 0 ? (
-                  <table className="admin-table">
-                    <thead><tr><th>Strikes</th><th>Sanción</th><th>Duración</th></tr></thead>
-                    <tbody>
-                      {Object.entries(data.punishments).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).map(([num, p], i) => (
-                        <tr key={i}>
-                          <td style={{ color: 'var(--gold)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{ color: 'var(--text-muted)' }}>{iconMap[p.type] || null}</span> {num}
-                          </td>
-                          <td style={{ textTransform: 'capitalize' }}>{p.type}</td>
-                          <td>{p.duration ? `${Math.round(p.duration / 3600)}h` : 'Permanente'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem 0' }}>
-                    No hay sanciones automáticas configuradas. Usa <code style={{ color: 'var(--gold)' }}>,punishments set &lt;nº&gt; &lt;mute|ban&gt; [duración]</code> en Discord para añadirlas.
-                  </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginTop: '12px' }}>
+                  {[
+                    ['Global', data.global === null ? '—' : (data.global ? 'Sí' : 'No')],
+                    ['Apodo automático (nick)', data.nick === null ? '—' : (data.nick ? 'Sí' : 'No')],
+                    ['Canal de Welcome', data.welcome ? `#${cfgChannelName(data.welcome) || data.welcome}` : '—'],
+                    ['Canal de Blacklist', data.blchannel ? `#${cfgChannelName(data.blchannel) || data.blchannel}` : '—'],
+                    ['Whitelist', data.whitelist ? (cfgRoleName(data.whitelist) ? `@${cfgRoleName(data.whitelist)}` : data.whitelist) : '—'],
+                    ['Servidores sincronizados', (data.sync && data.sync.length) ? data.sync.join(', ') : '—'],
+                  ].map(([label, value], i) => (
+                    <div key={i} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '8px', padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '4px' }}>{label}</p>
+                      <p style={{ fontSize: '0.9rem', fontWeight: 600, wordBreak: 'break-word' }}>{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sanciones automáticas (editables) */}
+              <div className="admin-card">
+                <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <ScaleIcon style={{ width: 20, height: 20 }} /> Sanciones Automáticas (por strikes)
+                  </span>
+                  <button onClick={addPunishRow} className="btn" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', fontSize: '0.8rem', background: 'rgba(255,255,255,0.05)' }}>
+                    <PlusIcon style={{ width: 14, height: 14 }} /> Añadir
+                  </button>
+                </div>
+                <table className="admin-table" style={{ marginTop: '10px' }}>
+                  <thead><tr><th>Strikes</th><th>Sanción</th><th>Duración (horas)</th><th></th></tr></thead>
+                  <tbody>
+                    {(punish || []).map((row, i) => (
+                      <tr key={i}>
+                        <td>
+                          <input type="number" min="1" value={row.strike} onChange={e => updatePunishRow(i, 'strike', e.target.value)}
+                            style={{ width: '70px', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </td>
+                        <td>
+                          <select value={row.type} onChange={e => updatePunishRow(i, 'type', e.target.value)}
+                            style={{ padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                            <option value="mute">Mute</option>
+                            <option value="ban">Ban</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input type="number" min="0" value={row.hours} placeholder="Permanente" onChange={e => updatePunishRow(i, 'hours', e.target.value)}
+                            style={{ width: '120px', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </td>
+                        <td>
+                          <button onClick={() => removePunishRow(i)} className="btn-danger" style={{ padding: '6px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <TrashIcon style={{ width: 16, height: 16 }} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {(!punish || punish.length === 0) && (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem 0' }}>No hay sanciones configuradas. Pulsa «Añadir» para crear una.</p>
                 )}
+                <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.78rem', margin: 0 }}>Duración en horas; déjala vacía para una sanción permanente.</p>
+                  <button className="btn-primary" disabled={savingField === 'punishments'} onClick={savePunishments} style={{ padding: '10px 20px', borderRadius: '8px', margin: 0 }}>
+                    {savingField === 'punishments' ? 'Guardando...' : 'Guardar sanciones'}
+                  </button>
+                </div>
               </div>
             </>
           )}
