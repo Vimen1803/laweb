@@ -1,6 +1,10 @@
 import { StarIcon, ChartBarIcon, SparklesIcon, ShieldCheckIcon } from '@heroicons/react/24/solid';
+import { getMembersByRoleIds } from '@/lib/discord-members';
 
 export const metadata = { title: 'Roles - LA Spain' };
+
+// Refresca los miembros del staff (desde Discord) cada 10 minutos.
+export const revalidate = 600;
 
 const levelRoles = [
   { level: 10, name: '✠ Común', perk: 'Enviar fotos y videos' },
@@ -23,34 +27,43 @@ const levelRoles = [
 const specialRoles = [
   { name: 'Nitro Booster', desc: 'Obtenido al mejorar el servidor con Discord Nitro, consulta las ventajas en info-boosters.', color: '#f47fff' },
   { name: 'Tier 1 / Tier 2 / Tier 3', desc: 'Obtenidos al apoyar monetariamente al servidor, consulta las ventajas en abonos.', color: '#2ecc71' },
-  { name: 'Buscar Brawl', desc: 'Recibe pings de otros miembros cuando busquen equipo para Brawl Stars.', color: '#e67e22' },
+  { name: 'Portador de la Fortuna', desc: 'Rol exclusivo que se obtiene al ganar la lotería del servidor. Solo una persona puede portarlo a la vez.', color: '#f1c40f' },
   { name: 'Cumpleañero', desc: 'Obtén ventajas especiales durante el día de tu cumpleaños. Usa: ,remember-birthday Año-Mes-Día', color: '#e74c3c' },
 ];
 
+// Los miembros se extraen automáticamente de quienes tienen cada rol en Discord
+// (ver `roleId`). Si la API falla, se usa `fallback` como respaldo.
 const staffRoles = [
   {
-    name: 'Ayudante', color: '#00bcd4',
+    name: 'Ayudante', color: '#00bcd4', roleId: '825027187156451338',
     desc: 'Encargados de ayudar en los tickets de soporte, resolviendo dudas y aprendiendo del resto del staff.',
-    members: ['victor', 'p a t a t a', 'Oscucar', 'Sebas 🐳🩵']
+    fallback: ['victor', 'p a t a t a', 'Oscucar', 'Sebas 🐳🩵']
   },
   {
-    name: 'Moderador', color: '#5865f2',
+    name: 'Moderador', color: '#5865f2', roleId: '691405385025716234',
     desc: 'Encargados de todo el apartado de moderación del servidor. Pueden banear, dar strikes, mutear y resolver conflictos.',
-    members: ['b r i a m', 'Dani El Rolo']
+    fallback: ['b r i a m', 'Dani El Rolo']
   },
   {
-    name: 'Manager', color: '#9b59b6',
+    name: 'Manager', color: '#9b59b6', roleId: '668510956225167360',
     desc: 'Encargados de prácticamente todas las tareas más importantes del servidor, su palabra es ley y orden.',
-    members: ['David_01', 'Prince Senju', 'DrakuL']
+    fallback: ['David_01', 'Prince Senju', 'DrakuL']
   },
   {
-    name: 'Admin', color: '#ffffff',
+    name: 'Admin', color: '#ffffff', roleId: '574163143681638411',
     desc: 'Es el rango máximo. Son los creadores y/o personas que representan LA Spain.',
-    members: ['Amaroyusi ☀️ #LA2026', 'Srta.Vocales']
+    fallback: ['Amaroyusi ☀️ #LA2026', 'Srta.Vocales']
   },
 ];
 
-export default function RolesPage() {
+export default async function RolesPage() {
+  // Extrae los miembros de cada rol de staff directamente de Discord.
+  const byRole = await getMembersByRoleIds(staffRoles.map(r => r.roleId)).catch(() => null);
+  const staff = staffRoles.map(r => {
+    const apiMembers = byRole?.[r.roleId]?.map(m => m.name);
+    return { ...r, members: (apiMembers && apiMembers.length) ? apiMembers : r.fallback };
+  });
+
   return (
     <section className="section" style={{ maxWidth: 1000 }}>
       <h1 className="section-title" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -100,7 +113,7 @@ export default function RolesPage() {
           <ShieldCheckIcon style={{ width: 24, height: 24, color: 'var(--gold)' }} /> Equipo de Staff
         </h2>
         <div className="grid-2">
-          {staffRoles.map((r, i) => (
+          {staff.map((r, i) => (
             <div key={i} className="card" style={{ borderLeft: `4px solid ${r.color}`, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <h4 style={{ color: r.color, marginBottom: '0.25rem' }}>{r.name}</h4>

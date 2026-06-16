@@ -15,6 +15,7 @@ import {
 
 export default function LotteryStatsPage() {
   const [data, setData] = useState(null);
+  const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
@@ -24,6 +25,7 @@ export default function LotteryStatsPage() {
       .then(res => res.json())
       .then(d => {
         setData(d.lottery);
+        setWinner(d.lotteryWinner || null);
         setLoading(false);
       })
       .catch(err => {
@@ -66,11 +68,33 @@ export default function LotteryStatsPage() {
   if (!data) {
     return (
       <section className="section" style={{ maxWidth: 800, textAlign: 'center' }}>
-        <div className="card" style={{ padding: '3rem' }}>
-          <TicketIcon style={{ width: 60, height: 60, color: 'var(--text-muted)', margin: '0 auto 1.5rem' }} />
-          <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>No hay Lotería Activa</h1>
-          <p className="text-muted" style={{ marginBottom: '2rem' }}>Actualmente no hay ningún sorteo en curso en el servidor de LA Spain.</p>
-          <Link href="/bot-stats" className="btn btn-primary">Volver al Dashboard</Link>
+        <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
+          <ArrowLeftIcon style={{ width: 16, height: 16 }} /> Volver al Dashboard
+        </Link>
+        <div className="card" style={{ padding: '3rem', borderTop: '4px solid #f39c12' }}>
+          {winner ? (
+            <>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800 }}>Último Ganador de la Lotería</p>
+              {winner.avatar ? (
+                <img src={winner.avatar} alt={winner.name} style={{ width: 90, height: 90, borderRadius: '50%', border: '3px solid #f39c12', margin: '0 auto 1.2rem' }} />
+              ) : (
+                <TrophyIcon style={{ width: 60, height: 60, color: '#f39c12', margin: '0 auto 1.2rem' }} />
+              )}
+              <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{winner.name}</h1>
+              <p style={{ color: '#f39c12', fontWeight: 700, marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <SparklesIcon style={{ width: 18, height: 18 }} /> Portador de la Fortuna
+              </p>
+              <p className="text-muted" style={{ marginBottom: '2rem', fontSize: '0.9rem' }}>No hay ningún sorteo en curso ahora mismo. ¡Vuelve pronto para arrebatarle el título!</p>
+              <Link href="/bot-stats" className="btn btn-primary">Volver al Dashboard</Link>
+            </>
+          ) : (
+            <>
+              <TicketIcon style={{ width: 60, height: 60, color: 'var(--text-muted)', margin: '0 auto 1.5rem' }} />
+              <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>No hay Lotería Activa</h1>
+              <p className="text-muted" style={{ marginBottom: '2rem' }}>Actualmente no hay ningún sorteo en curso en el servidor de LA Spain.</p>
+              <Link href="/bot-stats" className="btn btn-primary">Volver al Dashboard</Link>
+            </>
+          )}
         </div>
       </section>
     );

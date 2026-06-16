@@ -8,13 +8,18 @@ export default function ComandosPage() {
   const [selectedCmd, setSelectedCmd] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const cogs = Object.keys(commandsData);
+  // Categorías ordenadas alfabéticamente (sidebar y listado).
+  const cogs = useMemo(() => Object.keys(commandsData).sort((a, b) => a.localeCompare(b, 'es')), []);
   const totalCommands = useMemo(() => Object.values(commandsData).reduce((s, c) => s + c.commands.length, 0), []);
 
   const filteredCommands = useMemo(() => {
     let cmds = [];
-    const source = activeCog ? { [activeCog]: commandsData[activeCog] } : commandsData;
-    for (const [cogName, cog] of Object.entries(source)) {
+    // Recorremos las categorías en orden alfabético para que el listado salga
+    // agrupado por categoría.
+    const orderedCogs = activeCog ? [activeCog] : cogs;
+    for (const cogName of orderedCogs) {
+      const cog = commandsData[cogName];
+      if (!cog) continue;
       for (const cmd of cog.commands) {
         cmds.push({ ...cmd, cogName, cogIcon: cog.icon });
       }
@@ -28,7 +33,7 @@ export default function ComandosPage() {
       );
     }
     return cmds;
-  }, [activeCog, search]);
+  }, [activeCog, search, cogs]);
 
   return (
     <div style={{ paddingTop: '1rem' }}>

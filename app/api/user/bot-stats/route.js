@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import clientPromise, { werewolfClientPromise } from '@/lib/mongodb';
 import { Long } from 'mongodb';
+import { getFortuneHolder } from '@/lib/discord-members';
 
 export async function GET() {
   try {
@@ -132,11 +133,23 @@ export async function GET() {
       } : null;
     }
 
+    // Si no hay lotería activa, mostramos al último ganador: el miembro que
+    // actualmente porta el rol "Portador de la Fortuna".
+    let lotteryWinner = null;
+    if (!lotteryStats) {
+      try {
+        lotteryWinner = await getFortuneHolder();
+      } catch (e) {
+        console.warn('No se pudo obtener el portador de la fortuna:', e?.message);
+      }
+    }
+
     return NextResponse.json({
       isAuthenticated,
       wordle: wordleStats,
       werewolf: werewolfStats,
       lottery: lotteryStats,
+      lotteryWinner,
       trivial: null
     });
   } catch (err) {

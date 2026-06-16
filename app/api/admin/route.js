@@ -123,8 +123,44 @@ export async function GET(request) {
     if (section === 'config') {
       const config = await db.collection('mod_config').findOne({
         guild_id: parseInt(guildId) || guildId,
+      }) || {};
+
+      // Resolvemos los IDs a nombres legibles vía la API de Discord.
+      const token = process.env.DISCORD_BOT_TOKEN;
+      let modlogName = null;
+      let muteroleName = null;
+      if (token) {
+        if (config.modlog) {
+          try {
+            const r = await fetch(`https://discord.com/api/v10/channels/${config.modlog}`, {
+              headers: { Authorization: `Bot ${token}` },
+              next: { revalidate: 600 },
+            });
+            if (r.ok) modlogName = (await r.json()).name || null;
+          } catch {}
+        }
+        if (config.muterole) {
+          try {
+            const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/roles`, {
+              headers: { Authorization: `Bot ${token}` },
+              next: { revalidate: 600 },
+            });
+            if (r.ok) {
+              const roles = await r.json();
+              const role = (roles || []).find(x => String(x.id) === String(config.muterole));
+              if (role) muteroleName = role.name;
+            }
+          } catch {}
+        }
+      }
+
+      return NextResponse.json({
+        modlog: config.modlog ? String(config.modlog) : null,
+        muterole: config.muterole ? String(config.muterole) : null,
+        punishments: config.punishments || {},
+        modlogName,
+        muteroleName,
       });
-      return NextResponse.json(config || {});
     }
 
     if (section === 'users') {

@@ -279,11 +279,31 @@ export default function BotStatsPage() {
 
           {!data.lottery ? (
             <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
-              <div style={{ background: 'rgba(243,156,18,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                <TicketIcon style={{ width: 30, height: 30, color: '#f39c12' }} />
-              </div>
-              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>No hay ninguna lotería activa en este momento.</p>
-              <p style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>¡Vuelve pronto para participar!</p>
+              {data.lotteryWinner ? (
+                <>
+                  <p className="text-muted" style={{ marginBottom: '1.2rem', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800 }}>Último Ganador</p>
+                  {data.lotteryWinner.avatar ? (
+                    <img src={data.lotteryWinner.avatar} alt={data.lotteryWinner.name} style={{ width: 70, height: 70, borderRadius: '50%', border: '3px solid #f39c12', marginBottom: '1rem' }} />
+                  ) : (
+                    <div style={{ background: 'rgba(243,156,18,0.1)', width: '70px', height: '70px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                      <TrophyIcon style={{ width: 34, height: 34, color: '#f39c12' }} />
+                    </div>
+                  )}
+                  <p style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '0.4rem' }}>{data.lotteryWinner.name}</p>
+                  <p style={{ fontSize: '0.85rem', color: '#f39c12', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <SparklesIcon style={{ width: 14, height: 14 }} /> Portador de la Fortuna
+                  </p>
+                  <p className="text-muted" style={{ marginTop: '1.2rem', fontSize: '0.8rem' }}>No hay ninguna lotería activa ahora mismo.</p>
+                </>
+              ) : (
+                <>
+                  <div style={{ background: 'rgba(243,156,18,0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                    <TicketIcon style={{ width: 30, height: 30, color: '#f39c12' }} />
+                  </div>
+                  <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>No hay ninguna lotería activa en este momento.</p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--gold)' }}>¡Vuelve pronto para participar!</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>

@@ -129,7 +129,6 @@ export default function AdminPage() {
     { id: 'clubesla', icon: <BuildingLibraryIcon style={{ width: 18, height: 18 }} />, label: 'Clubes de LA' },
     { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
-    { id: 'users', icon: <UsersIcon style={{ width: 18, height: 18 }} />, label: 'Usuarios BS' },
     { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
   ];
 
@@ -586,71 +585,86 @@ export default function AdminPage() {
           {/* Config */}
           {section === 'config' && data && !loading && (
             <>
-              <h2 className="section-title" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Cog6ToothIcon style={{ width: 28, height: 28 }} /> Configuración
               </h2>
-              <div className="grid-2">
-                <div className="admin-card">
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Configuración de moderación del servidor. Estos valores se ajustan desde Discord con los comandos <code style={{ color: 'var(--gold)' }}>,modlog</code>, <code style={{ color: 'var(--gold)' }}>,muterole</code> y <code style={{ color: 'var(--gold)' }}>,punishments</code>.
+              </p>
+
+              <div className="grid-2" style={{ marginBottom: '1rem' }}>
+                {/* Canal ModLog */}
+                <div className="admin-card" style={{ borderLeft: `4px solid ${data.modlog ? '#3498db' : 'var(--border)'}` }}>
                   <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Canal ModLog
+                    <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Canal de ModLog
                   </div>
-                  <p style={{ color: 'var(--text-secondary)' }}>ID: <span style={{ color: 'var(--gold)' }}>{data.modlog || 'No configurado'}</span></p>
+                  {data.modlog ? (
+                    <>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: '4px 0' }}>
+                        #{data.modlogName || 'canal-desconocido'}
+                      </p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'monospace' }}>ID: {data.modlog}</p>
+                    </>
+                  ) : (
+                    <span style={{ display: 'inline-block', marginTop: '6px', padding: '3px 10px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(231,76,60,0.12)', color: '#e74c3c' }}>
+                      No configurado
+                    </span>
+                  )}
                 </div>
-                <div className="admin-card">
+
+                {/* Rol Mute */}
+                <div className="admin-card" style={{ borderLeft: `4px solid ${data.muterole ? '#9b59b6' : 'var(--border)'}` }}>
                   <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <SpeakerXMarkIcon style={{ width: 20, height: 20 }} /> Rol Mute
+                    <SpeakerXMarkIcon style={{ width: 20, height: 20 }} /> Rol de Silencio (Mute)
                   </div>
-                  <p style={{ color: 'var(--text-secondary)' }}>ID: <span style={{ color: 'var(--gold)' }}>{data.muterole || 'No configurado'}</span></p>
+                  {data.muterole ? (
+                    <>
+                      <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', margin: '4px 0' }}>
+                        @{data.muteroleName || 'rol-desconocido'}
+                      </p>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'monospace' }}>ID: {data.muterole}</p>
+                    </>
+                  ) : (
+                    <span style={{ display: 'inline-block', marginTop: '6px', padding: '3px 10px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 700, background: 'rgba(231,76,60,0.12)', color: '#e74c3c' }}>
+                      No configurado
+                    </span>
+                  )}
                 </div>
               </div>
-              {data.punishments && Object.keys(data.punishments).length > 0 && (
-                <div className="admin-card" style={{ marginTop: '1rem' }}>
-                  <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+
+              <div className="admin-card">
+                <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <ScaleIcon style={{ width: 20, height: 20 }} /> Sanciones Automáticas
-                  </div>
+                  </span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                    {data.punishments ? Object.keys(data.punishments).length : 0} configuradas
+                  </span>
+                </div>
+                {data.punishments && Object.keys(data.punishments).length > 0 ? (
                   <table className="admin-table">
-                    <thead><tr><th>Strike #</th><th>Tipo</th><th>Duración</th></tr></thead>
+                    <thead><tr><th>Strikes</th><th>Sanción</th><th>Duración</th></tr></thead>
                     <tbody>
                       {Object.entries(data.punishments).sort((a, b) => parseInt(a[0]) - parseInt(b[0])).map(([num, p], i) => (
                         <tr key={i}>
-                          <td style={{ color: 'var(--gold)' }}>{num}</td>
-                          <td>{p.type}</td>
-                          <td>{p.duration ? `${Math.round(p.duration / 3600)}h` : '—'}</td>
+                          <td style={{ color: 'var(--gold)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>{iconMap[p.type] || null}</span> {num}
+                          </td>
+                          <td style={{ textTransform: 'capitalize' }}>{p.type}</td>
+                          <td>{p.duration ? `${Math.round(p.duration / 3600)}h` : 'Permanente'}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Users */}
-          {section === 'users' && data && Array.isArray(data) && !loading && (
-            <>
-              <h2 className="section-title" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <UsersIcon style={{ width: 28, height: 28 }} /> Usuarios con Tag BS ({data.length})
-              </h2>
-              <div className="admin-card">
-                <table className="admin-table">
-                  <thead><tr><th>Discord ID</th><th>Tag BS</th><th>Alt Tag</th></tr></thead>
-                  <tbody>
-                    {data.map((u, i) => (
-                      <tr key={i} style={{ cursor: 'pointer' }}
-                        tabIndex={0} role="button"
-                        aria-label={`Ver usuario ${u.member_id}`}
-                        onClick={() => { setUserId(String(u.member_id)); setSection('usercheck'); }}
-                        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setUserId(String(u.member_id)); setSection('usercheck'); } }}>
-                        <td>{u.member_id}</td>
-                        <td style={{ color: 'var(--gold)' }}>{u.bs_tag || '—'}</td>
-                        <td>{u.bs_alt_tag || '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                ) : (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem 0' }}>
+                    No hay sanciones automáticas configuradas. Usa <code style={{ color: 'var(--gold)' }}>,punishments set &lt;nº&gt; &lt;mute|ban&gt; [duración]</code> en Discord para añadirlas.
+                  </p>
+                )}
               </div>
             </>
           )}
+
         </div>
       </div>
     </div>
