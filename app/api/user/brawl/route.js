@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import clientPromise from '@/lib/mongodb';
+import clientPromise, { DB_NAME } from '@/lib/mongodb';
 import { Long } from 'mongodb';
 
+// El tag de Brawl Stars vive en el perfil GLOBAL del usuario:
+// colección `users`, clave user_id, campo brawlstars.tag.
 export async function GET() {
   try {
     const session = await auth();
@@ -12,28 +14,23 @@ export async function GET() {
     }
 
     const client = await clientPromise;
-    const db = client.db('labot');
+    const db = client.db(DB_NAME);
 
     let userDoc = null;
     try {
-      userDoc = await db.collection('users').findOne({ member_id: Long.fromString(discordId) });
+      userDoc = await db.collection('users').findOne({ user_id: Long.fromString(discordId) });
     } catch (e) {}
+    if (!userDoc) userDoc = await db.collection('users').findOne({ user_id: Number(discordId) });
+    if (!userDoc) userDoc = await db.collection('users').findOne({ user_id: discordId });
 
-    if (!userDoc) {
-      userDoc = await db.collection('users').findOne({ member_id: Number(discordId) });
-    }
-
-    if (!userDoc) {
-      userDoc = await db.collection('users').findOne({ member_id: discordId });
-    }
-
-    if (!userDoc || !userDoc.bs_tag) {
+    const savedTag = userDoc?.brawlstars?.tag || null;
+    if (!savedTag) {
       return NextResponse.json({ loggedIn: true, tag: null });
     }
 
-    const tag = userDoc.bs_tag.startsWith('#') ? userDoc.bs_tag : `#${userDoc.bs_tag}`;
+    const tag = savedTag.startsWith('#') ? savedTag : `#${savedTag}`;
     const cleanTag = tag.replace('#', '').toUpperCase();
-    
+
     // Fetch BS profile to get club info using rnt.dev
     try {
       const res = await fetch(`https://api.rnt.dev/profile?tag=${cleanTag}`, {
@@ -73,14 +70,14 @@ export async function POST(req) {
     if (!tag.startsWith('#')) tag = '#' + tag;
 
     const client = await clientPromise;
-    const db = client.db('labot');
+    const db = client.db(DB_NAME);
 
     // Use Long to avoid JS Number precision loss and match Python bot's Int64 format
     const memberId = Long.fromString(discordId);
 
     await db.collection('users').updateOne(
-      { member_id: memberId },
-      { $set: { member_id: memberId, bs_tag: tag , bs_alt_tag: undefined} },
+      { user_id: memberId },
+      { $set: { user_id: memberId, 'brawlstars.tag': tag } },
       { upsert: true }
     );
 

@@ -76,7 +76,8 @@ export async function GET(request) {
         for (const k of ['member_id', 'moderator', 'guild_id', '_id']) if (h[k]?.toString) h[k] = h[k].toString();
       }
 
-      const userInfo = await db.collection('users').findOne({ guild_id: Long.fromString(guildId), user_id: uidLong });
+      // `users` es ahora un perfil global por usuario (sin guild_id).
+      const userInfo = await db.collection('users').findOne({ user_id: uidLong });
       if (userInfo) userInfo.bs_tag = userInfo.brawlstars?.tag || null;
 
       let discordUser = null;
