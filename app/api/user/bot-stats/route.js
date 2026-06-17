@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import clientPromise, { werewolfClientPromise } from '@/lib/mongodb';
+import clientPromise, { DB_NAME } from '@/lib/mongodb';
 import { Long } from 'mongodb';
 import { getFortuneHolder } from '@/lib/discord-members';
 
@@ -11,20 +11,12 @@ export async function GET() {
     const isAuthenticated = !!discordId;
 
     let labotDb = null;
-    let werewolfDb = null;
 
     try {
       const client = await clientPromise;
-      labotDb = client.db('labot');
+      labotDb = client.db(DB_NAME);
     } catch (e) {
-      console.warn('labot connection failed:', e.message);
-    }
-
-    try {
-      const werewolfClient = await werewolfClientPromise;
-      werewolfDb = werewolfClient.db('werewolf');
-    } catch (e) {
-      console.warn('werewolf connection failed:', e.message);
+      console.warn('DB connection failed:', e.message);
     }
 
     // LA Spain — centralizado en variable de entorno (con respaldo al ID conocido)
@@ -33,28 +25,28 @@ export async function GET() {
 
     let wordle = null;
     let werewolf = null;
+    let trivial = null;
 
-    if (isAuthenticated) {
+    if (isAuthenticated && labotDb) {
       const memberIdLong = Long.fromString(discordId);
+      const userIds = [memberIdLong, discordId, Number(discordId)];
 
-      if (labotDb) {
-        wordle = await labotDb.collection('wordle').findOne({
-          member_id: { $in: [memberIdLong, discordId, Number(discordId)] },
-          guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
-        });
+      wordle = await labotDb.collection('wordle').findOne({
+        member_id: { $in: userIds },
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] }
+      }) || await labotDb.collection('wordle').findOne({ member_id: { $in: userIds } });
 
-        if (!wordle) {
-          wordle = await labotDb.collection('wordle').findOne({
-            member_id: { $in: [memberIdLong, discordId, Number(discordId)] }
-          });
-        }
-      }
+      // Werewolf unificado: ww_players (guild_id, user_id)
+      werewolf = await labotDb.collection('ww_players').findOne({
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+        user_id: { $in: userIds }
+      });
 
-      if (werewolfDb) {
-        werewolf = await werewolfDb.collection('players').findOne({
-          _id: { $in: [memberIdLong, discordId, Number(discordId)] }
-        });
-      }
+      // Trivial (guild_id, user_id)
+      trivial = await labotDb.collection('trivial').findOne({
+        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+        user_id: { $in: userIds }
+      });
     }
 
     // Process Wordle data to separate modes
@@ -144,13 +136,26 @@ export async function GET() {
       }
     }
 
+    // Trivial stats
+    let trivialStats = null;
+    if (trivial) {
+      const games = Number(trivial.games || 0);
+      const total = Number(trivial.total_score || 0);
+      trivialStats = {
+        games,
+        wins: Number(trivial.wins || 0),
+        total_score: total,
+        average: games > 0 ? (total / games).toFixed(1) : '0.0',
+      };
+    }
+
     return NextResponse.json({
       isAuthenticated,
       wordle: wordleStats,
       werewolf: werewolfStats,
       lottery: lotteryStats,
       lotteryWinner,
-      trivial: null
+      trivial: trivialStats
     });
   } catch (err) {
     console.error('Error fetching bot stats:', err);

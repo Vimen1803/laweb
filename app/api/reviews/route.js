@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import clientPromise, { DB_NAME } from '@/lib/mongodb';
+import { Long } from 'mongodb';
 import { auth } from '@/lib/auth';
 
 // Obtiene el nombre y avatar ACTUALES de un usuario desde la API de Discord.
@@ -27,7 +28,7 @@ async function fetchDiscordUser(userId) {
 export async function GET() {
   try {
     const client = await clientPromise;
-    const db = client.db('labot');
+    const db = client.db(DB_NAME);
 
     const reviews = await db.collection('reviews').find({}).sort({ timestamp: -1 }).toArray();
 
@@ -37,15 +38,19 @@ export async function GET() {
       average = sum / reviews.length;
     }
 
-    // Nombre y foto se sacan en vivo de la API de Discord usando el ID del
-    // usuario; solo si la API falla se usan los datos guardados en la DB.
+    // Nombre y foto se sacan en vivo de la API de Discord usando el user_id;
+    // si la API falla, se muestra un nombre genérico (ya no se cachean en la DB).
     const enriched = await Promise.all(reviews.map(async (rev) => {
-      const live = await fetchDiscordUser(rev.userId);
+      const uid = rev.user_id != null ? String(rev.user_id) : null;
+      const live = await fetchDiscordUser(uid);
       return {
-        ...rev,
         _id: rev._id?.toString?.() || rev._id,
-        userName: live?.name || rev.userName,
-        userImage: live?.image || rev.userImage,
+        user_id: uid,
+        stars: rev.stars,
+        message: rev.message,
+        timestamp: rev.timestamp,
+        userName: live?.name || rev.userName || 'Usuario',
+        userImage: live?.image || rev.userImage || null,
       };
     }));
 
@@ -78,45 +83,18 @@ export async function POST(req) {
     }
 
     const client = await clientPromise;
-    const db = client.db('labot');
+    const db = client.db(DB_NAME);
 
-    // Prevent multiple reviews from the same user?
-    // User might want to update or leave multiple. I'll allow multiple for now but usually it's one per user.
-    // Let's stick to simple: allow multiple or check by discordId.
-    const discordId = session.discordId || session.user.id;
-    
-    // Check if user already reviewed
-    const existing = await db.collection('reviews').findOne({ userId: discordId });
-    
-    if (existing) {
-      // Update existing review
-      await db.collection('reviews').updateOne(
-        { userId: discordId },
-        { 
-          $set: { 
-            stars, 
-            message: message.trim(), 
-            timestamp: new Date(),
-            userName: session.user.name,
-            userImage: session.user.image
-          } 
-        }
-      );
-      return NextResponse.json({ message: 'Reseña actualizada correctamente' });
-    }
+    const discordId = String(session.discordId || session.user.id);
+    const userKey = Long.fromString(discordId);
 
-    const newReview = {
-      userId: discordId,
-      userName: session.user.name,
-      userImage: session.user.image,
-      stars,
-      message: message.trim(),
-      timestamp: new Date()
-    };
+    await db.collection('reviews').updateOne(
+      { user_id: userKey },
+      { $set: { user_id: userKey, stars, message: message.trim(), timestamp: new Date() } },
+      { upsert: true }
+    );
 
-    await db.collection('reviews').insertOne(newReview);
-
-    return NextResponse.json({ message: 'Reseña enviada correctamente' }, { status: 201 });
+    return NextResponse.json({ message: 'Reseña guardada correctamente' }, { status: 201 });
   } catch (err) {
     console.error('Error saving review:', err);
     return NextResponse.json({ error: 'Error al guardar la reseña' }, { status: 500 });

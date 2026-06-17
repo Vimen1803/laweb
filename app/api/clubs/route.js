@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import clientPromise, { DB_NAME } from '@/lib/mongodb';
 import { Long } from 'mongodb';
 
 export async function GET() {
@@ -9,10 +9,10 @@ export async function GET() {
     // Fetch from DB
     try {
       const client = await clientPromise;
-      const db = client.db('labot');
+      const db = client.db(DB_NAME);
       const guildId = process.env.DISCORD_GUILD_ID;
-      
-      const dbClubs = await db.collection('clubes').find({ guild_id: Long.fromString(guildId) }).toArray();
+
+      const dbClubs = await db.collection('clubs').find({ guild_id: Long.fromString(guildId) }).toArray();
 
       if (dbClubs.length > 0) {
         // Deduplicate by tag
