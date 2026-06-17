@@ -6,61 +6,76 @@ export const metadata = {
 };
 
 const LINKS = [
-  { href: '/bot-stats/trivial/doc/jugar', title: 'Cómo jugar', desc: 'Reglas, packs y puntuación.', tiles: ['#3498db', '#2980b9', '#3a3c42'] },
-  { href: '/bot-stats/trivial/doc/comandos', title: 'Comandos', desc: 'Todos los comandos explicados.', tiles: ['#3a3c42', '#3498db', '#3498db'] },
-  { href: '/bot-stats/trivial/doc/ranking', title: 'Ranking', desc: 'Puntos, victorias y clasificación.', tiles: ['#2980b9', '#3a3c42', '#3498db'] },
+  { href: '/bot-stats/trivial/doc/jugar', icon: '🎯', title: 'Cómo jugar', desc: 'Reglas, packs, tiempos y el flujo completo de una partida.' },
+  { href: '/bot-stats/trivial/doc/comandos', icon: '⌨️', title: 'Comandos', desc: 'Todos los comandos del Trivial explicados con ejemplos.' },
+  { href: '/bot-stats/trivial/doc/ranking', icon: '🏆', title: 'Ranking', desc: 'Cómo se cuentan puntos, victorias, partidas y la media.' },
+];
+
+const FACTS = [
+  { num: '10', lbl: 'Puntos para ganar' },
+  { num: '15s', lbl: 'Por pregunta' },
+  { num: '1º', lbl: 'Gana el más rápido' },
+  { num: '∞', lbl: 'Packs temáticos' },
 ];
 
 export default function TrivialDocInicio() {
   return (
-    <main className="wd-main wd-fade">
-      <Link href="/bot-stats" className="wd-back">← Volver al Dashboard</Link>
+    <main className="tv-main tv-fade">
+      <Link href="/bot-stats" className="tv-back">← Volver al Dashboard</Link>
 
-      <section className="wd-hero">
+      <section className="tv-hero">
         <div>
-          <span className="wd-eyebrow">▪ El Trivial de LA Spain</span>
-          <h1 className="wd-h1">Pon a prueba<br /><em>lo que sabes</em></h1>
-          <p className="wd-lead">
-            Partidas de preguntas por packs temáticos. Responde el primero, suma puntos,
-            encadena victorias y escala en el ranking del servidor.
+          <span className="tv-eyebrow">▪ El Trivial de LA Spain</span>
+          <h1 className="tv-h1">Pon a prueba<br /><em>lo que sabes</em></h1>
+          <p className="tv-lead">
+            El bot lanza preguntas de packs temáticos en el canal. El primero en escribir la
+            respuesta correcta se lleva el punto. Encadena aciertos, llega a la puntuación
+            máxima y escala en el ranking del servidor.
           </p>
         </div>
-        <div className="wd-hero-board">
-          <div className="wd-board">
-            <div className="wd-row">
-              <div className="wd-tile green" style={{ animationDelay: '0s' }}>?</div>
-              <div className="wd-tile gray" style={{ animationDelay: '0.1s' }}>A</div>
-              <div className="wd-tile yellow" style={{ animationDelay: '0.2s' }}>B</div>
-              <div className="wd-tile gray" style={{ animationDelay: '0.3s' }}>C</div>
+
+        <div className="tv-chat" aria-hidden="true">
+          <div className="tv-chat-row">
+            <div className="tv-chat-av bot">LA</div>
+            <div className="tv-chat-body">
+              <div className="tv-chat-name bot">LABot <span className="botbadge">BOT</span></div>
+              <div className="tv-chat-msg">Pregunta número 3!</div>
+              <div className="tv-chat-msg tv-chat-q">¿Cuál es la capital de Francia?</div>
             </div>
-            <div className="wd-row">
-              <div className="wd-tile gray" style={{ animationDelay: '0.2s' }}>1</div>
-              <div className="wd-tile green" style={{ animationDelay: '0.3s' }}>0</div>
-              <div className="wd-tile green" style={{ animationDelay: '0.4s' }}>p</div>
-              <div className="wd-tile green" style={{ animationDelay: '0.5s' }}>t</div>
+          </div>
+          <div className="tv-chat-row">
+            <div className="tv-chat-av user">V</div>
+            <div className="tv-chat-body">
+              <div className="tv-chat-name">Víctor</div>
+              <div className="tv-chat-msg">París</div>
+            </div>
+          </div>
+          <div className="tv-chat-row">
+            <div className="tv-chat-av bot">LA</div>
+            <div className="tv-chat-body">
+              <div className="tv-chat-name bot">LABot <span className="botbadge">BOT</span></div>
+              <div className="tv-chat-msg">¡Lo tienes, Víctor! <span className="tv-plus">+1</span> para ti</div>
             </div>
           </div>
         </div>
       </section>
 
-      <div className="wd-statline">
-        <div className="wd-stat"><span className="wd-stat-num">10</span><span className="wd-stat-lbl">Puntos p/ ganar</span></div>
-        <div className="wd-stat"><span className="wd-stat-num">∞</span><span className="wd-stat-lbl">Packs</span></div>
-        <div className="wd-stat"><span className="wd-stat-num">1º</span><span className="wd-stat-lbl">Gana el más rápido</span></div>
-        <div className="wd-stat"><span className="wd-stat-num">🏆</span><span className="wd-stat-lbl">Ranking</span></div>
+      <div className="tv-facts">
+        {FACTS.map((f, i) => (
+          <div key={i} className="tv-fact">
+            <span className="tv-fact-num">{f.num}</span>
+            <span className="tv-fact-lbl">{f.lbl}</span>
+          </div>
+        ))}
       </div>
 
-      <div className="wd-links">
+      <div className="tv-links">
         {LINKS.map(l => (
-          <Link key={l.href} href={l.href} className="wd-link-card">
-            <div className="wd-link-tiles">
-              {l.tiles.map((bg, i) => <span key={i} style={{ background: bg }} />)}
-            </div>
-            <div>
-              <h3>{l.title}</h3>
-              <p>{l.desc}</p>
-            </div>
-            <span className="wd-link-arrow">→</span>
+          <Link key={l.href} href={l.href} className="tv-link">
+            <span className="tv-link-ic">{l.icon}</span>
+            <h3>{l.title}</h3>
+            <p>{l.desc}</p>
+            <span className="tv-link-go">Ver más →</span>
           </Link>
         ))}
       </div>
