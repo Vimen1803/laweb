@@ -1,18 +1,6 @@
+import Leaderboard from './Leaderboard';
+
 export const metadata = { title: 'Ranking — Trivial LA Spain' };
-
-const PODIUM = [
-  { cls: 'second', rank: '2', name: 'Lucía', pts: '152 pts' },
-  { cls: 'first', rank: '1', name: 'Víctor', pts: '184 pts' },
-  { cls: 'third', rank: '3', name: 'Mario', pts: '128 pts' },
-];
-
-const ROWS = [
-  { rk: '🥇', name: 'Víctor', w: 8, g: 24, p: 184, m: '7.67' },
-  { rk: '🥈', name: 'Lucía', w: 6, g: 21, p: 152, m: '7.24' },
-  { rk: '🥉', name: 'Mario', w: 4, g: 19, p: 128, m: '6.74' },
-  { rk: '#4', name: 'Sara', w: 3, g: 17, p: 96, m: '5.65' },
-  { rk: '#5', name: 'Iker', w: 2, g: 14, p: 78, m: '5.57' },
-];
 
 const CARDS = [
   { ic: '➕', title: 'Puntos', text: 'Cada respuesta correcta suma 1 punto. Los puntos de todas tus partidas se acumulan como puntos totales, el criterio principal del ranking.' },
@@ -24,51 +12,17 @@ const CARDS = [
 export default function TrivialRanking() {
   return (
     <main className="tv-main tv-fade">
-      <span className="tv-eyebrow">▪ Sistema de puntos</span>
+      <span className="tv-eyebrow">▪ Clasificación del servidor</span>
       <h1 className="tv-section-title">Ranking</h1>
       <p className="tv-section-sub">
-        Así se calcula la clasificación del Trivial. Tus estadísticas se guardan por servidor
-        y puedes consultarlas en cualquier momento con <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--tv-violet-l)' }}>,trivial lb</code>.
+        Clasificación en vivo del Trivial con los datos reales del servidor, ordenada por
+        puntos totales. Es la misma que verías con <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--tv-violet-l)' }}>,trivial lb</code> en Discord.
       </p>
 
-      <div className="tv-podium">
-        {PODIUM.map((p, i) => (
-          <div key={i} className={`tv-pod ${p.cls}`}>
-            <div className="tv-pod-rank">{p.rank}</div>
-            <div className="tv-pod-name">{p.name}</div>
-            <div className="tv-pod-pts">{p.pts}</div>
-          </div>
-        ))}
-      </div>
+      <Leaderboard />
 
-      <div className="tv-lb-wrap">
-        <table className="tv-lb">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Jugador</th>
-              <th className="r">Victorias</th>
-              <th className="r">Partidas</th>
-              <th className="r">Puntos</th>
-              <th className="r">Media</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ROWS.map((r, i) => (
-              <tr key={i}>
-                <td className="rk">{r.rk}</td>
-                <td>{r.name}</td>
-                <td className="r">{r.w}</td>
-                <td className="r">{r.g}</td>
-                <td className="r pts">{r.p}</td>
-                <td className="r">{r.m}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="tv-cards">
+      <h2 className="tv-section-title" style={{ fontSize: '1.4rem', marginTop: '3rem' }}>Cómo se calcula</h2>
+      <div className="tv-cards" style={{ marginTop: '1.25rem' }}>
         {CARDS.map((c, i) => (
           <div key={i} className="tv-card2">
             <h4><span className="ic">{c.ic}</span> {c.title}</h4>

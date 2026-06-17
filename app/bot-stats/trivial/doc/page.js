@@ -5,12 +5,6 @@ export const metadata = {
   description: 'Documentación oficial del Trivial de LA Spain: cómo jugar, comandos y ranking.',
 };
 
-const LINKS = [
-  { href: '/bot-stats/trivial/doc/jugar', icon: '🎯', title: 'Cómo jugar', desc: 'Reglas, packs, tiempos y el flujo completo de una partida.' },
-  { href: '/bot-stats/trivial/doc/comandos', icon: '⌨️', title: 'Comandos', desc: 'Todos los comandos del Trivial explicados con ejemplos.' },
-  { href: '/bot-stats/trivial/doc/ranking', icon: '🏆', title: 'Ranking', desc: 'Cómo se cuentan puntos, victorias, partidas y la media.' },
-];
-
 const FACTS = [
   { num: '10', lbl: 'Puntos para ganar' },
   { num: '15s', lbl: 'Por pregunta' },
@@ -66,17 +60,6 @@ export default function TrivialDocInicio() {
             <span className="tv-fact-num">{f.num}</span>
             <span className="tv-fact-lbl">{f.lbl}</span>
           </div>
-        ))}
-      </div>
-
-      <div className="tv-links">
-        {LINKS.map(l => (
-          <Link key={l.href} href={l.href} className="tv-link">
-            <span className="tv-link-ic">{l.icon}</span>
-            <h3>{l.title}</h3>
-            <p>{l.desc}</p>
-            <span className="tv-link-go">Ver más →</span>
-          </Link>
         ))}
       </div>
     </main>

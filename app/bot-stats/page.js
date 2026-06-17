@@ -62,6 +62,7 @@ export default function BotStatsPage() {
 
   const wordle = data.wordle || null;
   const werewolf = data.werewolf || null;
+  const trivial = data.trivial || null;
   const wordlePlayed = wordle && (Number(wordle.normal?.played) || Number(wordle.double?.played) || Number(wordle.triple?.played) || Number(wordle.ladder?.played));
 
 
@@ -343,20 +344,59 @@ export default function BotStatsPage() {
           )}
         </div>
 
-        {/* TRIVIAL — solo documentación (sin stats) */}
+        {/* TRIVIAL — estadísticas personales + enlace a la documentación */}
         <div className="card" style={{ borderTop: '4px solid #7c5cff', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
             <QuestionMarkCircleIcon style={{ width: 28, height: 28, color: '#7c5cff' }} />
             <h2 style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit, sans-serif' }}>Trivial</h2>
           </div>
-          <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '1rem' }}>
-            <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-              Pon a prueba tus conocimientos con los packs de preguntas del servidor. Consulta cómo jugar, los comandos y el ranking en la documentación.
-            </p>
-            <Link href="/bot-stats/trivial/doc" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '8px', background: '#7c5cff', borderColor: '#7c5cff', color: '#fff', fontWeight: 700 }}>
-              Ver Documentación <ArrowRightIcon style={{ width: 16, height: 16 }} />
-            </Link>
-          </div>
+
+          {!data.isAuthenticated ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Inicia sesión para ver tus estadísticas personalizadas.</p>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href="/api/auth/signin?callbackUrl=/bot-stats" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px', background: '#7c5cff', borderColor: '#7c5cff', color: '#fff' }}>Iniciar Sesión</a>
+                <Link href="/bot-stats/trivial/doc" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>Ver Documentación</Link>
+              </div>
+            </div>
+          ) : (!trivial || trivial.games === 0) ? (
+            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+              <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>Aún no has jugado ninguna partida de Trivial.</p>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <a href="https://discord.gg/DbRUker" target="_blank" className="btn btn-primary" style={{ fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px', background: '#7c5cff', borderColor: '#7c5cff', color: '#fff' }}>¡Juega en Discord!</a>
+                <Link href="/bot-stats/trivial/doc" className="btn" style={{ background: 'rgba(255,255,255,0.05)', fontSize: '0.8rem', fontWeight: 700, padding: '8px 20px', borderRadius: '8px' }}>Ver Documentación</Link>
+              </div>
+            </div>
+          ) : (
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+              <div style={{ flexGrow: 1 }}>
+                <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem', color: '#7c5cff' }}>{trivial.games}</span>
+                    <span className="stat-label">Partidas</span>
+                  </div>
+                  <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
+                    <span className="stat-value" style={{ fontSize: '1.5rem', color: '#7c5cff' }}>{trivial.wins}</span>
+                    <span className="stat-label">Victorias</span>
+                  </div>
+                </div>
+                <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Puntos</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{trivial.total_score}</p>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Media</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{trivial.average}</p>
+                  </div>
+                </div>
+              </div>
+              <Link href="/bot-stats/trivial/doc" className="btn btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: '#7c5cff', borderColor: '#7c5cff', color: '#fff', fontWeight: 700 }}>
+                Ver Documentación <ArrowRightIcon style={{ width: 16, height: 16 }} />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
