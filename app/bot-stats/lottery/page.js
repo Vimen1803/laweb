@@ -1,24 +1,35 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  ArrowLeftIcon, 
-  TicketIcon, 
-  SparklesIcon, 
-  ClockIcon, 
-  HashtagIcon,
+import {
+  ArrowLeftIcon,
+  TicketIcon,
+  SparklesIcon,
+  ClockIcon,
   TrophyIcon,
-  MagnifyingGlassIcon,
-  CheckCircleIcon,
-  XCircleIcon
+  UsersIcon,
+  HashtagIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/solid';
+
+function fmtCooldown(s) {
+  if (!s) return 'Ninguno';
+  if (s % 3600 === 0) return `${s / 3600}h`;
+  if (s < 3600) return `${Math.round(s / 60)}m`;
+  return `${Math.floor(s / 3600)}h ${Math.round((s % 3600) / 60)}m`;
+}
+
+function fmtDate(epoch) {
+  if (!epoch) return '—';
+  return new Date(epoch * 1000).toLocaleString('es-ES', {
+    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit',
+  });
+}
 
 export default function LotteryStatsPage() {
   const [data, setData] = useState(null);
   const [winner, setWinner] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResult, setSearchResult] = useState(null);
 
   useEffect(() => {
     fetch('/api/user/bot-stats')
@@ -33,29 +44,6 @@ export default function LotteryStatsPage() {
         setLoading(false);
       });
   }, []);
-
-  const handleSearch = (e) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-    
-    if (!val || isNaN(val)) {
-      setSearchResult(null);
-      return;
-    }
-
-    const num = parseInt(val);
-    if (data && data.numbers) {
-      if (data.numbers.includes(num)) {
-        setSearchResult('guessed');
-      } else if (num < data.min || num > data.max) {
-        setSearchResult('out-of-range');
-      } else {
-        setSearchResult('available');
-      }
-    }
-  };
-
-  // ... (loading and empty states remain same)
 
   if (loading) {
     return (
@@ -100,6 +88,15 @@ export default function LotteryStatsPage() {
     );
   }
 
+  const stats = [
+    { icon: <HashtagIcon style={{ width: 20, height: 20 }} />, label: 'Rango', value: `${data.min} – ${data.max}` },
+    { icon: <ClockIcon style={{ width: 20, height: 20 }} />, label: 'Termina', value: fmtDate(data.end) },
+    { icon: <TicketIcon style={{ width: 20, height: 20 }} />, label: 'Intentos máx.', value: data.maxAttempts === 0 ? '∞' : data.maxAttempts },
+    { icon: <ClockIcon style={{ width: 20, height: 20 }} />, label: 'Cooldown', value: fmtCooldown(data.cooldown) },
+    { icon: <UsersIcon style={{ width: 20, height: 20 }} />, label: 'Participantes', value: data.participants },
+    { icon: <SparklesIcon style={{ width: 20, height: 20 }} />, label: 'Intentos totales', value: data.attempts },
+  ];
+
   return (
     <section className="section" style={{ maxWidth: 1000 }}>
       <Link href="/bot-stats" className="btn" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem', padding: '8px 15px' }}>
@@ -107,94 +104,34 @@ export default function LotteryStatsPage() {
       </Link>
 
       <div className="card" style={{ borderTop: '4px solid #f39c12', padding: '2.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
           <TicketIcon style={{ width: 40, height: 40, color: '#f39c12' }} />
-          <div>
+          <div style={{ flex: 1 }}>
             <h1 style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Lotería: Portador de la Fortuna</h1>
             <p className="text-muted">Estado actual del sorteo activo en LA Spain</p>
           </div>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 800, background: data.rotate ? 'rgba(46,204,113,0.12)' : 'rgba(231,76,60,0.12)', color: data.rotate ? '#2ecc71' : '#e74c3c', border: `1px solid ${data.rotate ? 'rgba(46,204,113,0.3)' : 'rgba(231,76,60,0.3)'}` }}>
+            <ArrowPathIcon style={{ width: 14, height: 14 }} /> {data.rotate ? 'Rotación activa' : 'Rotación detenida'}
+          </span>
         </div>
 
-        <div className="grid-2" style={{ gap: '2rem', marginBottom: '3rem', alignItems: 'stretch' }}>
-          {/* Left: Main Info */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <HashtagIcon style={{ width: 18, height: 18 }} /> Parámetros del Juego
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', flexGrow: 1, justifyContent: 'center' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <span className="text-muted">Rango Mínimo</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800 }}>{data.min}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <span className="text-muted">Rango Máximo</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#f39c12' }}>{data.max}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '15px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                <span className="text-muted">Números Intentados</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800 }}>{data.guessed}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="text-muted">Tiempo de Espera</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <ClockIcon style={{ width: 18, height: 18, color: 'var(--text-muted)' }} /> {data.timeout}s
-                </span>
-              </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+          {stats.map((s, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+              <div style={{ color: '#f39c12', display: 'flex', justifyContent: 'center', marginBottom: '0.6rem' }}>{s.icon}</div>
+              <p style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.2rem' }}>{s.value}</p>
+              <p className="text-muted" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>{s.label}</p>
             </div>
-          </div>
-
-          {/* Right: Searcher */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
-            <h3 style={{ color: 'var(--gold)', fontSize: '0.9rem', textTransform: 'uppercase', marginBottom: '1.5rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <MagnifyingGlassIcon style={{ width: 18, height: 18 }} /> Buscador de Números
-            </h3>
-            
-            <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '1.2rem' }}>Comprueba si un número ya ha sido intentado:</p>
-              <div style={{ position: 'relative' }}>
-                <input 
-                  type="number"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  style={{ 
-                    width: '100%', 
-                    padding: '12px 15px 12px 40px', 
-                    borderRadius: '10px', 
-                    background: 'rgba(0,0,0,0.3)', 
-                    border: '1px solid rgba(255,255,255,0.1)', 
-                    color: '#fff',
-                    fontSize: '1rem',
-                    outline: 'none'
-                  }}
-                />
-                <MagnifyingGlassIcon style={{ width: 18, height: 18, color: 'rgba(255,255,255,0.3)', position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
-              </div>
-
-              {searchResult && (
-                <div className="fade-in" style={{ marginTop: '1.2rem', padding: '12px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', 
-                  background: searchResult === 'available' ? 'rgba(46,204,113,0.1)' : 'rgba(231,76,60,0.1)',
-                  border: `1px solid ${searchResult === 'available' ? 'rgba(46,204,113,0.2)' : 'rgba(231,76,60,0.2)'}`
-                }}>
-                  {searchResult === 'available' ? (
-                    <CheckCircleIcon style={{ width: 20, height: 20, color: '#2ecc71', flexShrink: 0 }} />
-                  ) : (
-                    <XCircleIcon style={{ width: 20, height: 20, color: '#e74c3c', flexShrink: 0 }} />
-                  )}
-                  <p style={{ fontSize: '0.85rem', fontWeight: 700, color: searchResult === 'available' ? '#2ecc71' : '#e74c3c' }}>
-                    {searchResult === 'available' ? '¡Número libre!' : searchResult === 'guessed' ? 'Ya intentado' : 'Fuera de rango'}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', padding: '2rem', marginTop: '2rem' }}>
+        <div className="card" style={{ background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center', padding: '2rem' }}>
           <SparklesIcon style={{ width: 30, height: 30, color: 'var(--gold)', margin: '0 auto 1rem' }} />
           <h4 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>¿Cómo Participar?</h4>
-          <p className="text-muted" style={{ fontSize: '0.9rem' }}>
-            Dirígete al canal <span style={{ color: '#fff', fontWeight: 700 }}>#lotería</span> en nuestro Discord y escribe un número dentro del rango permitido. 
-            ¡Si aciertas, el rol será tuyo automáticamente!
+          <p className="text-muted" style={{ fontSize: '0.9rem', maxWidth: 620, margin: '0 auto' }}>
+            Dirígete al canal <span style={{ color: '#fff', fontWeight: 700 }}>#lotería</span> y escribe un número dentro del rango.
+            Si <span style={{ color: '#fff', fontWeight: 700 }}>aciertas el número exacto</span> ganas al instante; si nadie acierta antes de que termine,
+            gana quien <span style={{ color: '#fff', fontWeight: 700 }}>más se acerque</span>. ¡Cuando acaba un sorteo empieza otro!
           </p>
         </div>
       </div>

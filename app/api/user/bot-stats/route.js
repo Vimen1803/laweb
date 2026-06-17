@@ -106,23 +106,30 @@ export async function GET() {
       };
     }
 
-    // Fetch Lottery stats (labot.lottery)
+    // Lotería activa (nuevo esquema: config en `lottery`, intentos en `lottery_entries`).
+    // No se expone el número objetivo.
     let lotteryStats = null;
     if (labotDb) {
-      const lottery = await labotDb.collection('lottery').findOne({
-        guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
-        user_id: null
-      });
-
-      lotteryStats = lottery ? {
-        min: Number(lottery.range_min || 0),
-        max: Number(lottery.range_max || 0),
-        timeout: Number(lottery.timeout || 0),
-        role: lottery.role ? lottery.role.toString() : null,
-        guessed: Array.isArray(lottery.numeros) ? lottery.numeros.length : 0,
-        numbers: Array.isArray(lottery.numeros) ? lottery.numeros : [],
-        channel: lottery.channel_id ? lottery.channel_id.toString() : null
-      } : null;
+      const guildMatch = { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] };
+      // `end` existe solo en el esquema nuevo: así ignoramos docs antiguos.
+      const lottery = await labotDb.collection('lottery').findOne({ guild_id: guildMatch, end: { $exists: true } });
+      if (lottery) {
+        const entryFilter = { guild_id: guildMatch };
+        const attempts = await labotDb.collection('lottery_entries').countDocuments(entryFilter);
+        const participants = (await labotDb.collection('lottery_entries').distinct('user_id', entryFilter)).length;
+        lotteryStats = {
+          min: Number(lottery.range_min || 0),
+          max: Number(lottery.range_max || 0),
+          end: lottery.end != null ? Number(lottery.end) : null,
+          maxAttempts: Number(lottery.max_attempts || 0),
+          cooldown: Number(lottery.cooldown_s || 0),
+          role: lottery.role ? lottery.role.toString() : null,
+          rotate: lottery.rotate !== false,
+          participants,
+          attempts,
+          channel: lottery.channel_id ? lottery.channel_id.toString() : null,
+        };
+      }
     }
 
     // Si no hay lotería activa, mostramos al último ganador: el miembro que

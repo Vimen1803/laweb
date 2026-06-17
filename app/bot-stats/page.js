@@ -315,23 +315,27 @@ export default function BotStatsPage() {
                     <span className="stat-label">Rango</span>
                   </div>
                   <div className="stat-item" style={{ background: 'var(--bg-body)', padding: '15px' }}>
-                    <span className="stat-value" style={{ fontSize: '1.5rem' }}>{data.lottery.guessed}</span>
-                    <span className="stat-label">Nº Dichos</span>
+                    <span className="stat-value" style={{ fontSize: '1.5rem' }}>{data.lottery.participants}</span>
+                    <span className="stat-label">Participantes</span>
                   </div>
                 </div>
 
                 <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Detalles del Sorteo</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Cooldown</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{data.lottery.timeout}h</p>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Termina</p>
+                    <p style={{ fontSize: '0.95rem', fontWeight: 800 }}>{data.lottery.end ? new Date(data.lottery.end * 1000).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'}</p>
                   </div>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Recompensa</p>
-                    <p style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--gold)' }}>Rol Exclusivo</p>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Intentos máx.</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{data.lottery.maxAttempts === 0 ? '∞' : data.lottery.maxAttempts}</p>
                   </div>
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center', gridColumn: 'span 2' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Premio Especial</p>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Cooldown</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{data.lottery.cooldown === 0 ? 'Ninguno' : data.lottery.cooldown >= 3600 ? `${Math.round(data.lottery.cooldown / 3600)}h` : `${Math.round(data.lottery.cooldown / 60)}m`}</p>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Premio</p>
                     <p style={{ fontSize: '1rem', fontWeight: 800 }}>Portador de la Fortuna</p>
                   </div>
                 </div>
