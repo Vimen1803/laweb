@@ -55,6 +55,7 @@ export default function WerewolfPresets() {
             <h3>Reglas de Generación</h3>
             <ul>
               <li><strong>Hechicera / Licántropo:</strong> Requieren que un <b>Vidente</b> esté presente en la partida.</li>
+              <li><strong>5 Jugadores:</strong> En partidas de <b>5 jugadores</b>, si hay <b>Vidente</b> no habrá <b>Bruja</b>.</li>
               <li><strong>Visitantes:</strong> Nunca habrá <b>Ramera e Infiel</b> en la misma partida.</li>
               <li><strong>Mirón:</strong> En partidas de <b>-15 jugadores</b>, no puede coexistir con el Vidente.</li>
               <li><strong>Ladrón:</strong> Sus cartas del centro nunca serán roles ya existentes en la partida, ni tampoco Aldeanos o Alma Pura. Pueden ser 2,3 o 4 cartas de forma aleatoria.</li>
