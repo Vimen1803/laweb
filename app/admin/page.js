@@ -116,6 +116,7 @@ export default function AdminPage() {
         pts_round_alive: data.pts_round_alive ?? 2,
         pts_survive_end: data.pts_survive_end ?? 5,
         pts_enabled: data.pts_enabled ?? true,
+        mention_cooldown: data.mention_cooldown ?? 900,
       });
     }
   }, [section, data]);
@@ -192,6 +193,7 @@ export default function AdminPage() {
             pts_round_alive: Number(drafts.pts_round_alive) || 0,
             pts_survive_end: Number(drafts.pts_survive_end) || 0,
             pts_enabled: drafts.pts_enabled === true,
+            mention_cooldown: Number(drafts.mention_cooldown) || 900,
           }
         })
       });
@@ -864,67 +866,122 @@ export default function AdminPage() {
                 Personaliza las opciones del bot de hombres lobo para este servidor.
               </p>
 
+              {/* Prefijo (Ancho completo) */}
+              <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6', marginBottom: '1.5rem' }}>
+                <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                  Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                </p>
+                <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
+              </div>
+
+              {/* Columnas del medio */}
               <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
-                {/* Canales Permitidos */}
-                <div className="admin-card" style={{ borderLeft: '4px solid #3498db' }}>
-                  <div className="admin-card-title">🌐 Canales Permitidos</div>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '4px 0 10px' }}>
-                    Si no seleccionas ninguno, se podrá jugar en todos los canales.
-                  </p>
+                
+                {/* Columna Izquierda: Canales Permitidos + Puntos */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   
-                  {/* Select and Add */}
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                    <select id="add_allowed_channel_select" defaultValue=""
-                      style={{ flex: 1, minWidth: '150px', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
-                      <option value="">— Selecciona un canal —</option>
-                      {(data.channels || []).map(c => (
-                        <option key={c.id} value={c.id}>#{c.name}</option>
-                      ))}
-                    </select>
-                    <button type="button" className="btn-primary" style={{ padding: '8px 12px', borderRadius: '8px', margin: 0 }}
-                      onClick={() => {
-                        const sel = document.getElementById('add_allowed_channel_select');
-                        const val = sel.value;
-                        if (val && !drafts.allowed_channels?.includes(val)) {
-                          setDrafts(prev => ({
-                            ...prev,
-                            allowed_channels: [...(prev.allowed_channels || []), val]
-                          }));
-                          sel.value = "";
-                        }
-                      }}>
-                      Añadir
-                    </button>
+                  {/* Canales Permitidos */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid #3498db' }}>
+                    <div className="admin-card-title">🌐 Canales Permitidos</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '4px 0 10px' }}>
+                      Si no seleccionas ninguno, se podrá jugar en todos los canales.
+                    </p>
+                    
+                    {/* Select and Add */}
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                      <select id="add_allowed_channel_select" defaultValue=""
+                        style={{ flex: 1, minWidth: '150px', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                        <option value="">— Selecciona un canal —</option>
+                        {(data.channels || []).map(c => (
+                          <option key={c.id} value={c.id}>#{c.name}</option>
+                        ))}
+                      </select>
+                      <button type="button" className="btn-primary" style={{ padding: '8px 12px', borderRadius: '8px', margin: 0 }}
+                        onClick={() => {
+                          const sel = document.getElementById('add_allowed_channel_select');
+                          const val = sel.value;
+                          if (val && !drafts.allowed_channels?.includes(val)) {
+                            setDrafts(prev => ({
+                              ...prev,
+                              allowed_channels: [...(prev.allowed_channels || []), val]
+                            }));
+                            sel.value = "";
+                          }
+                        }}>
+                        Añadir
+                      </button>
+                    </div>
+                    
+                    {/* List of selected channels with remove buttons */}
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {(drafts.allowed_channels || []).map(cid => {
+                        const ch = (data.channels || []).find(c => String(c.id) === String(cid));
+                        return (
+                          <span key={cid} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(52, 152, 219, 0.2)', color: '#5dade2', padding: '4px 8px', borderRadius: '16px', fontSize: '0.8rem', border: '1px solid rgba(52,152,219,0.3)' }}>
+                            #{ch ? ch.name : cid}
+                            <button type="button" style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                              onClick={() => {
+                                setDrafts(prev => ({
+                                  ...prev,
+                                  allowed_channels: prev.allowed_channels.filter(x => x !== cid)
+                                }));
+                              }}>
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })}
+                      {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic' }}>Todos los canales permitidos</span>
+                      )}
+                    </div>
                   </div>
-                  
-                  {/* List of selected channels with remove buttons */}
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    {(drafts.allowed_channels || []).map(cid => {
-                      const ch = (data.channels || []).find(c => String(c.id) === String(cid));
-                      return (
-                        <span key={cid} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(52, 152, 219, 0.2)', color: '#5dade2', padding: '4px 8px', borderRadius: '16px', fontSize: '0.8rem', border: '1px solid rgba(52,152,219,0.3)' }}>
-                          #{ch ? ch.name : cid}
-                          <button type="button" style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
-                            onClick={() => {
-                              setDrafts(prev => ({
-                                ...prev,
-                                allowed_channels: prev.allowed_channels.filter(x => x !== cid)
-                              }));
-                            }}>
-                            ×
-                          </button>
-                        </span>
-                      );
-                    })}
-                    {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic' }}>Todos los canales permitidos</span>
-                    )}
+
+                  {/* Puntos (con su activador) */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <div className="admin-card-title" style={{ margin: 0 }}>🏆 Puntos del Evento</div>
+                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.8rem', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))}
+                          style={{ width: '14px', height: '14px', cursor: 'pointer' }} />
+                        Activar Sistema
+                      </label>
+                    </div>
+                    
+                    <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px' }}>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
+                          <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
+                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
+                          <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
+                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
+                          <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
+                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
+                          <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
+                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Canal de Anuncios y Rol de Mención */}
-                <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div>
+                {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  
+                  {/* Canal Anuncios */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
                     <div className="admin-card-title">📢 Canal de Anuncios</div>
                     <select value={drafts.canal_anuncios ?? ''} onChange={e => setDrafts(prev => ({ ...prev, canal_anuncios: e.target.value }))}
                       style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
@@ -934,33 +991,40 @@ export default function AdminPage() {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <div className="admin-card-title">📡 Rol de Mención</div>
-                    <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
-                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
-                      <option value="">— Sin configurar —</option>
-                      {(data.roles || []).map(r => (
-                        <option key={r.id} value={r.id}>@{r.name}</option>
-                      ))}
-                    </select>
+
+                  {/* Mention Rol + Cooldown */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid #1abc9c', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div>
+                      <div className="admin-card-title">📡 Rol de Mención</div>
+                      <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
+                        <option value="">— Sin configurar —</option>
+                        {(data.roles || []).map(r => (
+                          <option key={r.id} value={r.id}>@{r.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <div className="admin-card-title">⏳ Cooldown de Mención (segundos)</div>
+                      <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Toggles y Prefijo */}
-              <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
-                {/* Flags/Toggles */}
-                <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div className="admin-card-title">⚙️ Parámetros del Juego</div>
-                  
+              {/* Parámetros del juego (Ancho completo) */}
+              <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #e74c3c' }}>
+                <div className="admin-card-title">⚙️ Parámetros del Juego</div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px', marginTop: '6px' }}>
                   {[
                     ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
                     ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
                     ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
                     ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
-                    ['pts_enabled', 'Habilitar Puntos de Evento', 'Activa la acumulación y guardado de puntos por partida.'],
                   ].map(([field, label, desc]) => (
-                    <label key={field} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                    <label key={field} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
                       <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))}
                         style={{ marginTop: '4px', width: '16px', height: '16px', cursor: 'pointer' }} />
                       <div>
@@ -969,44 +1033,6 @@ export default function AdminPage() {
                       </div>
                     </label>
                   ))}
-                </div>
-
-                {/* Prefijo y Puntos */}
-                <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div>
-                    <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 6px' }}>
-                      Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
-                    </p>
-                    <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
-                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                  </div>
-                  
-                  <div>
-                    <div className="admin-card-title">🏆 Puntos del Evento</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
-                      <div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
-                        <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
-                        <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
-                        <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                      </div>
-                      <div>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
-                        <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
-                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
 

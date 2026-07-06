@@ -125,6 +125,7 @@ export async function GET(request) {
         pts_round_alive: ww.pts_round_alive ?? 2,
         pts_survive_end: ww.pts_survive_end ?? 5,
         pts_enabled: ww.pts_enabled ?? true,
+        mention_cooldown: ww.mention_cooldown ?? 900,
         channels,
         roles,
       });
@@ -285,6 +286,7 @@ export async function POST(request) {
        const pts_special_victory = werewolfConfig.pts_special_victory !== undefined ? (parseInt(werewolfConfig.pts_special_victory, 10) || 0) : 50;
        const pts_round_alive = parseInt(werewolfConfig.pts_round_alive, 10) || 0;
        const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
+       const mention_cooldown = parseInt(werewolfConfig.mention_cooldown, 10) || 900;
 
        const res = await db.collection('ww_guilds').updateOne(
          { _id: guildQuery(guildId) },
@@ -303,6 +305,7 @@ export async function POST(request) {
              pts_round_alive,
              pts_survive_end,
              pts_enabled,
+             mention_cooldown,
            }
          },
          { upsert: true }
