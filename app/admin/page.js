@@ -101,6 +101,23 @@ export default function AdminPage() {
           .sort((a, b) => parseInt(a.strike) - parseInt(b.strike))
       );
     }
+    if (section === 'werewolf' && data && !Array.isArray(data)) {
+      setDrafts({
+        allowed_channels: data.allowed_channels || [],
+        mention_role_id: data.mention_role_id || '',
+        canal_anuncios: data.canal_anuncios || '',
+        mute_noche: data.mute_noche ?? true,
+        mute_votacion: data.mute_votacion ?? true,
+        mute_muertos: data.mute_muertos ?? true,
+        logros_enabled: data.logros_enabled ?? true,
+        prefix: data.prefix || 'ww',
+        pts_victory: data.pts_victory ?? 15,
+        pts_special_victory: data.pts_special_victory ?? 50,
+        pts_round_alive: data.pts_round_alive ?? 2,
+        pts_survive_end: data.pts_survive_end ?? 5,
+        pts_enabled: data.pts_enabled ?? true,
+      });
+    }
   }, [section, data]);
 
   async function saveConfigField(field) {
@@ -150,6 +167,44 @@ export default function AdminPage() {
       if (res.ok && d.success) { showToast('success', 'Sanciones guardadas', 'Se actualizaron los castigos por strike.'); loadSection('config'); }
       else showToast('error', 'No se pudo guardar', d.error || 'Ha ocurrido un error.');
     } catch { showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.'); }
+    setSavingField(null);
+  }
+
+  async function saveWerewolfConfig() {
+    setSavingField('werewolf');
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'setWerewolfConfig',
+          werewolfConfig: {
+            allowed_channels: drafts.allowed_channels || [],
+            mention_role_id: drafts.mention_role_id || null,
+            canal_anuncios: drafts.canal_anuncios || null,
+            mute_noche: drafts.mute_noche === true,
+            mute_votacion: drafts.mute_votacion === true,
+            mute_muertos: drafts.mute_muertos === true,
+            logros_enabled: drafts.logros_enabled === true,
+            prefix: drafts.prefix || 'ww',
+            pts_victory: Number(drafts.pts_victory) || 0,
+            pts_special_victory: Number(drafts.pts_special_victory) || 0,
+            pts_round_alive: Number(drafts.pts_round_alive) || 0,
+            pts_survive_end: Number(drafts.pts_survive_end) || 0,
+            pts_enabled: drafts.pts_enabled === true,
+          }
+        })
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.success) {
+        showToast('success', 'Guardado', 'Configuración de Werewolf actualizada.');
+        loadSection('werewolf');
+      } else {
+        showToast('error', 'No se pudo guardar', d.error || 'Ha ocurrido un error.');
+      }
+    } catch {
+      showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+    }
     setSavingField(null);
   }
 
@@ -238,6 +293,7 @@ export default function AdminPage() {
     { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
     { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
+    { id: 'werewolf', icon: <SparklesIcon style={{ width: 18, height: 18 }} />, label: 'Werewolf' },
   ];
 
   async function handleAddClub(e) {
@@ -794,6 +850,171 @@ export default function AdminPage() {
                     {savingField === 'punishments' ? 'Guardando...' : 'Guardar sanciones'}
                   </button>
                 </div>
+              </div>
+            </>
+          )}
+
+          {/* Werewolf Config */}
+          {section === 'werewolf' && data && !loading && (
+            <>
+              <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                🐺 Configuración de Werewolf
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Personaliza las opciones del bot de hombres lobo para este servidor.
+              </p>
+
+              <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
+                {/* Canales Permitidos */}
+                <div className="admin-card" style={{ borderLeft: '4px solid #3498db' }}>
+                  <div className="admin-card-title">🌐 Canales Permitidos</div>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '4px 0 10px' }}>
+                    Si no seleccionas ninguno, se podrá jugar en todos los canales.
+                  </p>
+                  
+                  {/* Select and Add */}
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                    <select id="add_allowed_channel_select" defaultValue=""
+                      style={{ flex: 1, minWidth: '150px', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                      <option value="">— Selecciona un canal —</option>
+                      {(data.channels || []).map(c => (
+                        <option key={c.id} value={c.id}>#{c.name}</option>
+                      ))}
+                    </select>
+                    <button type="button" className="btn-primary" style={{ padding: '8px 12px', borderRadius: '8px', margin: 0 }}
+                      onClick={() => {
+                        const sel = document.getElementById('add_allowed_channel_select');
+                        const val = sel.value;
+                        if (val && !drafts.allowed_channels?.includes(val)) {
+                          setDrafts(prev => ({
+                            ...prev,
+                            allowed_channels: [...(prev.allowed_channels || []), val]
+                          }));
+                          sel.value = "";
+                        }
+                      }}>
+                      Añadir
+                    </button>
+                  </div>
+                  
+                  {/* List of selected channels with remove buttons */}
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {(drafts.allowed_channels || []).map(cid => {
+                      const ch = (data.channels || []).find(c => String(c.id) === String(cid));
+                      return (
+                        <span key={cid} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(52, 152, 219, 0.2)', color: '#5dade2', padding: '4px 8px', borderRadius: '16px', fontSize: '0.8rem', border: '1px solid rgba(52,152,219,0.3)' }}>
+                          #{ch ? ch.name : cid}
+                          <button type="button" style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                            onClick={() => {
+                              setDrafts(prev => ({
+                                ...prev,
+                                allowed_channels: prev.allowed_channels.filter(x => x !== cid)
+                              }));
+                            }}>
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })}
+                    {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic' }}>Todos los canales permitidos</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Canal de Anuncios y Rol de Mención */}
+                <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <div className="admin-card-title">📢 Canal de Anuncios</div>
+                    <select value={drafts.canal_anuncios ?? ''} onChange={e => setDrafts(prev => ({ ...prev, canal_anuncios: e.target.value }))}
+                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
+                      <option value="">— Sin configurar —</option>
+                      {(data.channels || []).map(c => (
+                        <option key={c.id} value={c.id}>#{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <div className="admin-card-title">📡 Rol de Mención</div>
+                    <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
+                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
+                      <option value="">— Sin configurar —</option>
+                      {(data.roles || []).map(r => (
+                        <option key={r.id} value={r.id}>@{r.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Toggles y Prefijo */}
+              <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
+                {/* Flags/Toggles */}
+                <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="admin-card-title">⚙️ Parámetros del Juego</div>
+                  
+                  {[
+                    ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
+                    ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
+                    ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
+                    ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
+                    ['pts_enabled', 'Habilitar Puntos de Evento', 'Activa la acumulación y guardado de puntos por partida.'],
+                  ].map(([field, label, desc]) => (
+                    <label key={field} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                      <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))}
+                        style={{ marginTop: '4px', width: '16px', height: '16px', cursor: 'pointer' }} />
+                      <div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{label}</div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{desc}</div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+
+                {/* Prefijo y Puntos */}
+                <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 6px' }}>
+                      Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                    </p>
+                    <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                  </div>
+                  
+                  <div>
+                    <div className="admin-card-title">🏆 Puntos del Evento</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
+                        <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
+                        <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
+                        <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
+                        <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
+                          style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Botón de guardar todo */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                <button type="button" className="btn-primary" disabled={savingField === 'werewolf'} onClick={saveWerewolfConfig} style={{ padding: '12px 30px', borderRadius: '8px', margin: 0, fontSize: '0.95rem' }}>
+                  {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Configuración de Werewolf'}
+                </button>
               </div>
             </>
           )}

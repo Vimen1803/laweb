@@ -94,6 +94,42 @@ export async function GET(request) {
       return NextResponse.json({ account, history, userInfo, discordUser });
     }
 
+    if (section === 'werewolf') {
+      const ww = await db.collection('ww_guilds').findOne({ _id: guildQuery(guildId) }) || {};
+
+      const token = process.env.DISCORD_BOT_TOKEN;
+      let channels = [], roles = [];
+      if (token) {
+        const headers = { Authorization: `Bot ${token}` };
+        try {
+          const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, { headers, next: { revalidate: 300 } });
+          if (r.ok) channels = (await r.json()).filter(c => [0, 5, 15].includes(c.type)).map(c => ({ id: String(c.id), name: c.name }));
+        } catch {}
+        try {
+          const r = await fetch(`https://discord.com/api/v10/guilds/${guildId}/roles`, { headers, next: { revalidate: 300 } });
+          if (r.ok) roles = (await r.json()).filter(x => x.name !== '@everyone').sort((a, b) => (b.position || 0) - (a.position || 0)).map(x => ({ id: String(x.id), name: x.name }));
+        } catch {}
+      }
+
+      return NextResponse.json({
+        allowed_channels: Array.isArray(ww.allowed_channels) ? ww.allowed_channels.map(String) : [],
+        mention_role_id: ww.mention_role_id ? String(ww.mention_role_id) : null,
+        canal_anuncios: ww.canal_anuncios ? String(ww.canal_anuncios) : null,
+        mute_noche: ww.mute_noche ?? true,
+        mute_votacion: ww.mute_votacion ?? true,
+        mute_muertos: ww.mute_muertos ?? true,
+        logros_enabled: ww.logros_enabled ?? true,
+        prefix: ww.prefix || 'ww',
+        pts_victory: ww.pts_victory ?? 15,
+        pts_special_victory: ww.pts_special_victory ?? 50,
+        pts_round_alive: ww.pts_round_alive ?? 2,
+        pts_survive_end: ww.pts_survive_end ?? 5,
+        pts_enabled: ww.pts_enabled ?? true,
+        channels,
+        roles,
+      });
+    }
+
     if (section === 'config') {
       // Toda la config vive ahora en la colección unificada `guilds` (anidada).
       const g = await db.collection('guilds').findOne({ _id: guildQuery(guildId) }) || {};
@@ -214,6 +250,64 @@ export async function POST(request) {
       if (!formattedTag.startsWith('#')) formattedTag = '#' + formattedTag;
       await db.collection('blacklist').deleteOne({ tag: formattedTag, guild_id: Long.fromString(BLACKLIST_SERVER) });
       return NextResponse.json({ success: true });
+    }
+
+    if (action === 'setWerewolfConfig') {
+      const { werewolfConfig } = body;
+      if (!werewolfConfig) return NextResponse.json({ error: 'Configuración faltante' }, { status: 400 });
+
+      let allowed_channels = [];
+      if (Array.isArray(werewolfConfig.allowed_channels)) {
+        for (const item of werewolfConfig.allowed_channels) {
+          if (item) {
+            try { allowed_channels.push(Long.fromString(String(item))); } catch {}
+          }
+        }
+      }
+
+      let mention_role_id = null;
+      if (werewolfConfig.mention_role_id) {
+        try { mention_role_id = Long.fromString(String(werewolfConfig.mention_role_id)); } catch {}
+      }
+
+      let canal_anuncios = null;
+      if (werewolfConfig.canal_anuncios) {
+        try { canal_anuncios = Long.fromString(String(werewolfConfig.canal_anuncios)); } catch {}
+      }
+
+      const mute_noche = werewolfConfig.mute_noche === true;
+      const mute_votacion = werewolfConfig.mute_votacion === true;
+      const mute_muertos = werewolfConfig.mute_muertos === true;
+      const logros_enabled = werewolfConfig.logros_enabled === true;
+       const pts_enabled = werewolfConfig.pts_enabled === true;
+       const prefix = String(werewolfConfig.prefix || 'ww').trim().substring(0, 10);
+       const pts_victory = parseInt(werewolfConfig.pts_victory, 10) || 0;
+       const pts_special_victory = werewolfConfig.pts_special_victory !== undefined ? (parseInt(werewolfConfig.pts_special_victory, 10) || 0) : 50;
+       const pts_round_alive = parseInt(werewolfConfig.pts_round_alive, 10) || 0;
+       const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
+
+       const res = await db.collection('ww_guilds').updateOne(
+         { _id: guildQuery(guildId) },
+         {
+           $set: {
+             allowed_channels,
+             mention_role_id,
+             canal_anuncios,
+             mute_noche,
+             mute_votacion,
+             mute_muertos,
+             logros_enabled,
+             prefix,
+             pts_victory,
+             pts_special_victory,
+             pts_round_alive,
+             pts_survive_end,
+             pts_enabled,
+           }
+         },
+         { upsert: true }
+       );
+      return NextResponse.json({ success: res.matchedCount > 0 || res.upsertedCount > 0 });
     }
 
     // ── Configuración del servidor (colección unificada `guilds`) ───────────
