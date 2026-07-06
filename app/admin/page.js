@@ -866,16 +866,6 @@ export default function AdminPage() {
                 Personaliza las opciones del bot de hombres lobo para este servidor.
               </p>
 
-              {/* Prefijo (Ancho completo) */}
-              <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6', marginBottom: '1.5rem' }}>
-                <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
-                  Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
-                </p>
-                <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
-              </div>
-
               {/* Columnas del medio */}
               <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
                 
@@ -905,15 +895,27 @@ export default function AdminPage() {
                           if (val && !drafts.allowed_channels?.includes(val)) {
                             const ch = (data.channels || []).find(c => String(c.id) === String(val));
                             const name = ch ? ch.name : val;
-                            if (window.confirm(`¿Estás seguro de que quieres añadir el canal #${name} a la lista de canales permitidos?`)) {
-                              if (window.confirm(`Confirma una segunda vez para añadir definitivamente el canal #${name}.`)) {
-                                setDrafts(prev => ({
-                                  ...prev,
-                                  allowed_channels: [...(prev.allowed_channels || []), val]
-                                }));
-                                sel.value = "";
+                            askConfirm({
+                              title: '¿Confirmar canal?',
+                              message: `¿Estás seguro de que quieres añadir el canal #${name} a la lista de canales permitidos?`,
+                              confirmLabel: 'Confirmar',
+                              onConfirm: () => {
+                                setTimeout(() => {
+                                  askConfirm({
+                                    title: '⚠️ Confirmación Final',
+                                    message: `Por favor, confirma por segunda vez para añadir definitivamente el canal #${name}.`,
+                                    confirmLabel: 'Añadir definitivamente',
+                                    onConfirm: () => {
+                                      setDrafts(prev => ({
+                                        ...prev,
+                                        allowed_channels: [...(prev.allowed_channels || []), val]
+                                      }));
+                                      sel.value = "";
+                                    }
+                                  });
+                                }, 150);
                               }
-                            }
+                            });
                           }
                         }}>
                         Añadir
@@ -930,14 +932,26 @@ export default function AdminPage() {
                             <span style={{ fontSize: '0.85rem', color: '#5dade2', fontWeight: 500 }}>#{name}</span>
                             <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                               onClick={() => {
-                                if (window.confirm(`¿Estás seguro de que quieres eliminar el canal #${name} de la lista de canales permitidos?`)) {
-                                  if (window.confirm(`Confirma una segunda vez para eliminar definitivamente el canal #${name}.`)) {
-                                    setDrafts(prev => ({
-                                      ...prev,
-                                      allowed_channels: (prev.allowed_channels || []).filter(x => x !== cid)
-                                    }));
+                                askConfirm({
+                                  title: '¿Eliminar canal?',
+                                  message: `¿Estás seguro de que quieres eliminar el canal #${name} de la lista de canales permitidos?`,
+                                  confirmLabel: 'Eliminar',
+                                  onConfirm: () => {
+                                    setTimeout(() => {
+                                      askConfirm({
+                                        title: '⚠️ Confirmación Final',
+                                        message: `Por favor, confirma por segunda vez para eliminar definitivamente el canal #${name}.`,
+                                        confirmLabel: 'Eliminar definitivamente',
+                                        onConfirm: () => {
+                                          setDrafts(prev => ({
+                                            ...prev,
+                                            allowed_channels: (prev.allowed_channels || []).filter(x => x !== cid)
+                                          }));
+                                        }
+                                      });
+                                    }, 150);
                                   }
-                                }
+                                });
                               }}>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#e74c3c" style={{ width: '18px', height: '18px' }}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -986,7 +1000,7 @@ export default function AdminPage() {
                       <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
                         <div style={{ position: 'relative' }}>
                           <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
-                          <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : 'rgba(255,255,255,0.15)', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                          <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
                           <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
                         </div>
                       </label>
@@ -994,7 +1008,7 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown */}
+                {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown + Prefijo */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   
                   {/* Canal Anuncios */}
@@ -1027,6 +1041,16 @@ export default function AdminPage() {
                         style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
                     </div>
                   </div>
+
+                  {/* Prefijo (Movido aquí) */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
+                    <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                      Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                    </p>
+                    <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
+                  </div>
                 </div>
               </div>
 
@@ -1049,7 +1073,7 @@ export default function AdminPage() {
                       <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
                         <div style={{ position: 'relative' }}>
                           <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
-                          <div style={{ width: '40px', height: '20px', background: (drafts[field] ?? true) ? '#2ecc71' : 'rgba(255,255,255,0.15)', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                          <div style={{ width: '40px', height: '20px', background: (drafts[field] ?? true) ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
                           <div style={{ position: 'absolute', top: '2px', left: (drafts[field] ?? true) ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
                         </div>
                       </label>
