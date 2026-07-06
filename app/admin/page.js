@@ -903,11 +903,17 @@ export default function AdminPage() {
                           const sel = document.getElementById('add_allowed_channel_select');
                           const val = sel.value;
                           if (val && !drafts.allowed_channels?.includes(val)) {
-                            setDrafts(prev => ({
-                              ...prev,
-                              allowed_channels: [...(prev.allowed_channels || []), val]
-                            }));
-                            sel.value = "";
+                            const ch = (data.channels || []).find(c => String(c.id) === String(val));
+                            const name = ch ? ch.name : val;
+                            if (window.confirm(`¿Estás seguro de que quieres añadir el canal #${name} a la lista de canales permitidos?`)) {
+                              if (window.confirm(`Confirma una segunda vez para añadir definitivamente el canal #${name}.`)) {
+                                setDrafts(prev => ({
+                                  ...prev,
+                                  allowed_channels: [...(prev.allowed_channels || []), val]
+                                }));
+                                sel.value = "";
+                              }
+                            }
                           }
                         }}>
                         Añadir
@@ -915,43 +921,43 @@ export default function AdminPage() {
                     </div>
                     
                     {/* List of selected channels with remove buttons */}
-                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
                       {(drafts.allowed_channels || []).map(cid => {
                         const ch = (data.channels || []).find(c => String(c.id) === String(cid));
+                        const name = ch ? ch.name : cid;
                         return (
-                          <span key={cid} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(52, 152, 219, 0.2)', color: '#5dade2', padding: '4px 8px', borderRadius: '16px', fontSize: '0.8rem', border: '1px solid rgba(52,152,219,0.3)' }}>
-                            #{ch ? ch.name : cid}
-                            <button type="button" style={{ background: 'none', border: 'none', color: '#e74c3c', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                          <div key={cid} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <span style={{ fontSize: '0.85rem', color: '#5dade2', fontWeight: 500 }}>#{name}</span>
+                            <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                               onClick={() => {
-                                setDrafts(prev => ({
-                                  ...prev,
-                                  allowed_channels: prev.allowed_channels.filter(x => x !== cid)
-                                }));
+                                if (window.confirm(`¿Estás seguro de que quieres eliminar el canal #${name} de la lista de canales permitidos?`)) {
+                                  if (window.confirm(`Confirma una segunda vez para eliminar definitivamente el canal #${name}.`)) {
+                                    setDrafts(prev => ({
+                                      ...prev,
+                                      allowed_channels: (prev.allowed_channels || []).filter(x => x !== cid)
+                                    }));
+                                  }
+                                }
                               }}>
-                              ×
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#e74c3c" style={{ width: '18px', height: '18px' }}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                              </svg>
                             </button>
-                          </span>
+                          </div>
                         );
                       })}
                       {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic' }}>Todos los canales permitidos</span>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '4px' }}>Todos los canales permitidos</div>
                       )}
                     </div>
                   </div>
 
                   {/* Puntos (con su activador) */}
                   <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <div className="admin-card-title" style={{ margin: 0 }}>🏆 Puntos del Evento</div>
-                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.8rem', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))}
-                          style={{ width: '14px', height: '14px', cursor: 'pointer' }} />
-                        Activar Sistema
-                      </label>
-                    </div>
+                    <div className="admin-card-title">🏆 Puntos del Evento</div>
                     
                     <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', marginBottom: '16px' }}>
                         <div>
                           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
                           <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
@@ -973,6 +979,17 @@ export default function AdminPage() {
                             style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
                         </div>
                       </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos</span>
+                      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                        <div style={{ position: 'relative' }}>
+                          <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
+                          <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : 'rgba(255,255,255,0.15)', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                          <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                        </div>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -1024,14 +1041,19 @@ export default function AdminPage() {
                     ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
                     ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
                   ].map(([field, label, desc]) => (
-                    <label key={field} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                      <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))}
-                        style={{ marginTop: '4px', width: '16px', height: '16px', cursor: 'pointer' }} />
+                    <div key={field} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
                       <div>
                         <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{label}</div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{desc}</div>
                       </div>
-                    </label>
+                      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                        <div style={{ position: 'relative' }}>
+                          <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
+                          <div style={{ width: '40px', height: '20px', background: (drafts[field] ?? true) ? '#2ecc71' : 'rgba(255,255,255,0.15)', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                          <div style={{ position: 'absolute', top: '2px', left: (drafts[field] ?? true) ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                        </div>
+                      </label>
+                    </div>
                   ))}
                 </div>
               </div>
