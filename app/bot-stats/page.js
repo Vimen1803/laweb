@@ -234,7 +234,7 @@ export default function BotStatsPage() {
                 </div>
 
                 <h4 style={{ color: 'var(--gold)', fontSize: '0.75rem', textTransform: 'uppercase', marginBottom: '1rem', letterSpacing: '1px' }}>Rendimiento por Bando</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Aldea</p>
                     <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.village_won} / {werewolf.village_played} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 400 }}>W/P</span></p>
@@ -250,6 +250,17 @@ export default function BotStatsPage() {
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Amantes</p>
                     <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.lovers_won} / {werewolf.lovers_played} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 400 }}>W/P</span></p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Puntos</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.event_points || 0} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 400 }}>PTS</span></p>
+                  </div>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Posición</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.position !== '—' ? `#${werewolf.position}` : '—'}</p>
                   </div>
                 </div>
               </div>

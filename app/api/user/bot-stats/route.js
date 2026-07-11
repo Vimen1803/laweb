@@ -86,6 +86,20 @@ export async function GET() {
     // Sanitize Werewolf data
     let werewolfStats = null;
     if (werewolf) {
+      let position = '—';
+      try {
+        const pts = Number(werewolf.event_points || 0);
+        if (pts > 0) {
+          const countAbove = await labotDb.collection('ww_players').countDocuments({
+            guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
+            event_points: { $gt: pts }
+          });
+          position = countAbove + 1;
+        }
+      } catch (err) {
+        console.warn('Could not calculate player event rank:', err);
+      }
+
       werewolfStats = {
         ...werewolf,
         _id: werewolf._id.toString(),
@@ -101,6 +115,8 @@ export async function GET() {
         white_wolf_won: Number(werewolf.white_wolf_won || 0),
         lovers_played: Number(werewolf.lovers_played || 0),
         lovers_won: Number(werewolf.lovers_won || 0),
+        event_points: Number(werewolf.event_points || 0),
+        position: position,
         roles_played: werewolf.roles_played || {},
         roles_won: werewolf.roles_won || {}
       };

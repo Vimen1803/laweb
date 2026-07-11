@@ -126,7 +126,7 @@ export default function WerewolfStatsPage() {
       </div>
 
       {/* Resumen global */}
-      <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '2rem' }}>
+      <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '1rem' }}>
         <div className="stat-item">
           <span className="stat-value" style={{ color: 'var(--text-primary)' }}>{werewolf.games_played || 0}</span>
           <span className="stat-label">Partidas jugadas</span>
@@ -138,6 +138,21 @@ export default function WerewolfStatsPage() {
         <div className="stat-item">
           <span className="stat-value" style={{ color: overallWinrate >= 50 ? 'var(--accent-green)' : 'var(--text-primary)' }}>{overallWinrate}%</span>
           <span className="stat-label">Winrate global</span>
+        </div>
+      </div>
+
+      <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '2rem' }}>
+        <div className="stat-item">
+          <span className="stat-value" style={{ color: 'var(--text-primary)' }}>—</span>
+          <span className="stat-label">Nivel</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-value" style={{ color: 'var(--gold)' }}>{werewolf.event_points || 0}</span>
+          <span className="stat-label">Puntos</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-value" style={{ color: 'var(--text-primary)' }}>{werewolf.position !== '—' ? `#${werewolf.position}` : '—'}</span>
+          <span className="stat-label">Posición</span>
         </div>
       </div>
 
