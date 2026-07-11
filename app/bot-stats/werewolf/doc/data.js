@@ -134,8 +134,8 @@ export const LOGROS_DATA = [
 
 export const CHANGELOG_DATA = [
   {
-    date: "JULIO 2026 (PARTE 2)",
-    title: "📢 Actualización de Julio — Sistema de XP y Panel Web",
+    date: "AGOSTO 2026",
+    title: "📢 Actualización de Agosto — Sistema de XP y Panel Web",
     sections: [
       { heading: "🌟 NUEVAS CARACTERÍSTICAS", items: [
         "<strong>📈 Sistema de Niveles y XP:</strong> ¡Ahora tienes niveles en Werewolf! Tu nivel se calcula automáticamente a partir de tus puntos con la fórmula <code>Nivel = 1 + sqrt(Puntos / 20)</code>.",

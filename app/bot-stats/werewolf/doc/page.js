@@ -12,7 +12,7 @@ export default function WerewolfDocInicio() {
       <section className="hero fade-in">
         <div className="hero-badge">
           <Link href="/bot-stats/werewolf/doc/cambios" style={{ color: 'inherit', textDecoration: 'none' }}>
-            <span className="bolt-icon">⚡</span> ACTUALIZACIÓN JULIO — XP Y NIVELES
+            <span className="bolt-icon">⚡</span> ACTUALIZACIÓN AGOSTO — XP Y NIVELES
           </Link>
         </div>
         <h1 className="hero-title">
