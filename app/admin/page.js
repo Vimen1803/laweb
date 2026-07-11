@@ -115,7 +115,7 @@ export default function AdminPage() {
           .sort((a, b) => parseInt(a.strike) - parseInt(b.strike))
       );
     }
-    if ((section === 'werewolf' || section === 'werewolf_xp' || section === 'werewolf_blacklist') && data && !Array.isArray(data)) {
+    if ((section === 'werewolf' || section === 'werewolf_xp' || section === 'werewolf_blacklist' || section === 'werewolf_levels') && data && !Array.isArray(data)) {
       setDrafts({
         allowed_channels: data.allowed_channels || [],
         mention_role_id: data.mention_role_id || '',
@@ -310,7 +310,7 @@ export default function AdminPage() {
       } else if (sec === 'clubesla') {
         const res = await fetch('/api/clubs');
         setClubesLaData(await res.json());
-      } else if (sec === 'werewolf' || sec === 'werewolf_xp' || sec === 'werewolf_blacklist') {
+      } else if (sec === 'werewolf' || sec === 'werewolf_xp' || sec === 'werewolf_blacklist' || sec === 'werewolf_levels') {
         const res = await fetch(`/api/admin?section=werewolf`);
         setData(await res.json());
       } else if (sec !== 'usercheck') {
@@ -352,6 +352,7 @@ export default function AdminPage() {
     Werewolf: [
       { id: 'werewolf', icon: <WolfIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
       { id: 'werewolf_xp', icon: <SparklesIcon style={{ width: 18, height: 18 }} />, label: 'XP' },
+      { id: 'werewolf_levels', icon: <UsersIcon style={{ width: 18, height: 18 }} />, label: 'Roles por Nivel' },
       { id: 'werewolf_blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     ]
   };
@@ -1216,8 +1217,23 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Roles por Nivel (Ancho completo) */}
-                  <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #3498db', marginTop: '1.5rem' }}>
+                  {/* Fin de sección Werewolf */}
+                </>
+              )}
+
+              {section === 'werewolf_levels' && data && !loading && (
+                <>
+                  <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <UsersIcon style={{ width: 28, height: 28, color: '#3498db' }} />
+                    </span>
+                    Roles por Nivel de Werewolf
+                  </h2>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                    Configura los roles de Discord que obtendrán automáticamente los jugadores según su nivel.
+                  </p>
+
+                  <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #3498db' }}>
                     <div className="admin-card-title">🎖️ Roles de Discord por Nivel</div>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
                       Configura los roles de Discord otorgados automáticamente al alcanzar un nivel determinado en el juego (se asignará solo el rol de nivel más alto alcanzado).
@@ -1273,6 +1289,13 @@ export default function AdminPage() {
                         + Añadir Rol
                       </button>
                     </div>
+                  </div>
+
+                  {/* Botón de guardar todo */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                    <button type="button" className="btn-primary" disabled={savingField === 'werewolf'} onClick={saveWerewolfConfig} style={{ padding: '12px 30px', borderRadius: '8px', margin: 0, fontSize: '0.95rem' }}>
+                      {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Roles por Nivel'}
+                    </button>
                   </div>
 
                 </>
