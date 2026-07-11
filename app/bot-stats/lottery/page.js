@@ -115,7 +115,7 @@ export default function LotteryStatsPage() {
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 3fr))', gap: '1rem', marginBottom: '2.5rem' }}>
           {stats.map((s, i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
               <div style={{ color: '#f39c12', display: 'flex', justifyContent: 'center', marginBottom: '0.6rem' }}>{s.icon}</div>
