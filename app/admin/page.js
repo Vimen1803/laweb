@@ -113,7 +113,7 @@ export default function AdminPage() {
           .sort((a, b) => parseInt(a.strike) - parseInt(b.strike))
       );
     }
-    if ((section === 'werewolf' || section === 'werewolf_blacklist') && data && !Array.isArray(data)) {
+    if ((section === 'werewolf' || section === 'werewolf_xp' || section === 'werewolf_blacklist') && data && !Array.isArray(data)) {
       setDrafts({
         allowed_channels: data.allowed_channels || [],
         mention_role_id: data.mention_role_id || '',
@@ -275,7 +275,7 @@ export default function AdminPage() {
       } else if (sec === 'clubesla') {
         const res = await fetch('/api/clubs');
         setClubesLaData(await res.json());
-      } else if (sec === 'werewolf' || sec === 'werewolf_blacklist') {
+      } else if (sec === 'werewolf' || sec === 'werewolf_xp' || sec === 'werewolf_blacklist') {
         const res = await fetch(`/api/admin?section=werewolf`);
         setData(await res.json());
       } else if (sec !== 'usercheck') {
@@ -316,6 +316,7 @@ export default function AdminPage() {
     ],
     Werewolf: [
       { id: 'werewolf', icon: <WolfIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
+      { id: 'werewolf_xp', icon: <SparklesIcon style={{ width: 18, height: 18 }} />, label: 'XP' },
       { id: 'werewolf_blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     ]
   };
@@ -1106,46 +1107,6 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Puntos (con su activador) */}
-                      <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
-                        <div className="admin-card-title">🏆 Puntos del Evento</div>
-                        
-                        <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', marginBottom: '16px' }}>
-                            <div>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
-                              <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
-                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                            </div>
-                            <div>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
-                              <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
-                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                            </div>
-                            <div>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
-                              <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
-                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                            </div>
-                            <div>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
-                              <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
-                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos</span>
-                          <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
-                            <div style={{ position: 'relative' }}>
-                              <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
-                              <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
-                              <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
-                            </div>
-                          </label>
-                        </div>
-                      </div>
                     </div>
 
                     {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown + Prefijo */}
@@ -1222,10 +1183,65 @@ export default function AdminPage() {
                     </div>
                   </div>
 
+                </>
+              )}
+
+              {section === 'werewolf_xp' && data && !loading && (
+                <>
+                  <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <SparklesIcon style={{ width: 28, height: 28, color: 'var(--gold)' }} />
+                    </span>
+                    Configuración de XP de Werewolf
+                  </h2>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                    Configura el sistema de puntos de evento y las cantidades de XP obtenidas en las partidas.
+                  </p>
+
+                  <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)', marginBottom: '1.5rem' }}>
+                    <div className="admin-card-title">🏆 Puntos del Evento / XP</div>
+                    
+                    <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '12px', marginBottom: '16px' }}>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Victoria Normal</span>
+                          <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
+                            style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Victoria Especial</span>
+                          <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
+                            style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Por Ronda Vivo</span>
+                          <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
+                            style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Extra Fin de Partida Vivo</span>
+                          <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
+                            style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos de evento</span>
+                      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                        <div style={{ position: 'relative' }}>
+                          <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
+                          <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                          <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
                   {/* Botón de guardar todo */}
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
                     <button type="button" className="btn-primary" disabled={savingField === 'werewolf'} onClick={saveWerewolfConfig} style={{ padding: '12px 30px', borderRadius: '8px', margin: 0, fontSize: '0.95rem' }}>
-                      {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Configuración de Werewolf'}
+                      {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Configuración de XP'}
                     </button>
                   </div>
                 </>
