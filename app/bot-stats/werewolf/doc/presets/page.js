@@ -37,6 +37,8 @@ export default function WerewolfPresets() {
 
   const notes = [];
   if (n < 8) notes.push('Sin slot solitario con menos de 8 jugadores.');
+  if (n === 7 || n === 8) notes.push('En partidas de 7 y 8 jugadores no hay Hechicera.');
+  if (n === 9) notes.push('Regla especial para 9 jugadores: Siempre habrá 2 lobos de base, y además puede aparecer una Hechicera (haciendo un total de 3 lobos). Si la Hechicera se activa, se reduce la aldea a 5 slots (garantizando que haya un Vidente).');
   if (n >= 8 && n < 11) notes.push('Si no sale ningún rol solitario se suma un slot a la aldea.');
   if (n >= 11 && n < 20) notes.push('Curtidor y Lobo Blanco compiten por el slot solitario. Si sale Lobo Blanco, se resta un slot a los lobos.');
   if (n === 20) notes.push('Partida especial: Pueden aparecer hasta 2 roles solitarios (Máx 1 Lobo Blanco, hasta 2 Curtidores).');
@@ -56,6 +58,8 @@ export default function WerewolfPresets() {
             <ul>
               <li><strong>Hechicera / Licántropo:</strong> Requieren que un <b>Vidente</b> esté presente en la partida.</li>
               <li><strong>5 Jugadores:</strong> En partidas de <b>5 jugadores</b>, si hay <b>Vidente</b> no habrá <b>Bruja</b>.</li>
+              <li><strong>7 y 8 Jugadores:</strong> No habrá <b>Hechicera</b> en las partidas (máximo 2 lobos).</li>
+              <li><strong>9 Jugadores:</strong> Habrá siempre 2 lobos de base. Además, puede aparecer la <b>Hechicera</b> (haciendo un total de 3 lobos). En ese caso, la aldea se reduce a 5 slots y se garantiza que haya un <b>Vidente</b>.</li>
               <li><strong>Visitantes:</strong> Nunca habrá <b>Ramera e Infiel</b> en la misma partida.</li>
               <li><strong>Mirón:</strong> En partidas de <b>-15 jugadores</b>, no puede coexistir con el Vidente.</li>
               <li><strong>Ladrón:</strong> Sus cartas del centro nunca serán roles ya existentes en la partida, ni tampoco Aldeanos o Alma Pura. Pueden ser 2,3 o 4 cartas de forma aleatoria.</li>
