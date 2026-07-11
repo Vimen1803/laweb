@@ -133,6 +133,45 @@ export const LOGROS_DATA = [
 
 export const CHANGELOG_DATA = [
   {
+    date: "JULIO 2026",
+    title: "📢 Actualización de Julio — Mejoras y Correcciones",
+    sections: [
+      { heading: "⚙️ CAMBIOS Y MEJORAS", items: [
+        "<strong>🗣️ Tiempo de Discusión:</strong> El bot ahora enviará un aviso cuando queden 10 segundos de discusión antes del cierre de líneas.",
+        "<strong>🌙 Información Nocturna:</strong> Se muestra claramente el número de jugadores que quedan vivos al inicio de cada noche.",
+        "<strong>💀 Muerte del Infiel:</strong> Corregido el mensaje de muerte del Infiel al acostarse con un lobo para que especifique la causa (VIH).",
+      ] },
+      { heading: "🐛 CORRECCIÓN DE ERRORES", items: [
+        "<strong>🏠 Infiel:</strong> Corregido el bug donde la Bruja lo veía como atacado si los lobos iban a su casa pero él dormía fuera.",
+        "<strong>💋 Ramera:</strong> Corregido el bug donde la Bruja lo veía como atacado si los lobos iban a su casa pero él dormía fuera.",
+        "<strong>🐺 Licántropo:</strong> Solucionado el bug que permitía la aparición de un Licántropo en partidas sin Vidente.",
+      ] }
+    ]
+  },
+  {
+    date: "JUNIO 2026",
+    title: "📢 Actualización de Junio — Sistema de Eventos",
+    sections: [
+      { heading: "🏆 SISTEMA DE PUNTOS Y EVENTO", items: [
+        "<strong>⏱️ Puntos por ronda:</strong> +2 puntos por cada ronda aguantada con vida.",
+        "<strong>🏆 Puntos por victoria:</strong> +15 puntos a cada miembro del equipo ganador (Aldea o Lobos).",
+        "<strong>❤️/💖 Victoria Solitaria o Enamorados:</strong> +50 puntos extra por ganar la partida como Solitario o Amantes.",
+        "<strong>❤️ Supervivencia final:</strong> +5 puntos extra si finalizas la partida con vida.",
+        "<strong>🥇 Tabla de Clasificación:</strong> Nuevo comando <code>,ww lb</code> / <code>/ww lb</code> para consultar los Top 10 jugadores.",
+        "<strong>📊 Puntos en Stats:</strong> El comando <code>,ww stats</code> ahora muestra los puntos acumulados del evento.",
+        "<strong>🛠️ Reset de Puntos:</strong> Comando <code>,ww resetlb</code> para que admins y owners reinicien la clasificación.",
+      ] },
+      { heading: "⚙️ CAMBIOS DE EQUILIBRIO Y ROLES", items: [
+        "<strong>🦴 Gran Lobo Feroz:</strong> Su habilidad para matar a una 2ª víctima en solitario solo se activa en <strong>noches pares</strong>.",
+        "<strong>💋 Ramera:</strong> Su visita a los lobos solo cancela la cacería si se acuesta con el <strong>lobo decisor</strong>.",
+        "<strong>🔮 Presets de 5 Jugadores:</strong> En partidas de 5 jugadores, si hay <strong>Vidente</strong>, no habrá <strong>Bruja</strong>.",
+      ] },
+      { heading: "🐛 CORRECCIÓN DE ERRORES", items: [
+        "<strong>🎭 Ladrón:</strong> Corregido un error que limitaba las cartas del centro a 2. Ahora puede ver y elegir entre todas las cartas generadas (entre 2 y 4).",
+      ] }
+    ]
+  },
+  {
     date: "ABRIL 2026",
     title: "📢 Gran Actualización de Abril",
     sections: [
