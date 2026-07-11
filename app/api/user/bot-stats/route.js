@@ -87,8 +87,10 @@ export async function GET() {
     let werewolfStats = null;
     if (werewolf) {
       let position = '—';
+      let level = 1;
+      const pts = Number(werewolf.event_points || 0);
       try {
-        const pts = Number(werewolf.event_points || 0);
+        level = Math.floor(Math.sqrt(pts / 20)) + 1;
         if (pts > 0) {
           const countAbove = await labotDb.collection('ww_players').countDocuments({
             guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
@@ -115,7 +117,8 @@ export async function GET() {
         white_wolf_won: Number(werewolf.white_wolf_won || 0),
         lovers_played: Number(werewolf.lovers_played || 0),
         lovers_won: Number(werewolf.lovers_won || 0),
-        event_points: Number(werewolf.event_points || 0),
+        event_points: pts,
+        level: level,
         position: position,
         roles_played: werewolf.roles_played || {},
         roles_won: werewolf.roles_won || {}

@@ -143,7 +143,7 @@ export default function WerewolfStatsPage() {
 
       <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '2rem' }}>
         <div className="stat-item">
-          <span className="stat-value" style={{ color: 'var(--text-primary)' }}>—</span>
+          <span className="stat-value" style={{ color: 'var(--text-primary)' }}>{werewolf.level || 1}</span>
           <span className="stat-label">Nivel</span>
         </div>
         <div className="stat-item">

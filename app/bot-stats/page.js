@@ -255,8 +255,8 @@ export default function BotStatsPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Puntos</p>
-                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.event_points || 0} <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 400 }}>PTS</span></p>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Nivel</p>
+                    <p style={{ fontSize: '1.1rem', fontWeight: 800 }}>{werewolf.level || 1}</p>
                   </div>
                   <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontWeight: 800 }}>Posición</p>
