@@ -51,7 +51,6 @@ export default function AdminPage() {
   const [drafts, setDrafts] = useState({});
   const [savingField, setSavingField] = useState(null);
   const [punish, setPunish] = useState([]);
-  const [wwSubTab, setWwSubTab] = useState('config'); // 'config' o 'blacklist'
   const [isAddingWwBlacklist, setIsAddingWwBlacklist] = useState(false);
 
   // --- Sistema de notificaciones (toasts) ---
@@ -114,7 +113,7 @@ export default function AdminPage() {
           .sort((a, b) => parseInt(a.strike) - parseInt(b.strike))
       );
     }
-    if (section === 'werewolf' && data && !Array.isArray(data)) {
+    if ((section === 'werewolf' || section === 'werewolf_blacklist') && data && !Array.isArray(data)) {
       setDrafts({
         allowed_channels: data.allowed_channels || [],
         mention_role_id: data.mention_role_id || '',
@@ -276,6 +275,9 @@ export default function AdminPage() {
       } else if (sec === 'clubesla') {
         const res = await fetch('/api/clubs');
         setClubesLaData(await res.json());
+      } else if (sec === 'werewolf' || sec === 'werewolf_blacklist') {
+        const res = await fetch(`/api/admin?section=werewolf`);
+        setData(await res.json());
       } else if (sec !== 'usercheck') {
         const res = await fetch(`/api/admin?section=${sec}`);
         setData(await res.json());
@@ -301,15 +303,22 @@ export default function AdminPage() {
     return new Date(ts * 1000).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
   }
 
-  const sideItems = [
-    { id: 'overview', icon: <ChartBarIcon style={{ width: 18, height: 18 }} />, label: 'Resumen' },
-    { id: 'usercheck', icon: <MagnifyingGlassIcon style={{ width: 18, height: 18 }} />, label: 'Buscar Usuario' },
-    { id: 'clubesla', icon: <BuildingLibraryIcon style={{ width: 18, height: 18 }} />, label: 'Clubes de LA' },
-    { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
-    { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
-    { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
-    { id: 'werewolf', icon: <WolfIcon style={{ width: 18, height: 18 }} />, label: 'Werewolf' },
-  ];
+  const groupedSideItems = {
+    Discord: [
+      { id: 'overview', icon: <ChartBarIcon style={{ width: 18, height: 18 }} />, label: 'Resumen' },
+      { id: 'usercheck', icon: <MagnifyingGlassIcon style={{ width: 18, height: 18 }} />, label: 'Buscar Usuario' },
+      { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
+      { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
+    ],
+    Brawl: [
+      { id: 'clubesla', icon: <BuildingLibraryIcon style={{ width: 18, height: 18 }} />, label: 'Clubes de LA' },
+      { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
+    ],
+    Werewolf: [
+      { id: 'werewolf', icon: <WolfIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
+      { id: 'werewolf_blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
+    ]
+  };
 
   async function handleAddClub(e) {
     e.preventDefault();
@@ -419,21 +428,38 @@ export default function AdminPage() {
     });
   }
 
-  function handleAddWwBlacklist(e) {
+  async function handleAddWwBlacklist(e) {
     e.preventDefault();
     const userIdInput = document.getElementById('newWwBlId').value.trim();
     const reasonInput = document.getElementById('newWwBlReason').value.trim();
     if (!userIdInput || !reasonInput) return;
 
+    setIsAddingWwBlacklist(true);
+    let resolvedName = `ID: ${userIdInput}`;
+    try {
+      const checkRes = await fetch(`/api/admin?section=usercheck&userId=${userIdInput}`);
+      if (checkRes.ok) {
+        const d = await checkRes.json();
+        if (d.discordUser) {
+          resolvedName = d.discordUser.global_name || d.discordUser.username || resolvedName;
+        } else if (d.userInfo?.username) {
+          resolvedName = d.userInfo.username;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not pre-resolve username:", err);
+    }
+    setIsAddingWwBlacklist(false);
+
     askConfirm({
       title: '¿Añadir a la blacklist de Werewolf?',
-      message: `¿Estás seguro de que quieres añadir al usuario con ID ${userIdInput} a la blacklist por el motivo: "${reasonInput}"?`,
+      message: `¿Estás seguro de que quieres añadir al usuario "${resolvedName}" a la blacklist por el motivo: "${reasonInput}"?`,
       confirmLabel: 'Confirmar',
       onConfirm: () => {
         setTimeout(() => {
           askConfirm({
             title: '⚠️ Confirmación Final',
-            message: `Por favor, confirma por segunda vez para añadir definitivamente al usuario ${userIdInput} a la blacklist de Werewolf.`,
+            message: `Por favor, confirma por segunda vez para añadir definitivamente al usuario "${resolvedName}" a la blacklist de Werewolf.`,
             confirmLabel: 'Añadir definitivamente',
             onConfirm: async () => {
               setIsAddingWwBlacklist(true);
@@ -445,7 +471,7 @@ export default function AdminPage() {
                 });
                 const d = await res.json().catch(() => ({}));
                 if (res.ok && d.success) {
-                  showToast('success', 'Añadido', 'Usuario añadido a la blacklist de Werewolf.');
+                  showToast('success', 'Añadido', `Usuario "${resolvedName}" añadido a la blacklist de Werewolf.`);
                   document.getElementById('newWwBlId').value = '';
                   document.getElementById('newWwBlReason').value = '';
                   loadSection('werewolf');
@@ -464,15 +490,16 @@ export default function AdminPage() {
   }
 
   function handleRemoveWwBlacklist(userId, username) {
+    const displayName = username || `ID: ${userId}`;
     askConfirm({
       title: '¿Eliminar de la blacklist de Werewolf?',
-      message: `¿Estás seguro de que quieres quitar a ${username || userId} de la blacklist de Werewolf? El usuario podrá volver a participar.`,
+      message: `¿Estás seguro de que quieres quitar al usuario "${displayName}" de la blacklist de Werewolf? El usuario podrá volver a participar.`,
       confirmLabel: 'Eliminar',
       onConfirm: () => {
         setTimeout(() => {
           askConfirm({
             title: '⚠️ Confirmación Final',
-            message: `Por favor, confirma por segunda vez para eliminar definitivamente a ${username || userId} de la blacklist de Werewolf.`,
+            message: `Por favor, confirma por segunda vez para eliminar definitivamente al usuario "${displayName}" de la blacklist de Werewolf.`,
             confirmLabel: 'Eliminar definitivamente',
             onConfirm: async () => {
               try {
@@ -483,7 +510,7 @@ export default function AdminPage() {
                 });
                 const d = await res.json().catch(() => ({}));
                 if (res.ok && d.success) {
-                  showToast('success', 'Eliminado', 'Usuario eliminado de la blacklist de Werewolf.');
+                  showToast('success', 'Eliminado', `Usuario "${displayName}" eliminado de la blacklist de Werewolf.`);
                   loadSection('werewolf');
                 } else {
                   showToast('error', 'No se pudo eliminar', d.error || 'Ha ocurrido un error al eliminar de la blacklist.');
@@ -563,12 +590,30 @@ export default function AdminPage() {
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><LockClosedIcon style={{ width: 20, height: 20 }} /> PANEL ADMIN</span>
             <span className="sidebar-toggle-icon" style={{ fontSize: '0.8rem', transition: 'transform 0.3s', transform: adminSidebarOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
           </div>
-          {sideItems.map(s => (
-            <button key={s.id}
-              className={`sidebar-item ${section === s.id ? 'active' : ''}`}
-              onClick={() => { setSection(s.id); setAdminSidebarOpen(false); }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>{s.icon} {s.label}</span>
-            </button>
+          {Object.entries(groupedSideItems).map(([category, items]) => (
+            <div key={category} style={{ marginBottom: '1.25rem' }}>
+              <div style={{
+                color: 'var(--text-muted)',
+                fontSize: '0.72rem',
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                marginTop: '0.75rem',
+                marginBottom: '0.5rem',
+                paddingLeft: '0.75rem'
+              }}>
+                {category}
+              </div>
+              {items.map(s => (
+                <button key={s.id}
+                  className={`sidebar-item ${section === s.id ? 'active' : ''}`}
+                  onClick={() => { setSection(s.id); setAdminSidebarOpen(false); }}
+                  style={{ width: '100%', textAlign: 'left' }}
+                >
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>{s.icon} {s.label}</span>
+                </button>
+              ))}
+            </div>
           ))}
           <div className="admin-sidebar-footer" style={{ padding: '1rem 0.75rem', marginTop: '1rem', borderTop: '1px solid var(--border)' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
@@ -957,52 +1002,9 @@ export default function AdminPage() {
                 </span>
                 Configuración de Werewolf
               </h2>
-              
-              {/* Sub-tabs bar */}
-              <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border)', marginBottom: '1.5rem', paddingBottom: '0.5rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setWwSubTab('config')}
-                  style={{
-                    background: wwSubTab === 'config' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
-                    border: 'none',
-                    color: wwSubTab === 'config' ? 'var(--gold)' : 'var(--text-muted)',
-                    fontWeight: 600,
-                    fontSize: '0.95rem',
-                    cursor: 'pointer',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    borderBottom: wwSubTab === 'config' ? '2px solid var(--gold)' : '2px solid transparent',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  Configuración General
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setWwSubTab('blacklist')}
-                  style={{
-                    background: wwSubTab === 'blacklist' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
-                    border: 'none',
-                    color: wwSubTab === 'blacklist' ? 'var(--gold)' : 'var(--text-muted)',
-                    fontWeight: 600,
-                    fontSize: '0.95rem',
-                    cursor: 'pointer',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    borderBottom: wwSubTab === 'blacklist' ? '2px solid var(--gold)' : '2px solid transparent',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  Blacklist Werewolf
-                </button>
-              </div>
-
-              {wwSubTab === 'config' && (
-                <>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                    Personaliza las opciones del bot de hombres lobo para este servidor.
-                  </p>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Personaliza las opciones del bot de hombres lobo para este servidor.
+              </p>
 
                   {/* Columnas del medio */}
                   <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
@@ -1229,8 +1231,14 @@ export default function AdminPage() {
                 </>
               )}
 
-              {wwSubTab === 'blacklist' && (
+              {section === 'werewolf_blacklist' && data && !loading && (
                 <>
+                  <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <WolfIcon style={{ width: 28, height: 28 }} />
+                    </span>
+                    Blacklist de Werewolf
+                  </h2>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
                     Gestión de la blacklist para evitar que ciertos usuarios jueguen a Werewolf.
                   </p>
@@ -1257,7 +1265,6 @@ export default function AdminPage() {
                     <table className="admin-table admin-table-desktop">
                       <thead>
                         <tr>
-                          <th>Usuario ID</th>
                           <th>Nombre de Usuario</th>
                           <th>Razón</th>
                           <th>Añadido Por</th>
@@ -1268,10 +1275,9 @@ export default function AdminPage() {
                       <tbody>
                         {(data.blacklist || []).map((b, i) => (
                           <tr key={i}>
-                            <td style={{ color: 'var(--gold)', fontFamily: 'monospace' }}>{b._id}</td>
-                            <td style={{ fontWeight: '600' }}>{b.username || '—'}</td>
+                            <td style={{ fontWeight: '600', color: 'var(--gold)' }}>{b.username || '—'}</td>
                             <td>{b.reason || '—'}</td>
-                            <td style={{ fontSize: '0.85rem' }}>{b.added_by_name || '—'} ({b.added_by})</td>
+                            <td style={{ fontSize: '0.85rem' }}>{b.added_by_name || '—'}</td>
                             <td style={{ fontSize: '0.85rem' }}>{formatTime(new Date(b.date_added).getTime() / 1000)}</td>
                             <td>
                               <button
@@ -1308,8 +1314,7 @@ export default function AdminPage() {
                         <div key={i} className="admin-entry-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ display: 'flex', gap: '12px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                              <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.85rem', fontFamily: 'monospace' }}>{b._id}</span>
-                              <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{b.username || '—'}</span>
+                              <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--gold)' }}>{b.username || '—'}</span>
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px', wordBreak: 'break-word' }}>
                               <strong>Motivo:</strong> {b.reason || '—'}
@@ -1350,8 +1355,6 @@ export default function AdminPage() {
                   </div>
                 </>
               )}
-            </>
-          )}
 
         </div>
       </div>
