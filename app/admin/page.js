@@ -1107,9 +1107,18 @@ export default function AdminPage() {
                         </div>
                       </div>
 
+                      {/* Prefijo */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
+                        <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                          Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                        </p>
+                        <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
+                      </div>
                     </div>
 
-                    {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown + Prefijo */}
+                    {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                       
                       {/* Canal Anuncios */}
@@ -1141,16 +1150,6 @@ export default function AdminPage() {
                           <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
                             style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
                         </div>
-                      </div>
-
-                      {/* Prefijo (Movido aquí) */}
-                      <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
-                        <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
-                          Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
-                        </p>
-                        <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
-                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
                       </div>
                     </div>
                   </div>
