@@ -21,6 +21,17 @@ const iconMap = {
   unban: <WrenchScrewdriverIcon style={{ width: 16, height: 16 }} /> 
 };
 
+const WolfIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M12 2.2c-.3 0-.5.1-.7.4L7.5 8.3 3.6 9.5c-.5.2-.8.6-.8 1.1 0 .7.6 1.3 1.3 1.3h.2L6.5 17.5l-1.6 3.6c-.2.5 0 1.1.5 1.3.2.1.3.1.5.1.4 0 .7-.2.9-.6l2-4.6c.2-.4.6-.7 1-.7h4.4c.4 0 .8.3 1 .7l2 4.6c.2.4.6.6.9.6.2 0 .3 0 .5-.1.5-.2.7-.8.5-1.3l-1.6-3.6 2.2-5.6h.2c.7 0 1.3-.6 1.3-1.3 0-.5-.3-.9-.8-1.1L16.5 8.3l-3.8-5.7c-.2-.3-.5-.4-.7-.4zM9 10c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1zm6 0c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1z"/>
+  </svg>
+);
+
 export default function AdminPage() {
   const [section, setSection] = useState('overview');
   const [data, setData] = useState(null);
@@ -40,6 +51,8 @@ export default function AdminPage() {
   const [drafts, setDrafts] = useState({});
   const [savingField, setSavingField] = useState(null);
   const [punish, setPunish] = useState([]);
+  const [wwSubTab, setWwSubTab] = useState('config'); // 'config' o 'blacklist'
+  const [isAddingWwBlacklist, setIsAddingWwBlacklist] = useState(false);
 
   // --- Sistema de notificaciones (toasts) ---
   function showToast(type, title, message) {
@@ -295,7 +308,7 @@ export default function AdminPage() {
     { id: 'blacklist', icon: <NoSymbolIcon style={{ width: 18, height: 18 }} />, label: 'Blacklist' },
     { id: 'modlogs', icon: <ClipboardDocumentListIcon style={{ width: 18, height: 18 }} />, label: 'Historial de Mod.' },
     { id: 'config', icon: <Cog6ToothIcon style={{ width: 18, height: 18 }} />, label: 'Configuración' },
-    { id: 'werewolf', icon: <SparklesIcon style={{ width: 18, height: 18 }} />, label: 'Werewolf' },
+    { id: 'werewolf', icon: <WolfIcon style={{ width: 18, height: 18 }} />, label: 'Werewolf' },
   ];
 
   async function handleAddClub(e) {
@@ -402,6 +415,85 @@ export default function AdminPage() {
         } catch {
           showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
         }
+      }
+    });
+  }
+
+  function handleAddWwBlacklist(e) {
+    e.preventDefault();
+    const userIdInput = document.getElementById('newWwBlId').value.trim();
+    const reasonInput = document.getElementById('newWwBlReason').value.trim();
+    if (!userIdInput || !reasonInput) return;
+
+    askConfirm({
+      title: '¿Añadir a la blacklist de Werewolf?',
+      message: `¿Estás seguro de que quieres añadir al usuario con ID ${userIdInput} a la blacklist por el motivo: "${reasonInput}"?`,
+      confirmLabel: 'Confirmar',
+      onConfirm: () => {
+        setTimeout(() => {
+          askConfirm({
+            title: '⚠️ Confirmación Final',
+            message: `Por favor, confirma por segunda vez para añadir definitivamente al usuario ${userIdInput} a la blacklist de Werewolf.`,
+            confirmLabel: 'Añadir definitivamente',
+            onConfirm: async () => {
+              setIsAddingWwBlacklist(true);
+              try {
+                const res = await fetch('/api/admin', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ action: 'addWerewolfBlacklist', userId: userIdInput, reason: reasonInput })
+                });
+                const d = await res.json().catch(() => ({}));
+                if (res.ok && d.success) {
+                  showToast('success', 'Añadido', 'Usuario añadido a la blacklist de Werewolf.');
+                  document.getElementById('newWwBlId').value = '';
+                  document.getElementById('newWwBlReason').value = '';
+                  loadSection('werewolf');
+                } else {
+                  showToast('error', 'No se pudo añadir', d.error || 'Ha ocurrido un error al añadir a la blacklist.');
+                }
+              } catch {
+                showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+              }
+              setIsAddingWwBlacklist(false);
+            }
+          });
+        }, 150);
+      }
+    });
+  }
+
+  function handleRemoveWwBlacklist(userId, username) {
+    askConfirm({
+      title: '¿Eliminar de la blacklist de Werewolf?',
+      message: `¿Estás seguro de que quieres quitar a ${username || userId} de la blacklist de Werewolf? El usuario podrá volver a participar.`,
+      confirmLabel: 'Eliminar',
+      onConfirm: () => {
+        setTimeout(() => {
+          askConfirm({
+            title: '⚠️ Confirmación Final',
+            message: `Por favor, confirma por segunda vez para eliminar definitivamente a ${username || userId} de la blacklist de Werewolf.`,
+            confirmLabel: 'Eliminar definitivamente',
+            onConfirm: async () => {
+              try {
+                const res = await fetch('/api/admin', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ action: 'removeWerewolfBlacklist', userId })
+                });
+                const d = await res.json().catch(() => ({}));
+                if (res.ok && d.success) {
+                  showToast('success', 'Eliminado', 'Usuario eliminado de la blacklist de Werewolf.');
+                  loadSection('werewolf');
+                } else {
+                  showToast('error', 'No se pudo eliminar', d.error || 'Ha ocurrido un error al eliminar de la blacklist.');
+                }
+              } catch {
+                showToast('error', 'Error de conexión', 'No se pudo contactar con el servidor.');
+              }
+            }
+          });
+        }, 150);
       }
     });
   }
@@ -860,234 +952,404 @@ export default function AdminPage() {
           {section === 'werewolf' && data && !loading && (
             <>
               <h2 className="section-title" style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                🐺 Configuración de Werewolf
+                <span style={{ width: 28, height: 28, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <WolfIcon style={{ width: 28, height: 28 }} />
+                </span>
+                Configuración de Werewolf
               </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                Personaliza las opciones del bot de hombres lobo para este servidor.
-              </p>
+              
+              {/* Sub-tabs bar */}
+              <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border)', marginBottom: '1.5rem', paddingBottom: '0.5rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setWwSubTab('config')}
+                  style={{
+                    background: wwSubTab === 'config' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+                    border: 'none',
+                    color: wwSubTab === 'config' ? 'var(--gold)' : 'var(--text-muted)',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    cursor: 'pointer',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    borderBottom: wwSubTab === 'config' ? '2px solid var(--gold)' : '2px solid transparent',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  Configuración General
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setWwSubTab('blacklist')}
+                  style={{
+                    background: wwSubTab === 'blacklist' ? 'rgba(212, 175, 55, 0.1)' : 'transparent',
+                    border: 'none',
+                    color: wwSubTab === 'blacklist' ? 'var(--gold)' : 'var(--text-muted)',
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
+                    cursor: 'pointer',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    borderBottom: wwSubTab === 'blacklist' ? '2px solid var(--gold)' : '2px solid transparent',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  Blacklist Werewolf
+                </button>
+              </div>
 
-              {/* Columnas del medio */}
-              <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
-                
-                {/* Columna Izquierda: Canales Permitidos + Puntos */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  
-                  {/* Canales Permitidos */}
-                  <div className="admin-card" style={{ borderLeft: '4px solid #3498db' }}>
-                    <div className="admin-card-title">🌐 Canales Permitidos</div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '4px 0 10px' }}>
-                      Si no seleccionas ninguno, se podrá jugar en todos los canales.
-                    </p>
+              {wwSubTab === 'config' && (
+                <>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                    Personaliza las opciones del bot de hombres lobo para este servidor.
+                  </p>
+
+                  {/* Columnas del medio */}
+                  <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
                     
-                    {/* Select and Add */}
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                      <select id="add_allowed_channel_select" defaultValue=""
-                        style={{ flex: 1, minWidth: '150px', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
-                        <option value="">— Selecciona un canal —</option>
-                        {(data.channels || []).map(c => (
-                          <option key={c.id} value={c.id}>#{c.name}</option>
-                        ))}
-                      </select>
-                      <button type="button" className="btn-primary" style={{ padding: '8px 12px', borderRadius: '8px', margin: 0 }}
-                        onClick={() => {
-                          const sel = document.getElementById('add_allowed_channel_select');
-                          const val = sel.value;
-                          if (val && !drafts.allowed_channels?.includes(val)) {
-                            const ch = (data.channels || []).find(c => String(c.id) === String(val));
-                            const name = ch ? ch.name : val;
-                            askConfirm({
-                              title: '¿Confirmar canal?',
-                              message: `¿Estás seguro de que quieres añadir el canal #${name} a la lista de canales permitidos?`,
-                              confirmLabel: 'Confirmar',
-                              onConfirm: () => {
-                                setTimeout(() => {
-                                  askConfirm({
-                                    title: '⚠️ Confirmación Final',
-                                    message: `Por favor, confirma por segunda vez para añadir definitivamente el canal #${name}.`,
-                                    confirmLabel: 'Añadir definitivamente',
-                                    onConfirm: () => {
-                                      setDrafts(prev => ({
-                                        ...prev,
-                                        allowed_channels: [...(prev.allowed_channels || []), val]
-                                      }));
-                                      sel.value = "";
-                                    }
-                                  });
-                                }, 150);
-                              }
-                            });
-                          }
-                        }}>
-                        Añadir
-                      </button>
-                    </div>
-                    
-                    {/* List of selected channels with remove buttons */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
-                      {(drafts.allowed_channels || []).map(cid => {
-                        const ch = (data.channels || []).find(c => String(c.id) === String(cid));
-                        const name = ch ? ch.name : cid;
-                        return (
-                          <div key={cid} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                            <span style={{ fontSize: '0.85rem', color: '#5dade2', fontWeight: 500 }}>#{name}</span>
-                            <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                              onClick={() => {
+                    {/* Columna Izquierda: Canales Permitidos + Puntos */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      
+                      {/* Canales Permitidos */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid #3498db' }}>
+                        <div className="admin-card-title">🌐 Canales Permitidos</div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '4px 0 10px' }}>
+                          Si no seleccionas ninguno, se podrá jugar en todos los canales.
+                        </p>
+                        
+                        {/* Select and Add */}
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                          <select id="add_allowed_channel_select" defaultValue=""
+                            style={{ flex: 1, minWidth: '150px', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                            <option value="">— Selecciona un canal —</option>
+                            {(data.channels || []).map(c => (
+                              <option key={c.id} value={c.id}>#{c.name}</option>
+                            ))}
+                          </select>
+                          <button type="button" className="btn-primary" style={{ padding: '8px 12px', borderRadius: '8px', margin: 0 }}
+                            onClick={() => {
+                              const sel = document.getElementById('add_allowed_channel_select');
+                              const val = sel.value;
+                              if (val && !drafts.allowed_channels?.includes(val)) {
+                                const ch = (data.channels || []).find(c => String(c.id) === String(val));
+                                const name = ch ? ch.name : val;
                                 askConfirm({
-                                  title: '¿Eliminar canal?',
-                                  message: `¿Estás seguro de que quieres eliminar el canal #${name} de la lista de canales permitidos?`,
-                                  confirmLabel: 'Eliminar',
+                                  title: '¿Confirmar canal?',
+                                  message: `¿Estás seguro de que quieres añadir el canal #${name} a la lista de canales permitidos?`,
+                                  confirmLabel: 'Confirmar',
                                   onConfirm: () => {
                                     setTimeout(() => {
                                       askConfirm({
                                         title: '⚠️ Confirmación Final',
-                                        message: `Por favor, confirma por segunda vez para eliminar definitivamente el canal #${name}.`,
-                                        confirmLabel: 'Eliminar definitivamente',
+                                        message: `Por favor, confirma por segunda vez para añadir definitivamente el canal #${name}.`,
+                                        confirmLabel: 'Añadir definitivamente',
                                         onConfirm: () => {
                                           setDrafts(prev => ({
                                             ...prev,
-                                            allowed_channels: (prev.allowed_channels || []).filter(x => x !== cid)
+                                            allowed_channels: [...(prev.allowed_channels || []), val]
                                           }));
+                                          sel.value = "";
                                         }
                                       });
                                     }, 150);
                                   }
                                 });
-                              }}>
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#e74c3c" style={{ width: '18px', height: '18px' }}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                              </svg>
-                            </button>
+                              }
+                            }}>
+                            Añadir
+                          </button>
+                        </div>
+                        
+                        {/* List of selected channels with remove buttons */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
+                          {(drafts.allowed_channels || []).map(cid => {
+                            const ch = (data.channels || []).find(c => String(c.id) === String(cid));
+                            const name = ch ? ch.name : cid;
+                            return (
+                              <div key={cid} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <span style={{ fontSize: '0.85rem', color: '#5dade2', fontWeight: 500 }}>#{name}</span>
+                                <button type="button" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                  onClick={() => {
+                                    askConfirm({
+                                      title: '¿Eliminar canal?',
+                                      message: `¿Estás seguro de que quieres eliminar el canal #${name} de la lista de canales permitidos?`,
+                                      confirmLabel: 'Eliminar',
+                                      onConfirm: () => {
+                                        setTimeout(() => {
+                                          askConfirm({
+                                            title: '⚠️ Confirmación Final',
+                                            message: `Por favor, confirma por segunda vez para eliminar definitivamente el canal #${name}.`,
+                                            confirmLabel: 'Eliminar definitivamente',
+                                            onConfirm: () => {
+                                              setDrafts(prev => ({
+                                                ...prev,
+                                                allowed_channels: (prev.allowed_channels || []).filter(x => x !== cid)
+                                              }));
+                                            }
+                                          });
+                                        }, 150);
+                                      }
+                                    });
+                                  }}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#e74c3c" style={{ width: '18px', height: '18px' }}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                  </svg>
+                                </button>
+                              </div>
+                            );
+                          })}
+                          {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '4px' }}>Todos los canales permitidos</div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Puntos (con su activador) */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
+                        <div className="admin-card-title">🏆 Puntos del Evento</div>
+                        
+                        <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', marginBottom: '16px' }}>
+                            <div>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
+                              <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
+                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
+                              <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
+                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
+                              <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
+                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                            </div>
+                            <div>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
+                              <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
+                                style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                            </div>
                           </div>
-                        );
-                      })}
-                      {(!drafts.allowed_channels || drafts.allowed_channels.length === 0) && (
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '4px' }}>Todos los canales permitidos</div>
-                      )}
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos</span>
+                          <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                            <div style={{ position: 'relative' }}>
+                              <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
+                              <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                              <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown + Prefijo */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      
+                      {/* Canal Anuncios */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
+                        <div className="admin-card-title">📢 Canal de Anuncios</div>
+                        <select value={drafts.canal_anuncios ?? ''} onChange={e => setDrafts(prev => ({ ...prev, canal_anuncios: e.target.value }))}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
+                          <option value="">— Sin configurar —</option>
+                          {(data.channels || []).map(c => (
+                            <option key={c.id} value={c.id}>#{c.name}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Mention Rol + Cooldown */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid #1abc9c', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div>
+                          <div className="admin-card-title">📡 Rol de Mención</div>
+                          <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
+                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
+                            <option value="">— Sin configurar —</option>
+                            {(data.roles || []).map(r => (
+                              <option key={r.id} value={r.id}>@{r.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <div className="admin-card-title">⏳ Cooldown de Mención (segundos)</div>
+                          <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
+                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
+                        </div>
+                      </div>
+
+                      {/* Prefijo (Movido aquí) */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
+                        <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                          Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                        </p>
+                        <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Puntos (con su activador) */}
-                  <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
-                    <div className="admin-card-title">🏆 Puntos del Evento</div>
+                  {/* Parámetros del juego (Ancho completo) */}
+                  <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #e74c3c' }}>
+                    <div className="admin-card-title">⚙️ Parámetros del Juego</div>
                     
-                    <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', marginBottom: '16px' }}>
-                        <div>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Normal</span>
-                          <input type="number" min="0" value={drafts.pts_victory ?? 15} onChange={e => setDrafts(prev => ({ ...prev, pts_victory: e.target.value }))}
-                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px', marginTop: '6px' }}>
+                      {[
+                        ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
+                        ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
+                        ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
+                        ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
+                      ].map(([field, label, desc]) => (
+                        <div key={field} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                          <div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{label}</div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{desc}</div>
+                          </div>
+                          <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
+                            <div style={{ position: 'relative' }}>
+                              <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
+                              <div style={{ width: '40px', height: '20px', background: (drafts[field] ?? true) ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
+                              <div style={{ position: 'absolute', top: '2px', left: (drafts[field] ?? true) ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                            </div>
+                          </label>
                         </div>
-                        <div>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Victoria Especial</span>
-                          <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
-                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Por Ronda Vivo</span>
-                          <input type="number" min="0" value={drafts.pts_round_alive ?? 2} onChange={e => setDrafts(prev => ({ ...prev, pts_round_alive: e.target.value }))}
-                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                        </div>
-                        <div>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Extra Fin de Partida Vivo</span>
-                          <input type="number" min="0" value={drafts.pts_survive_end ?? 5} onChange={e => setDrafts(prev => ({ ...prev, pts_survive_end: e.target.value }))}
-                            style={{ width: '100%', padding: '6px 8px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos</span>
-                      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
-                        <div style={{ position: 'relative' }}>
-                          <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
-                          <div style={{ width: '40px', height: '20px', background: drafts.pts_enabled ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
-                          <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown + Prefijo */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  
-                  {/* Canal Anuncios */}
-                  <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)' }}>
-                    <div className="admin-card-title">📢 Canal de Anuncios</div>
-                    <select value={drafts.canal_anuncios ?? ''} onChange={e => setDrafts(prev => ({ ...prev, canal_anuncios: e.target.value }))}
-                      style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
-                      <option value="">— Sin configurar —</option>
-                      {(data.channels || []).map(c => (
-                        <option key={c.id} value={c.id}>#{c.name}</option>
                       ))}
-                    </select>
+                    </div>
                   </div>
 
-                  {/* Mention Rol + Cooldown */}
-                  <div className="admin-card" style={{ borderLeft: '4px solid #1abc9c', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div>
-                      <div className="admin-card-title">📡 Rol de Mención</div>
-                      <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
-                        <option value="">— Sin configurar —</option>
-                        {(data.roles || []).map(r => (
-                          <option key={r.id} value={r.id}>@{r.name}</option>
+                  {/* Botón de guardar todo */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                    <button type="button" className="btn-primary" disabled={savingField === 'werewolf'} onClick={saveWerewolfConfig} style={{ padding: '12px 30px', borderRadius: '8px', margin: 0, fontSize: '0.95rem' }}>
+                      {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Configuración de Werewolf'}
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {wwSubTab === 'blacklist' && (
+                <>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                    Gestión de la blacklist para evitar que ciertos usuarios jueguen a Werewolf.
+                  </p>
+                  
+                  {/* Formulario de añadir */}
+                  <div className="card" style={{ marginBottom: '20px', padding: '1.5rem', background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+                    <h3 style={{ marginBottom: '10px', color: 'var(--accent-orange)', fontSize: '1.1rem', fontWeight: 700 }}>Añadir a la Blacklist de Werewolf</h3>
+                    <form onSubmit={handleAddWwBlacklist} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'stretch' }}>
+                      <input type="text" id="newWwBlId" placeholder="ID de Discord (ej: 523883024106913813)" className="search-box" style={{ flex: 1, padding: '10px', borderRadius: '8px', margin: 0 }} required />
+                      <input type="text" id="newWwBlReason" placeholder="Razón de la blacklist" className="search-box" style={{ flex: 2, padding: '10px', borderRadius: '8px', margin: 0 }} required />
+                      <button type="submit" className="btn-primary" disabled={isAddingWwBlacklist} style={{ padding: '12px 24px', borderRadius: '8px', margin: 0 }}>
+                        {isAddingWwBlacklist ? 'Añadiendo...' : 'Añadir'}
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* Tabla / Listado */}
+                  <div className="admin-card">
+                    <div className="admin-card-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <ClipboardDocumentListIcon style={{ width: 20, height: 20 }} /> Blacklist Werewolf ({data.blacklist?.length || 0})
+                    </div>
+                    
+                    {/* Desktop table */}
+                    <table className="admin-table admin-table-desktop">
+                      <thead>
+                        <tr>
+                          <th>Usuario ID</th>
+                          <th>Nombre de Usuario</th>
+                          <th>Razón</th>
+                          <th>Añadido Por</th>
+                          <th>Fecha</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(data.blacklist || []).map((b, i) => (
+                          <tr key={i}>
+                            <td style={{ color: 'var(--gold)', fontFamily: 'monospace' }}>{b._id}</td>
+                            <td style={{ fontWeight: '600' }}>{b.username || '—'}</td>
+                            <td>{b.reason || '—'}</td>
+                            <td style={{ fontSize: '0.85rem' }}>{b.added_by_name || '—'} ({b.added_by})</td>
+                            <td style={{ fontSize: '0.85rem' }}>{formatTime(new Date(b.date_added).getTime() / 1000)}</td>
+                            <td>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveWwBlacklist(b._id, b.username)}
+                                className="btn-danger"
+                                style={{
+                                  background: '#ef4444',
+                                  color: '#fff',
+                                  padding: '8px',
+                                  borderRadius: '8px',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  transition: 'background 0.2s, transform 0.1s',
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = '#dc2626'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = '#ef4444'}
+                                title="Eliminar de la blacklist"
+                              >
+                                <TrashIcon style={{ width: 16, height: 16 }} />
+                              </button>
+                            </td>
+                          </tr>
                         ))}
-                      </select>
-                    </div>
-                    <div>
-                      <div className="admin-card-title">⏳ Cooldown de Mención (segundos)</div>
-                      <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
-                    </div>
-                  </div>
+                      </tbody>
+                    </table>
 
-                  {/* Prefijo (Movido aquí) */}
-                  <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
-                    <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
-                      Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
-                    </p>
-                    <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
-                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Parámetros del juego (Ancho completo) */}
-              <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #e74c3c' }}>
-                <div className="admin-card-title">⚙️ Parámetros del Juego</div>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px', marginTop: '6px' }}>
-                  {[
-                    ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
-                    ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
-                    ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
-                    ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
-                  ].map(([field, label, desc]) => (
-                    <div key={field} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                      <div>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>{label}</div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{desc}</div>
-                      </div>
-                      <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
-                        <div style={{ position: 'relative' }}>
-                          <input type="checkbox" checked={drafts[field] ?? true} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
-                          <div style={{ width: '40px', height: '20px', background: (drafts[field] ?? true) ? '#2ecc71' : '#e74c3c', borderRadius: '10px', transition: 'background-color 0.2s' }}></div>
-                          <div style={{ position: 'absolute', top: '2px', left: (drafts[field] ?? true) ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
+                    {/* Mobile cards */}
+                    <div className="admin-cards-mobile">
+                      {(data.blacklist || []).map((b, i) => (
+                        <div key={i} className="admin-entry-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px' }}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', gap: '12px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                              <span style={{ color: 'var(--gold)', fontWeight: 700, fontSize: '0.85rem', fontFamily: 'monospace' }}>{b._id}</span>
+                              <span style={{ fontWeight: 600, fontSize: '0.85rem' }}>{b.username || '—'}</span>
+                            </div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px', wordBreak: 'break-word' }}>
+                              <strong>Motivo:</strong> {b.reason || '—'}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                              Por: {b.added_by_name} • {formatTime(new Date(b.date_added).getTime() / 1000)}
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveWwBlacklist(b._id, b.username)}
+                            className="btn-danger"
+                            style={{
+                              background: '#ef4444',
+                              color: '#fff',
+                              padding: '8px',
+                              borderRadius: '8px',
+                              border: 'none',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              flexShrink: 0
+                            }}
+                            title="Eliminar de la blacklist"
+                          >
+                            <TrashIcon style={{ width: 16, height: 16 }} />
+                          </button>
                         </div>
-                      </label>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Botón de guardar todo */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
-                <button type="button" className="btn-primary" disabled={savingField === 'werewolf'} onClick={saveWerewolfConfig} style={{ padding: '12px 30px', borderRadius: '8px', margin: 0, fontSize: '0.95rem' }}>
-                  {savingField === 'werewolf' ? 'Guardando...' : 'Guardar Configuración de Werewolf'}
-                </button>
-              </div>
+                    {(!data.blacklist || data.blacklist.length === 0) && (
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center', padding: '2rem 0' }}>
+                        No hay ningún usuario en la blacklist de Werewolf.
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
             </>
           )}
 

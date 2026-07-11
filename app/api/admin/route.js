@@ -111,6 +111,18 @@ export async function GET(request) {
         } catch {}
       }
 
+      const blacklistRaw = await db.collection('blacklist')
+        .find({ username: { $exists: true } })
+        .sort({ date_added: 1 })
+        .toArray();
+
+      const blacklist = blacklistRaw.map(b => {
+        const item = { ...b };
+        if (item._id && item._id.toString) item._id = item._id.toString();
+        if (item.added_by && item.added_by.toString) item.added_by = item.added_by.toString();
+        return item;
+      });
+
       return NextResponse.json({
         allowed_channels: Array.isArray(ww.allowed_channels) ? ww.allowed_channels.map(String) : [],
         mention_role_id: ww.mention_role_id ? String(ww.mention_role_id) : null,
@@ -128,6 +140,7 @@ export async function GET(request) {
         mention_cooldown: ww.mention_cooldown ?? 900,
         channels,
         roles,
+        blacklist,
       });
     }
 
@@ -365,6 +378,82 @@ export async function POST(request) {
       } catch {
         return NextResponse.json({ error: 'Error al cambiar el apodo' }, { status: 500 });
       }
+    }
+
+    if (action === 'addWerewolfBlacklist') {
+      const { userId, reason } = body;
+      if (!userId || !reason) {
+        return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
+      }
+
+      let uidLong;
+      try {
+        uidLong = Long.fromString(userId);
+      } catch {
+        return NextResponse.json({ error: 'El ID de usuario no es válido.' }, { status: 400 });
+      }
+
+      // Check if user is already blacklisted
+      const existing = await db.collection('blacklist').findOne({ _id: uidLong });
+      if (existing) {
+        return NextResponse.json({ error: 'El usuario ya está en la blacklist.' }, { status: 400 });
+      }
+
+      // Resolve username from Discord or local users collection
+      let username = 'Usuario Desconocido';
+      const token = process.env.DISCORD_BOT_TOKEN;
+      if (token) {
+        try {
+          const res = await fetch(`https://discord.com/api/v10/users/${userId}`, {
+            headers: { Authorization: `Bot ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            username = data.global_name || data.username || 'Usuario Desconocido';
+          }
+        } catch {}
+      }
+
+      if (username === 'Usuario Desconocido') {
+        try {
+          const userInfo = await db.collection('users').findOne({ user_id: uidLong });
+          if (userInfo && userInfo.username) {
+            username = userInfo.username;
+          }
+        } catch {}
+      }
+
+      const session = await auth();
+      const adminId = session?.discordId ? Long.fromString(session.discordId) : null;
+      const adminName = session?.user?.name || 'Administrador';
+
+      await db.collection('blacklist').insertOne({
+        _id: uidLong,
+        username,
+        added_by: adminId,
+        added_by_name: adminName,
+        reason,
+        date_added: new Date()
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === 'removeWerewolfBlacklist') {
+      const { userId } = body;
+      if (!userId) {
+        return NextResponse.json({ error: 'Falta el ID del usuario' }, { status: 400 });
+      }
+
+      let uidLong;
+      try {
+        uidLong = Long.fromString(userId);
+      } catch {
+        return NextResponse.json({ error: 'El ID de usuario no es válido.' }, { status: 400 });
+      }
+
+      const res = await db.collection('blacklist').deleteOne({ _id: uidLong });
+      return NextResponse.json({ success: res.deletedCount > 0 });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
