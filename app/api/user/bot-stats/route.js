@@ -93,7 +93,6 @@ export async function GET() {
         level = Math.floor(Math.sqrt(pts / 20)) + 1;
         if (pts > 0) {
           const countAbove = await labotDb.collection('ww_players').countDocuments({
-            guild_id: { $in: [guildIdLong, GUILD_ID, Number(GUILD_ID)] },
             event_points: { $gt: pts }
           });
           position = countAbove + 1;
