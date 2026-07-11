@@ -143,6 +143,10 @@ export const CHANGELOG_DATA = [
         "<strong>🛡️ Blacklist de Werewolf en la Web:</strong> Añadida una nueva sección en el Panel de Administración de la Web para gestionar usuarios en la lista negra (ver, añadir y eliminar con doble confirmación) de forma segura y automatizada.",
         "<strong>📊 Niveles en Stats:</strong> Los comandos <code>,ww stats</code> y <code>/ww stats</code> ahora muestran tu nivel de XP actual y se actualizan al instante.",
       ] },
+      { heading: "⚖️ CAMBIOS DE BALANCE", items: [
+        "<strong>🔮 Hechicera (7 y 8 jugadores):</strong> El rol Hechicera ya no aparece en partidas de menos de 9 jugadores (máximo de 2 lobos).",
+        "<strong>🔮 Hechicera (9 jugadores):</strong> Ahora en partidas de 9 jugadores siempre hay 2 lobos de base, y además puede aparecer una Hechicera (haciendo un total de 3 lobos). Si se activa, se garantiza que haya un Vidente en la aldea.",
+      ] },
       { heading: "🐛 CORRECCIÓN DE ERRORES Y MEJORAS", items: [
         "<strong>📈 Posición de Ranking Web:</strong> Corregido el fallo de consulta que mostraba a todos en la posición #1 del ranking en la web.",
         "<strong>🏆 Comando <code>,ww wr</code> (Win Rates):</strong> Corregido el comando de porcentaje de victorias global para que cargue y guarde de forma correcta las estadísticas específicas de cada servidor por separado.",
