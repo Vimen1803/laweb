@@ -134,6 +134,23 @@ export const LOGROS_DATA = [
 
 export const CHANGELOG_DATA = [
   {
+    date: "JULIO 2026 (PARTE 2)",
+    title: "📢 Actualización de Julio — Sistema de XP y Panel Web",
+    sections: [
+      { heading: "🌟 NUEVAS CARACTERÍSTICAS", items: [
+        "<strong>📈 Sistema de Niveles y XP:</strong> ¡Ahora tienes niveles en Werewolf! Tu nivel se calcula automáticamente a partir de tus puntos con la fórmula <code>Nivel = 1 + sqrt(Puntos / 20)</code>.",
+        "<strong>🎗️ Comando <code>,ww pts</code> / <code>/ww pts</code>:</strong> Nuevo comando público para consultar de forma interactiva las puntuaciones asignadas por cada acción de la partida (victorias, rondas sobrevividas, etc.).",
+        "<strong>🛡️ Blacklist de Werewolf en la Web:</strong> Añadida una nueva sección en el Panel de Administración de la Web para gestionar usuarios en la lista negra (ver, añadir y eliminar con doble confirmación) de forma segura y automatizada.",
+        "<strong>📊 Niveles en Stats:</strong> Los comandos <code>,ww stats</code> y <code>/ww stats</code> ahora muestran tu nivel de XP actual y se actualizan al instante.",
+      ] },
+      { heading: "🐛 CORRECCIÓN DE ERRORES Y MEJORAS", items: [
+        "<strong>📈 Posición de Ranking Web:</strong> Corregido el fallo de consulta que mostraba a todos en la posición #1 del ranking en la web.",
+        "<strong>🏆 Comando <code>,ww wr</code> (Win Rates):</strong> Corregido el comando de porcentaje de victorias global para que cargue y guarde de forma correcta las estadísticas específicas de cada servidor por separado.",
+        "<strong>📖 Ayuda e Información (<code>,ww info</code> y <code>,ww help</code>):</strong> Rediseñado el comando informativo para explicar el funcionamiento de los niveles, logros y listar adecuadamente los nuevos comandos de estadísticas."
+      ] }
+    ]
+  },
+  {
     date: "JULIO 2026",
     title: "📢 Actualización de Julio — Mejoras y Correcciones",
     sections: [
