@@ -126,11 +126,31 @@ export default function AdminPage() {
         level_roles: data.level_roles || {},
         prefix: data.prefix || 'ww',
         pts_victory: data.pts_victory ?? 15,
-        pts_special_victory: data.pts_special_victory ?? 50,
+        pts_special_victory: data.pts_special_victory ?? 40,
         pts_round_alive: data.pts_round_alive ?? 2,
         pts_survive_end: data.pts_survive_end ?? 5,
         pts_enabled: data.pts_enabled ?? true,
         mention_cooldown: data.mention_cooldown ?? 900,
+        xp_vidente_ver_lobo: data.xp_vidente_ver_lobo ?? 3,
+        xp_vidente_ver_lycan: data.xp_vidente_ver_lycan ?? -1,
+        xp_bruja_matar_lobo: data.xp_bruja_matar_lobo ?? 5,
+        xp_bruja_matar_inocente: data.xp_bruja_matar_inocente ?? -2,
+        xp_cazador_matar_lobo: data.xp_cazador_matar_lobo ?? 5,
+        xp_cazador_matar_inocente: data.xp_cazador_matar_inocente ?? -1,
+        xp_curandera_proteger_atacado: data.xp_curandera_proteger_atacado ?? 3,
+        xp_caballero_usar_poder: data.xp_caballero_usar_poder ?? 2,
+        xp_ramera_bloquear_decisor: data.xp_ramera_bloquear_decisor ?? 5,
+        xp_ramera_bloquear_inocente_accion: data.xp_ramera_bloquear_inocente_accion ?? -1,
+        xp_zorro_localizar_lobo: data.xp_zorro_localizar_lobo ?? 2,
+        xp_cazador_bestias_trampa_lobo: data.xp_cazador_bestias_trampa_lobo ?? 5,
+        xp_cupido_amantes_ganan: data.xp_cupido_amantes_ganan ?? 15,
+        xp_nino_salvaje_convertirse: data.xp_nino_salvaje_convertirse ?? 3,
+        xp_hermanas_vivas_ganan: data.xp_hermanas_vivas_ganan ?? 5,
+        xp_hermanas_muerte_votacion: data.xp_hermanas_muerte_votacion ?? -3,
+        xp_lobo_kill_cooperativo: data.xp_lobo_kill_cooperativo ?? 1,
+        xp_gran_lobo_kill_personal: data.xp_gran_lobo_kill_personal ?? 2,
+        xp_lobo_blanco_kill_lobo: data.xp_lobo_blanco_kill_lobo ?? 3,
+        xp_hechicera_descubrir_vidente: data.xp_hechicera_descubrir_vidente ?? 5,
       });
     }
   }, [section, data]);
@@ -208,6 +228,26 @@ export default function AdminPage() {
             pts_survive_end: Number(drafts.pts_survive_end) || 0,
             pts_enabled: drafts.pts_enabled === true,
             mention_cooldown: Number(drafts.mention_cooldown) || 900,
+            xp_vidente_ver_lobo: Number(drafts.xp_vidente_ver_lobo),
+            xp_vidente_ver_lycan: Number(drafts.xp_vidente_ver_lycan),
+            xp_bruja_matar_lobo: Number(drafts.xp_bruja_matar_lobo),
+            xp_bruja_matar_inocente: Number(drafts.xp_bruja_matar_inocente),
+            xp_cazador_matar_lobo: Number(drafts.xp_cazador_matar_lobo),
+            xp_cazador_matar_inocente: Number(drafts.xp_cazador_matar_inocente),
+            xp_curandera_proteger_atacado: Number(drafts.xp_curandera_proteger_atacado),
+            xp_caballero_usar_poder: Number(drafts.xp_caballero_usar_poder),
+            xp_ramera_bloquear_decisor: Number(drafts.xp_ramera_bloquear_decisor),
+            xp_ramera_bloquear_inocente_accion: Number(drafts.xp_ramera_bloquear_inocente_accion),
+            xp_zorro_localizar_lobo: Number(drafts.xp_zorro_localizar_lobo),
+            xp_cazador_bestias_trampa_lobo: Number(drafts.xp_cazador_bestias_trampa_lobo),
+            xp_cupido_amantes_ganan: Number(drafts.xp_cupido_amantes_ganan),
+            xp_nino_salvaje_convertirse: Number(drafts.xp_nino_salvaje_convertirse),
+            xp_hermanas_vivas_ganan: Number(drafts.xp_hermanas_vivas_ganan),
+            xp_hermanas_muerte_votacion: Number(drafts.xp_hermanas_muerte_votacion),
+            xp_lobo_kill_cooperativo: Number(drafts.xp_lobo_kill_cooperativo),
+            xp_gran_lobo_kill_personal: Number(drafts.xp_gran_lobo_kill_personal),
+            xp_lobo_blanco_kill_lobo: Number(drafts.xp_lobo_blanco_kill_lobo),
+            xp_hechicera_descubrir_vidente: Number(drafts.xp_hechicera_descubrir_vidente),
           }
         })
       });
@@ -1325,7 +1365,7 @@ export default function AdminPage() {
                         </div>
                         <div>
                           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Victoria Especial</span>
-                          <input type="number" min="0" value={drafts.pts_special_victory ?? 50} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
+                          <input type="number" min="0" value={drafts.pts_special_victory ?? 40} onChange={e => setDrafts(prev => ({ ...prev, pts_special_victory: e.target.value }))}
                             style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
                         </div>
                         <div>
@@ -1350,6 +1390,164 @@ export default function AdminPage() {
                           <div style={{ position: 'absolute', top: '2px', left: drafts.pts_enabled ? '22px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.4)' }}></div>
                         </div>
                       </label>
+                    </div>
+                  </div>
+
+                  <div className="admin-card" style={{ borderLeft: '4px solid #3498db', marginBottom: '1.5rem', opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
+                    <div className="admin-card-title">🎭 Puntuación Extra por Roles</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 16px' }}>
+                      Configura el multiplicador o cantidad fija de XP adicional que reciben ciertos roles al realizar acciones clave.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+                      {/* Vidente */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>🔮 Vidente</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Ver a un lobo</span>
+                            <input type="number" value={drafts.xp_vidente_ver_lobo ?? 3} onChange={e => setDrafts(prev => ({ ...prev, xp_vidente_ver_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Ver al Licántropo</span>
+                            <input type="number" value={drafts.xp_vidente_ver_lycan ?? -1} onChange={e => setDrafts(prev => ({ ...prev, xp_vidente_ver_lycan: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bruja */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>🧙‍♀️ Bruja</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Matar lobo con poción</span>
+                            <input type="number" value={drafts.xp_bruja_matar_lobo ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_bruja_matar_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Matar inocente con poción</span>
+                            <input type="number" value={drafts.xp_bruja_matar_inocente ?? -2} onChange={e => setDrafts(prev => ({ ...prev, xp_bruja_matar_inocente: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Cazador */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>🏹 Cazador</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Disparar a un lobo</span>
+                            <input type="number" value={drafts.xp_cazador_matar_lobo ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_cazador_matar_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Disparar a un inocente</span>
+                            <input type="number" value={drafts.xp_cazador_matar_inocente ?? -1} onChange={e => setDrafts(prev => ({ ...prev, xp_cazador_matar_inocente: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Ramera */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>💋 Ramera</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Bloquear lobo decisor</span>
+                            <input type="number" value={drafts.xp_ramera_bloquear_decisor ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_ramera_bloquear_decisor: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Bloquear inocente con acción</span>
+                            <input type="number" value={drafts.xp_ramera_bloquear_inocente_accion ?? -1} onChange={e => setDrafts(prev => ({ ...prev, xp_ramera_bloquear_inocente_accion: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Curandera, Caballero y Zorro */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>🛡️ Aldea Activos</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Curandera: Proteger atacado</span>
+                            <input type="number" value={drafts.xp_curandera_proteger_atacado ?? 3} onChange={e => setDrafts(prev => ({ ...prev, xp_curandera_proteger_atacado: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Caballero: delayed kill</span>
+                            <input type="number" value={drafts.xp_caballero_usar_poder ?? 2} onChange={e => setDrafts(prev => ({ ...prev, xp_caballero_usar_poder: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Zorro: localiza un lobo</span>
+                            <input type="number" value={drafts.xp_zorro_localizar_lobo ?? 2} onChange={e => setDrafts(prev => ({ ...prev, xp_zorro_localizar_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Cazador de bestias, Cupido, Niño salvaje y Hermanas */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>✨ Aldea Especiales</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Cazador Bestias: Lobo en trampa</span>
+                            <input type="number" value={drafts.xp_cazador_bestias_trampa_lobo ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_cazador_bestias_trampa_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Cupido: amantes ganan</span>
+                            <input type="number" value={drafts.xp_cupido_amantes_ganan ?? 15} onChange={e => setDrafts(prev => ({ ...prev, xp_cupido_amantes_ganan: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Niño Salvaje: convertirse</span>
+                            <input type="number" value={drafts.xp_nino_salvaje_convertirse ?? 3} onChange={e => setDrafts(prev => ({ ...prev, xp_nino_salvaje_convertirse: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Hermanas: ambas ganan vivas</span>
+                            <input type="number" value={drafts.xp_hermanas_vivas_ganan ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_hermanas_vivas_ganan: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Hermanas: hermana lynch</span>
+                            <input type="number" value={drafts.xp_hermanas_muerte_votacion ?? -3} onChange={e => setDrafts(prev => ({ ...prev, xp_hermanas_muerte_votacion: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Hombres Lobo */}
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-orange)', marginBottom: '8px' }}>🐺 Lobos</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Lobo: Kill cooperativo</span>
+                            <input type="number" value={drafts.xp_lobo_kill_cooperativo ?? 1} onChange={e => setDrafts(prev => ({ ...prev, xp_lobo_kill_cooperativo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Gran Lobo: Kill personal (2a)</span>
+                            <input type="number" value={drafts.xp_gran_lobo_kill_personal ?? 2} onChange={e => setDrafts(prev => ({ ...prev, xp_gran_lobo_kill_personal: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Lobo Blanco: Matar lobo</span>
+                            <input type="number" value={drafts.xp_lobo_blanco_kill_lobo ?? 3} onChange={e => setDrafts(prev => ({ ...prev, xp_lobo_blanco_kill_lobo: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                          <div>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>Hechicera: descubre vidente</span>
+                            <input type="number" value={drafts.xp_hechicera_descubrir_vidente ?? 5} onChange={e => setDrafts(prev => ({ ...prev, xp_hechicera_descubrir_vidente: e.target.value }))}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.8rem' }} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 

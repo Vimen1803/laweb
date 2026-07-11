@@ -133,11 +133,31 @@ export async function GET(request) {
         level_roles: ww.level_roles ? Object.fromEntries(Object.entries(ww.level_roles).map(([k, v]) => [k, String(v)])) : {},
         prefix: ww.prefix || 'ww',
         pts_victory: ww.pts_victory ?? 15,
-        pts_special_victory: ww.pts_special_victory ?? 50,
+        pts_special_victory: ww.pts_special_victory ?? 40,
         pts_round_alive: ww.pts_round_alive ?? 2,
         pts_survive_end: ww.pts_survive_end ?? 5,
         pts_enabled: ww.pts_enabled ?? true,
         mention_cooldown: ww.mention_cooldown ?? 900,
+        xp_vidente_ver_lobo: ww.xp_vidente_ver_lobo ?? 3,
+        xp_vidente_ver_lycan: ww.xp_vidente_ver_lycan ?? -1,
+        xp_bruja_matar_lobo: ww.xp_bruja_matar_lobo ?? 5,
+        xp_bruja_matar_inocente: ww.xp_bruja_matar_inocente ?? -2,
+        xp_cazador_matar_lobo: ww.xp_cazador_matar_lobo ?? 5,
+        xp_cazador_matar_inocente: ww.xp_cazador_matar_inocente ?? -1,
+        xp_curandera_proteger_atacado: ww.xp_curandera_proteger_atacado ?? 3,
+        xp_caballero_usar_poder: ww.xp_caballero_usar_poder ?? 2,
+        xp_ramera_bloquear_decisor: ww.xp_ramera_bloquear_decisor ?? 5,
+        xp_ramera_bloquear_inocente_accion: ww.xp_ramera_bloquear_inocente_accion ?? -1,
+        xp_zorro_localizar_lobo: ww.xp_zorro_localizar_lobo ?? 2,
+        xp_cazador_bestias_trampa_lobo: ww.xp_cazador_bestias_trampa_lobo ?? 5,
+        xp_cupido_amantes_ganan: ww.xp_cupido_amantes_ganan ?? 15,
+        xp_nino_salvaje_convertirse: ww.xp_nino_salvaje_convertirse ?? 3,
+        xp_hermanas_vivas_ganan: ww.xp_hermanas_vivas_ganan ?? 5,
+        xp_hermanas_muerte_votacion: ww.xp_hermanas_muerte_votacion ?? -3,
+        xp_lobo_kill_cooperativo: ww.xp_lobo_kill_cooperativo ?? 1,
+        xp_gran_lobo_kill_personal: ww.xp_gran_lobo_kill_personal ?? 2,
+        xp_lobo_blanco_kill_lobo: ww.xp_lobo_blanco_kill_lobo ?? 3,
+        xp_hechicera_descubrir_vidente: ww.xp_hechicera_descubrir_vidente ?? 5,
         channels,
         roles,
         blacklist,
@@ -300,34 +320,75 @@ export async function POST(request) {
           }
         }
       }
-       const pts_enabled = werewolfConfig.pts_enabled === true;
-       const prefix = String(werewolfConfig.prefix || 'ww').trim().substring(0, 10);
-       const pts_victory = parseInt(werewolfConfig.pts_victory, 10) || 0;
-       const pts_special_victory = werewolfConfig.pts_special_victory !== undefined ? (parseInt(werewolfConfig.pts_special_victory, 10) || 0) : 50;
-       const pts_round_alive = parseInt(werewolfConfig.pts_round_alive, 10) || 0;
-       const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
-       const mention_cooldown = parseInt(werewolfConfig.mention_cooldown, 10) || 900;
+        const pts_enabled = werewolfConfig.pts_enabled === true;
+        const prefix = String(werewolfConfig.prefix || 'ww').trim().substring(0, 10);
+        const pts_victory = parseInt(werewolfConfig.pts_victory, 10) || 0;
+        const pts_special_victory = werewolfConfig.pts_special_victory !== undefined ? (parseInt(werewolfConfig.pts_special_victory, 10) || 0) : 40;
+        const pts_round_alive = parseInt(werewolfConfig.pts_round_alive, 10) || 0;
+        const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
+        const mention_cooldown = parseInt(werewolfConfig.mention_cooldown, 10) || 900;
 
-       const res = await db.collection('ww_guilds').updateOne(
-         { _id: guildQuery(guildId) },
-         {
-           $set: {
-             allowed_channels,
-             mention_role_id,
-             canal_anuncios,
-             mute_noche,
-             mute_votacion,
-             mute_muertos,
-             level_roles,
-             prefix,
-             pts_victory,
-             pts_special_victory,
-             pts_round_alive,
-             pts_survive_end,
-             pts_enabled,
-             mention_cooldown,
-           }
-         },
+        const xp_vidente_ver_lobo = werewolfConfig.xp_vidente_ver_lobo !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lobo, 10) : 3;
+        const xp_vidente_ver_lycan = werewolfConfig.xp_vidente_ver_lycan !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lycan, 10) : -1;
+        const xp_bruja_matar_lobo = werewolfConfig.xp_bruja_matar_lobo !== undefined ? parseInt(werewolfConfig.xp_bruja_matar_lobo, 10) : 5;
+        const xp_bruja_matar_inocente = werewolfConfig.xp_bruja_matar_inocente !== undefined ? parseInt(werewolfConfig.xp_bruja_matar_inocente, 10) : -2;
+        const xp_cazador_matar_lobo = werewolfConfig.xp_cazador_matar_lobo !== undefined ? parseInt(werewolfConfig.xp_cazador_matar_lobo, 10) : 5;
+        const xp_cazador_matar_inocente = werewolfConfig.xp_cazador_matar_inocente !== undefined ? parseInt(werewolfConfig.xp_cazador_matar_inocente, 10) : -1;
+        const xp_curandera_proteger_atacado = werewolfConfig.xp_curandera_proteger_atacado !== undefined ? parseInt(werewolfConfig.xp_curandera_proteger_atacado, 10) : 3;
+        const xp_caballero_usar_poder = werewolfConfig.xp_caballero_usar_poder !== undefined ? parseInt(werewolfConfig.xp_caballero_usar_poder, 10) : 2;
+        const xp_ramera_bloquear_decisor = werewolfConfig.xp_ramera_bloquear_decisor !== undefined ? parseInt(werewolfConfig.xp_ramera_bloquear_decisor, 10) : 5;
+        const xp_ramera_bloquear_inocente_accion = werewolfConfig.xp_ramera_bloquear_inocente_accion !== undefined ? parseInt(werewolfConfig.xp_ramera_bloquear_inocente_accion, 10) : -1;
+        const xp_zorro_localizar_lobo = werewolfConfig.xp_zorro_localizar_lobo !== undefined ? parseInt(werewolfConfig.xp_zorro_localizar_lobo, 10) : 2;
+        const xp_cazador_bestias_trampa_lobo = werewolfConfig.xp_cazador_bestias_trampa_lobo !== undefined ? parseInt(werewolfConfig.xp_cazador_bestias_trampa_lobo, 10) : 5;
+        const xp_cupido_amantes_ganan = werewolfConfig.xp_cupido_amantes_ganan !== undefined ? parseInt(werewolfConfig.xp_cupido_amantes_ganan, 10) : 15;
+        const xp_nino_salvaje_convertirse = werewolfConfig.xp_nino_salvaje_convertirse !== undefined ? parseInt(werewolfConfig.xp_nino_salvaje_convertirse, 10) : 3;
+        const xp_hermanas_vivas_ganan = werewolfConfig.xp_hermanas_vivas_ganan !== undefined ? parseInt(werewolfConfig.xp_hermanas_vivas_ganan, 10) : 5;
+        const xp_hermanas_muerte_votacion = werewolfConfig.xp_hermanas_muerte_votacion !== undefined ? parseInt(werewolfConfig.xp_hermanas_muerte_votacion, 10) : -3;
+        const xp_lobo_kill_cooperativo = werewolfConfig.xp_lobo_kill_cooperativo !== undefined ? parseInt(werewolfConfig.xp_lobo_kill_cooperativo, 10) : 1;
+        const xp_gran_lobo_kill_personal = werewolfConfig.xp_gran_lobo_kill_personal !== undefined ? parseInt(werewolfConfig.xp_gran_lobo_kill_personal, 10) : 2;
+        const xp_lobo_blanco_kill_lobo = werewolfConfig.xp_lobo_blanco_kill_lobo !== undefined ? parseInt(werewolfConfig.xp_lobo_blanco_kill_lobo, 10) : 3;
+        const xp_hechicera_descubrir_vidente = werewolfConfig.xp_hechicera_descubrir_vidente !== undefined ? parseInt(werewolfConfig.xp_hechicera_descubrir_vidente, 10) : 5;
+
+        const res = await db.collection('ww_guilds').updateOne(
+          { _id: guildQuery(guildId) },
+          {
+            $set: {
+              allowed_channels,
+              mention_role_id,
+              canal_anuncios,
+              mute_noche,
+              mute_votacion,
+              mute_muertos,
+              level_roles,
+              prefix,
+              pts_victory,
+              pts_special_victory,
+              pts_round_alive,
+              pts_survive_end,
+              pts_enabled,
+              mention_cooldown,
+              xp_vidente_ver_lobo,
+              xp_vidente_ver_lycan,
+              xp_bruja_matar_lobo,
+              xp_bruja_matar_inocente,
+              xp_cazador_matar_lobo,
+              xp_cazador_matar_inocente,
+              xp_curandera_proteger_atacado,
+              xp_caballero_usar_poder,
+              xp_ramera_bloquear_decisor,
+              xp_ramera_bloquear_inocente_accion,
+              xp_zorro_localizar_lobo,
+              xp_cazador_bestias_trampa_lobo,
+              xp_cupido_amantes_ganan,
+              xp_nino_salvaje_convertirse,
+              xp_hermanas_vivas_ganan,
+              xp_hermanas_muerte_votacion,
+              xp_lobo_kill_cooperativo,
+              xp_gran_lobo_kill_personal,
+              xp_lobo_blanco_kill_lobo,
+              xp_hechicera_descubrir_vidente,
+            }
+          },
          { upsert: true }
        );
       return NextResponse.json({ success: res.matchedCount > 0 || res.upsertedCount > 0 });
