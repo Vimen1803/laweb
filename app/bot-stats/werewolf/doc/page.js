@@ -20,7 +20,7 @@ export default function WerewolfDocInicio() {
           <span className="orange-text">necesita tu voto</span>
         </h1>
         <p className="hero-subtitle">
-          El bot de Pueblo Duerme más completo para Discord. Roles, presets dinámicos, logros evolutivos y mucho más.
+          El bot de Pueblo Duerme más completo para Discord. Roles, presets dinámicos, roles por nivel (XP) y mucho más.
         </p>
       </section>
 

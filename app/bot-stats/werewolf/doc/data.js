@@ -55,9 +55,9 @@ export const COMMANDS_DATA = [
   { id: "help", name: "help", prefix: "/ww ", cat: "info", desc: "Menú de ayuda.", long_desc: "Muestra el mensaje de ayuda general con todas las categorías de comandos.", params: [], examples: ["/ww help"] },
   // --- ESTADISTICAS ---
   { id: "stats", name: "stats [@usuario]", prefix: "/ww ", cat: "stats", desc: "Estadísticas de jugador.", long_desc: "Muestra el historial de partidas, victorias por bando y roles más jugados de un usuario.", params: [ { name: "@usuario", desc: "Mención del usuario a consultar (opcional, por defecto tú).", optional: true } ], examples: ["/ww stats", "/ww stats @vicktor"] },
-  { id: "lb", name: "lb", prefix: "/ww ", cat: "stats", desc: "Clasificación del evento.", long_desc: "Muestra la tabla del Top 10 de jugadores con mayor puntuación acumulada en el evento de Werewolf.", params: [], examples: ["/ww lb", ",ww lb", ",ww top"] },
-  { id: "pts", name: "pts/puntos/points", prefix: "/ww ", cat: "stats", desc: "Ver puntuaciones por acción.", long_desc: "Muestra los puntos otorgados por cada acción en la partida (rondas sobrevividas, victoria normal o especial, y supervivencia al final de la partida).", params: [], examples: ["/ww pts", ",ww pts", ",ww puntos"] },
-  { id: "logros", name: "logros", prefix: "/ww ", cat: "stats", desc: "Ver logros y rangos.", long_desc: "Muestra el progreso de obtención de roles exclusivos y el sistema de rangos de la comunidad.", params: [], examples: ["/ww logros"] },
+  { id: "lb", name: "lb", prefix: "/ww ", cat: "stats", desc: "Clasificación de XP.", long_desc: "Muestra la tabla del Top 10 de jugadores con mayor XP acumulada en Werewolf.", params: [], examples: ["/ww lb", ",ww lb", ",ww top"] },
+  { id: "pts", name: "pts/xp/puntos/points", prefix: "/ww ", cat: "stats", desc: "Ver XP por acción.", long_desc: "Muestra la XP otorgada por cada acción en la partida (rondas sobrevividas, victoria normal o especial, y supervivencia al final de la partida).", params: [], examples: ["/ww pts", ",ww pts", ",ww puntos"] },
+  { id: "niveles", name: "niveles", prefix: "/ww ", cat: "stats", desc: "Ver niveles y rangos.", long_desc: "Muestra los roles de rango por nivel del servidor y tu progreso.", params: [], examples: ["/ww niveles", ",ww niveles"] },
   { id: "wr", name: "wr", prefix: "/ww ", cat: "stats", desc: "Win rates globales.", long_desc: "Estadísticas generales de victoria para cada bando (Aldea, Lobos, Solitarios, Amantes).", params: [], examples: ["/ww wr"] },
   // --- COMUNIDAD ---
   { id: "bug", name: "bug <descripción>", prefix: ",ww ", cat: "comunidad", desc: "Reportar un bug.", long_desc: "Envía un reporte técnico a los desarrolladores sobre un fallo en el bot.", params: [ { name: "descripción", desc: "Detalles del error encontrado.", optional: false } ], examples: [",ww bug El comando status no carga", ",ww bug No morí al ser atacado"] },
@@ -71,8 +71,8 @@ export const COMMANDS_DATA = [
   { id: "bl_add", name: "bl add @usuario [motivo]", prefix: ",ww ", cat: "admin", desc: "Añadir a la blacklist.", long_desc: "Prohíbe a un usuario participar en cualquier partida del bot.", params: [ { name: "@usuario", desc: "Mención del usuario a banear.", optional: false }, { name: "motivo", desc: "Razón del baneo.", optional: true } ], examples: [",ww bl add @toxico Toxicidad extrema", ",ww bl add @hacker Trampas"] },
   { id: "bl_remove", name: "bl remove @usuario", prefix: ",ww ", cat: "admin", desc: "Eliminar de la blacklist.", long_desc: "Perdona a un usuario y le permite volver a jugar.", params: [ { name: "@usuario", desc: "Mención del usuario a desbanear.", optional: false } ], examples: [",ww bl remove @ex_toxico"] },
   { id: "changelog", name: "changelog <enlace>", prefix: ",ww ", cat: "admin", desc: "Enviar un changelog.", long_desc: "Envía el anuncio de actualización al canal configurado usando un enlace a la imagen del parche. Sin enlace se manda el changelog de texto.", params: [ { name: "enlace", desc: "URL de la imagen del changelog.", optional: true } ], examples: [",ww changelog https://imagen.com/patch.png", ",ww changelog"] },
-  { id: "config", name: "config", prefix: ",ww ", cat: "admin", desc: "Ver la configuración del servidor.", long_desc: "Muestra un Embed detallado con la configuración de Werewolf en este servidor, incluyendo canales permitidos, mutes, prefijo y estado de la asignación de puntos.", params: [], examples: [",ww config"] },
-  { id: "resetlb", name: "resetlb", prefix: ",ww ", cat: "admin", desc: "Resetear puntos del evento.", long_desc: "Resetea a 0 los puntos de evento acumulados de todos los usuarios registrados en el bot. Solo accesible para administradores de Discord u owners.", params: [], examples: [",ww resetlb", "/ww resetlb"] },
+  { id: "config", name: "config", prefix: ",ww ", cat: "admin", desc: "Ver la configuración del servidor.", long_desc: "Muestra un Embed detallado con la configuración de Werewolf en este servidor, incluyendo canales permitidos, mutes, prefijo y estado del sistema de XP.", params: [], examples: [",ww config"] },
+  { id: "resetlb", name: "resetlb", prefix: ",ww ", cat: "admin", desc: "Resetear la XP.", long_desc: "Resetea a 0 la XP acumulada de todos los usuarios registrados en el bot. Solo accesible para administradores de Discord u owners.", params: [], examples: [",ww resetlb", "/ww resetlb"] },
   { id: "fixperms", name: "fixperms", prefix: ",ww ", cat: "admin", desc: "Limpiar bloqueos de chat.", long_desc: "Limpia los permisos de chat de los miembros que se hayan quedado silenciados por error tras una caída del bot o el fin de una partida. Solo disponible para administradores o el creador del bot.", params: [], examples: [",ww fixperms"] },
 ];
 
@@ -123,13 +123,11 @@ export const PRESETS_DATA = {
   wolfCount: [1,1,2,2,2,3,3,3,4,4,4,5,5,5,5,5],
 };
 
-export const LOGROS_DATA = [
-  { emoji: "🏡", title: "Aldea", color: "var(--accent-green)", desc: "Gana partidas con el bando de la Aldea", levels: [ { l: "I", req: "10 victorias" }, { l: "II", req: "50 victorias" }, { l: "III", req: "100 victorias" } ] },
-  { emoji: "🐺", title: "Lobos", color: "var(--accent-red)", desc: "Gana partidas con el bando de los Lobos", levels: [ { l: "I", req: "10 victorias" }, { l: "II", req: "50 victorias" }, { l: "III", req: "100 victorias" } ] },
-  { emoji: "🪡", title: "Curtidor", color: "var(--accent-purple)", desc: "Gana partidas como el Curtidor", levels: [ { l: "I", req: "5 victorias" }, { l: "II", req: "15 victorias" }, { l: "III", req: "25 victorias" } ] },
-  { emoji: "🤍", title: "Lobo Blanco", color: "var(--accent-purple)", desc: "Gana partidas como el Lobo Blanco", levels: [ { l: "I", req: "1 victoria" }, { l: "II", req: "5 victorias" }, { l: "III", req: "10 victorias" } ] },
-  { emoji: "💖", title: "Amantes", color: "#ff7eb6", desc: "Gana como pareja de amantes", levels: [ { l: "✦", req: "1 victoria como amante" } ] },
-  { emoji: "🏆", title: "Generales", color: "var(--gold)", desc: "Tener todos los logros al mismo nivel", levels: [ { l: "I", req: "Todos los roles de nivel I" }, { l: "II", req: "Todos los roles de nivel II" }, { l: "III", req: "Todos los roles de nivel III" } ] },
+export const NIVELES_DATA = [
+  { level: 5, xp: 320, emoji: "🥈", name: "Iniciado", color: "#a0a0a0", desc: "Primer rango por nivel. Has demostrado conocer las bases del juego." },
+  { level: 10, xp: 1620, emoji: "🥇", name: "Veterano", color: "var(--gold)", desc: "Rango de veteranía. Eres un jugador experimentado en la manada." },
+  { level: 15, xp: 3920, emoji: "👑", name: "Leyenda", color: "var(--accent-purple)", desc: "Rango legendario. Dominas el engaño, la traición y la deducción." },
+  { level: 20, xp: 7220, emoji: "🏆", name: "Mítico", color: "#e74c3c", desc: "Rango mítico. Nivel máximo de maestría en Werewolf." }
 ];
 
 export const CHANGELOG_DATA = [
@@ -138,8 +136,10 @@ export const CHANGELOG_DATA = [
     title: "📢 Actualización de Agosto — Sistema de XP y Panel Web",
     sections: [
       { heading: "🌟 NUEVAS CARACTERÍSTICAS", items: [
-        "<strong>📈 Sistema de Niveles y XP:</strong> ¡Ahora tienes niveles en Werewolf! Tu nivel se calcula automáticamente a partir de tus puntos con la fórmula <code>Nivel = 1 + sqrt(Puntos / 20)</code>.",
-        "<strong>🎗️ Comando <code>,ww pts</code> / <code>/ww pts</code>:</strong> Nuevo comando público para consultar de forma interactiva las puntuaciones asignadas por cada acción de la partida (victorias, rondas sobrevividas, etc.).",
+        "<strong>📈 Sistema de Niveles y XP:</strong> ¡Ahora tienes niveles en Werewolf! Tu nivel se calcula automáticamente a partir de tu XP con la fórmula <code>Nivel = 1 + sqrt(XP / 20)</code>.",
+        "<strong>🎖️ Roles por Nivel (Exclusivos):</strong> Se ha eliminado el antiguo sistema de logros por victorias. Ahora los servidores otorgan roles automáticos según tu nivel. Al subir de nivel se te asignará el rol nuevo y se retirará el anterior (asignación exclusiva). Modificable por los administradores desde el panel web.",
+        "<strong>🎗️ Comando <code>,ww niveles</code> / <code>/ww niveles</code>:</strong> Nuevo comando público para ver el progreso actual, tu nivel, XP acumulada y la lista de rangos por nivel configurados.",
+        "<strong>🎗️ Comando <code>,ww pts</code> / <code>/ww pts</code>:</strong> Nuevo comando público para consultar de forma interactiva la XP asignada por cada acción de la partida (victorias, rondas sobrevividas, etc.).",
         "<strong>🛡️ Blacklist de Werewolf en la Web:</strong> Añadida una nueva sección en el Panel de Administración de la Web para gestionar usuarios en la lista negra (ver, añadir y eliminar con doble confirmación) de forma segura y automatizada.",
         "<strong>📊 Niveles en Stats:</strong> Los comandos <code>,ww stats</code> y <code>/ww stats</code> ahora muestran tu nivel de XP actual y se actualizan al instante.",
       ] },
@@ -174,14 +174,14 @@ export const CHANGELOG_DATA = [
     date: "JUNIO 2026",
     title: "📢 Actualización de Junio — Sistema de Eventos",
     sections: [
-      { heading: "🏆 SISTEMA DE PUNTOS Y EVENTO", items: [
-        "<strong>⏱️ Puntos por ronda:</strong> +2 puntos por cada ronda aguantada con vida.",
-        "<strong>🏆 Puntos por victoria:</strong> +15 puntos a cada miembro del equipo ganador (Aldea o Lobos).",
-        "<strong>❤️/💖 Victoria Solitaria o Enamorados:</strong> +50 puntos extra por ganar la partida como Solitario o Amantes.",
-        "<strong>❤️ Supervivencia final:</strong> +5 puntos extra si finalizas la partida con vida.",
+      { heading: "🏆 SISTEMA DE XP", items: [
+        "<strong>⏱️ XP por ronda:</strong> +2 XP por cada ronda aguantada con vida.",
+        "<strong>🏆 XP por victoria:</strong> +15 XP a cada miembro del equipo ganador (Aldea o Lobos).",
+        "<strong>❤️/💖 Victoria Solitaria o Enamorados:</strong> +50 XP extra por ganar la partida como Solitario o Amantes.",
+        "<strong>❤️ Supervivencia final:</strong> +5 XP extra si finalizas la partida con vida.",
         "<strong>🥇 Tabla de Clasificación:</strong> Nuevo comando <code>,ww lb</code> / <code>/ww lb</code> para consultar los Top 10 jugadores.",
-        "<strong>📊 Puntos en Stats:</strong> El comando <code>,ww stats</code> ahora muestra los puntos acumulados del evento.",
-        "<strong>🛠️ Reset de Puntos:</strong> Comando <code>,ww resetlb</code> para que admins y owners reinicien la clasificación.",
+        "<strong>📊 XP en Stats:</strong> El comando <code>,ww stats</code> ahora muestra la XP acumulada.",
+        "<strong>🛠️ Reset de XP:</strong> Comando <code>,ww resetlb</code> para que admins y owners reinicien la clasificación.",
       ] },
       { heading: "⚙️ CAMBIOS DE EQUILIBRIO Y ROLES", items: [
         "<strong>🦴 Gran Lobo Feroz:</strong> Su habilidad para matar a una 2ª víctima en solitario solo se activa en <strong>noches pares</strong>.",

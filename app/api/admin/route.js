@@ -130,7 +130,7 @@ export async function GET(request) {
         mute_noche: ww.mute_noche ?? true,
         mute_votacion: ww.mute_votacion ?? true,
         mute_muertos: ww.mute_muertos ?? true,
-        logros_enabled: ww.logros_enabled ?? true,
+        level_roles: ww.level_roles ? Object.fromEntries(Object.entries(ww.level_roles).map(([k, v]) => [k, String(v)])) : {},
         prefix: ww.prefix || 'ww',
         pts_victory: ww.pts_victory ?? 15,
         pts_special_victory: ww.pts_special_victory ?? 50,
@@ -292,7 +292,14 @@ export async function POST(request) {
       const mute_noche = werewolfConfig.mute_noche === true;
       const mute_votacion = werewolfConfig.mute_votacion === true;
       const mute_muertos = werewolfConfig.mute_muertos === true;
-      const logros_enabled = werewolfConfig.logros_enabled === true;
+      let level_roles = {};
+      if (werewolfConfig.level_roles && typeof werewolfConfig.level_roles === 'object') {
+        for (const [lvl, rId] of Object.entries(werewolfConfig.level_roles)) {
+          if (rId) {
+            try { level_roles[lvl] = Long.fromString(String(rId)); } catch {}
+          }
+        }
+      }
        const pts_enabled = werewolfConfig.pts_enabled === true;
        const prefix = String(werewolfConfig.prefix || 'ww').trim().substring(0, 10);
        const pts_victory = parseInt(werewolfConfig.pts_victory, 10) || 0;
@@ -311,7 +318,7 @@ export async function POST(request) {
              mute_noche,
              mute_votacion,
              mute_muertos,
-             logros_enabled,
+             level_roles,
              prefix,
              pts_victory,
              pts_special_victory,

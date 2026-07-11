@@ -7,7 +7,7 @@ const NAV = [
   { href: '/bot-stats/werewolf/doc', label: 'Inicio', exact: true },
   { href: '/bot-stats/werewolf/doc/normas', label: 'Normas' },
   { href: '/bot-stats/werewolf/doc/roles', label: 'Roles' },
-  { href: '/bot-stats/werewolf/doc/logros', label: 'Logros' },
+  { href: '/bot-stats/werewolf/doc/niveles', label: 'Niveles' },
   { href: '/bot-stats/werewolf/doc/comandos', label: 'Comandos' },
   { href: '/bot-stats/werewolf/doc/presets', label: 'Presets' },
   { href: '/bot-stats/werewolf/doc/cambios', label: 'Cambios' },

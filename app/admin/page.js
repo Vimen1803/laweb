@@ -52,6 +52,8 @@ export default function AdminPage() {
   const [savingField, setSavingField] = useState(null);
   const [punish, setPunish] = useState([]);
   const [isAddingWwBlacklist, setIsAddingWwBlacklist] = useState(false);
+  const [newLevel, setNewLevel] = useState('');
+  const [newRole, setNewRole] = useState('');
 
   // --- Sistema de notificaciones (toasts) ---
   function showToast(type, title, message) {
@@ -121,7 +123,7 @@ export default function AdminPage() {
         mute_noche: data.mute_noche ?? true,
         mute_votacion: data.mute_votacion ?? true,
         mute_muertos: data.mute_muertos ?? true,
-        logros_enabled: data.logros_enabled ?? true,
+        level_roles: data.level_roles || {},
         prefix: data.prefix || 'ww',
         pts_victory: data.pts_victory ?? 15,
         pts_special_victory: data.pts_special_victory ?? 50,
@@ -198,7 +200,7 @@ export default function AdminPage() {
             mute_noche: drafts.mute_noche === true,
             mute_votacion: drafts.mute_votacion === true,
             mute_muertos: drafts.mute_muertos === true,
-            logros_enabled: drafts.logros_enabled === true,
+            level_roles: drafts.level_roles || {},
             prefix: drafts.prefix || 'ww',
             pts_victory: Number(drafts.pts_victory) || 0,
             pts_special_victory: Number(drafts.pts_special_victory) || 0,
@@ -221,6 +223,39 @@ export default function AdminPage() {
     }
     setSavingField(null);
   }
+
+  const updateLevelRole = (lvl, roleId) => {
+    setDrafts(prev => ({
+      ...prev,
+      level_roles: {
+        ...(prev.level_roles || {}),
+        [lvl]: roleId
+      }
+    }));
+  };
+
+  const deleteLevelRole = (lvl) => {
+    setDrafts(prev => {
+      const updated = { ...(prev.level_roles || {}) };
+      delete updated[lvl];
+      return { ...prev, level_roles: updated };
+    });
+  };
+
+  const addLevelRole = () => {
+    if (!newLevel || !newRole) return;
+    const lvlStr = String(parseInt(newLevel, 10));
+    if (isNaN(lvlStr)) return;
+    setDrafts(prev => ({
+      ...prev,
+      level_roles: {
+        ...(prev.level_roles || {}),
+        [lvlStr]: newRole
+      }
+    }));
+    setNewLevel('');
+    setNewRole('');
+  };
 
   const addPunishRow = () => {
     const next = (punish && punish.length) ? Math.max(...punish.map(r => parseInt(r.strike) || 0)) + 1 : 1;
@@ -1163,7 +1198,6 @@ export default function AdminPage() {
                         ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
                         ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
                         ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
-                        ['logros_enabled', 'Habilitar Roles de Logro', 'Concede roles automáticos según victorias acumuladas.'],
                       ].map(([field, label, desc]) => (
                         <div key={field} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
                           <div>
@@ -1182,6 +1216,65 @@ export default function AdminPage() {
                     </div>
                   </div>
 
+                  {/* Roles por Nivel (Ancho completo) */}
+                  <div className="admin-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderLeft: '4px solid #3498db', marginTop: '1.5rem' }}>
+                    <div className="admin-card-title">🎖️ Roles de Discord por Nivel</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                      Configura los roles de Discord otorgados automáticamente al alcanzar un nivel determinado en el juego (se asignará solo el rol de nivel más alto alcanzado).
+                    </p>
+                    
+                    {/* Lista de roles actuales */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px' }}>
+                      {Object.entries(drafts.level_roles || {}).length === 0 ? (
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '12px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)', textAlign: 'center' }}>
+                          No hay roles configurados por nivel. El bot no asignará roles por nivel hasta que añadas alguno.
+                        </div>
+                      ) : (
+                        Object.entries(drafts.level_roles || {})
+                          .sort((a, b) => Number(a[0]) - Number(b[0]))
+                          .map(([lvl, roleId]) => (
+                            <div key={lvl} style={{ display: 'flex', gap: '12px', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '10px 15px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                              <div style={{ fontSize: '0.85rem', fontWeight: 600, width: '80px', flexShrink: 0 }}>
+                                Nivel {lvl}
+                              </div>
+                              <select value={roleId} onChange={e => updateLevelRole(lvl, e.target.value)}
+                                style={{ flexGrow: 1, padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                                <option value="">— Seleccionar Rol —</option>
+                                {(data.roles || []).map(r => (
+                                  <option key={r.id} value={r.id}>@{r.name}</option>
+                                ))}
+                              </select>
+                              <button type="button" onClick={() => deleteLevelRole(lvl)} style={{ background: '#e74c3c', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600 }}>
+                                Eliminar
+                              </button>
+                            </div>
+                          ))
+                      )}
+                    </div>
+
+                    {/* Formulario para añadir uno nuevo */}
+                    <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 120px' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Nivel</span>
+                        <input type="number" min="1" placeholder="Ej: 5" value={newLevel} onChange={e => setNewLevel(e.target.value)}
+                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                      </div>
+                      <div style={{ flex: '2 1 200px' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Rol obtenido</span>
+                        <select value={newRole} onChange={e => setNewRole(e.target.value)}
+                          style={{ width: '100%', padding: '8px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}>
+                          <option value="">— Seleccionar Rol —</option>
+                          {(data.roles || []).map(r => (
+                            <option key={r.id} value={r.id}>@{r.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <button type="button" onClick={addLevelRole} style={{ background: '#2ecc71', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600, height: '38px', flexShrink: 0 }}>
+                        + Añadir Rol
+                      </button>
+                    </div>
+                  </div>
+
                 </>
               )}
 
@@ -1194,11 +1287,11 @@ export default function AdminPage() {
                     Configuración de XP de Werewolf
                   </h2>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                    Configura el sistema de puntos de evento y las cantidades de XP obtenidas en las partidas.
+                    Configura el sistema de XP y las cantidades obtenidas en las partidas.
                   </p>
 
                   <div className="admin-card" style={{ borderLeft: '4px solid var(--gold)', marginBottom: '1.5rem' }}>
-                    <div className="admin-card-title">🏆 Puntos del Evento / XP</div>
+                    <div className="admin-card-title">🏆 Configuración del Sistema de XP</div>
                     
                     <div style={{ opacity: drafts.pts_enabled ? 1 : 0.5, pointerEvents: drafts.pts_enabled ? 'auto' : 'none', transition: 'all 0.2s ease-in-out' }}>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '12px', marginBottom: '16px' }}>
@@ -1226,7 +1319,7 @@ export default function AdminPage() {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de puntos de evento</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Activar o desactivar el sistema de XP</span>
                       <label style={{ display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
                         <div style={{ position: 'relative' }}>
                           <input type="checkbox" checked={drafts.pts_enabled ?? true} onChange={e => setDrafts(prev => ({ ...prev, pts_enabled: e.target.checked }))} style={{ opacity: 0, width: 0, height: 0 }} />
