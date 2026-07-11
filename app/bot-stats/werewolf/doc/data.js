@@ -56,6 +56,7 @@ export const COMMANDS_DATA = [
   // --- ESTADISTICAS ---
   { id: "stats", name: "stats [@usuario]", prefix: "/ww ", cat: "stats", desc: "Estadísticas de jugador.", long_desc: "Muestra el historial de partidas, victorias por bando y roles más jugados de un usuario.", params: [ { name: "@usuario", desc: "Mención del usuario a consultar (opcional, por defecto tú).", optional: true } ], examples: ["/ww stats", "/ww stats @vicktor"] },
   { id: "lb", name: "lb", prefix: "/ww ", cat: "stats", desc: "Clasificación del evento.", long_desc: "Muestra la tabla del Top 10 de jugadores con mayor puntuación acumulada en el evento de Werewolf.", params: [], examples: ["/ww lb", ",ww lb", ",ww top"] },
+  { id: "pts", name: "pts/puntos/points", prefix: "/ww ", cat: "stats", desc: "Ver puntuaciones por acción.", long_desc: "Muestra los puntos otorgados por cada acción en la partida (rondas sobrevividas, victoria normal o especial, y supervivencia al final de la partida).", params: [], examples: ["/ww pts", ",ww pts", ",ww puntos"] },
   { id: "logros", name: "logros", prefix: "/ww ", cat: "stats", desc: "Ver logros y rangos.", long_desc: "Muestra el progreso de obtención de roles exclusivos y el sistema de rangos de la comunidad.", params: [], examples: ["/ww logros"] },
   { id: "wr", name: "wr", prefix: "/ww ", cat: "stats", desc: "Win rates globales.", long_desc: "Estadísticas generales de victoria para cada bando (Aldea, Lobos, Solitarios, Amantes).", params: [], examples: ["/ww wr"] },
   // --- COMUNIDAD ---
