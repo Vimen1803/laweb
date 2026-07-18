@@ -131,6 +131,7 @@ export default function AdminPage() {
         pts_survive_end: data.pts_survive_end ?? 5,
         pts_enabled: data.pts_enabled ?? true,
         mention_cooldown: data.mention_cooldown ?? 900,
+        vote_duration: data.vote_duration ?? 10,
         xp_vidente_ver_lobo: data.xp_vidente_ver_lobo ?? 3,
         xp_vidente_ver_lycan: data.xp_vidente_ver_lycan ?? -1,
         xp_bruja_matar_lobo: data.xp_bruja_matar_lobo ?? 5,
@@ -228,6 +229,7 @@ export default function AdminPage() {
             pts_survive_end: Number(drafts.pts_survive_end) || 0,
             pts_enabled: drafts.pts_enabled === true,
             mention_cooldown: Number(drafts.mention_cooldown) || 900,
+            vote_duration: Number(drafts.vote_duration) || 10,
             xp_vidente_ver_lobo: Number(drafts.xp_vidente_ver_lobo),
             xp_vidente_ver_lycan: Number(drafts.xp_vidente_ver_lycan),
             xp_bruja_matar_lobo: Number(drafts.xp_bruja_matar_lobo),
@@ -1254,6 +1256,13 @@ export default function AdminPage() {
                           </label>
                         </div>
                       ))}
+                    </div>
+
+                    <div style={{ marginTop: '12px' }}>
+                      <div className="admin-card-title">🗣️ Tiempo de Discusión (segundos)</div>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de debate antes de la votación del pueblo.</p>
+                      <input type="number" min="5" max="600" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
+                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
                     </div>
                   </div>
 

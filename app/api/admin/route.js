@@ -327,6 +327,7 @@ export async function POST(request) {
         const pts_round_alive = parseInt(werewolfConfig.pts_round_alive, 10) || 0;
         const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
         const mention_cooldown = parseInt(werewolfConfig.mention_cooldown, 10) || 900;
+        const vote_duration = parseInt(werewolfConfig.vote_duration, 10) || 10;
 
         const xp_vidente_ver_lobo = werewolfConfig.xp_vidente_ver_lobo !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lobo, 10) : 3;
         const xp_vidente_ver_lycan = werewolfConfig.xp_vidente_ver_lycan !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lycan, 10) : -1;
@@ -367,6 +368,7 @@ export async function POST(request) {
               pts_survive_end,
               pts_enabled,
               mention_cooldown,
+              vote_duration,
               xp_vidente_ver_lobo,
               xp_vidente_ver_lycan,
               xp_bruja_matar_lobo,
