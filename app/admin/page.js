@@ -1202,19 +1202,9 @@ export default function AdminPage() {
                           )}
                         </div>
                       </div>
-
-                      {/* Prefijo */}
-                      <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
-                        <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
-                          Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
-                        </p>
-                        <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
-                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
-                      </div>
                     </div>
 
-                    {/* Columna Derecha: Canal Anuncios + Mention Rol & Cooldown */}
+                    {/* Columna Derecha: Canal Anuncios + Prefijo */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                       
                       {/* Canal Anuncios */}
@@ -1229,47 +1219,39 @@ export default function AdminPage() {
                         </select>
                       </div>
 
-                      {/* Mention Rol + Cooldown */}
-                      <div className="admin-card" style={{ borderLeft: '4px solid #1abc9c', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <div>
-                          <div className="admin-card-title">📡 Rol de Mención</div>
-                          <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
-                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }}>
-                            <option value="">— Sin configurar —</option>
-                            {(data.roles || []).map(r => (
-                              <option key={r.id} value={r.id}>@{r.name}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <div className="admin-card-title">⏳ Cooldown de Mención (segundos)</div>
-                          <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
-                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
-                        </div>
-                        <div>
-                          <div className="admin-card-title">🗣️ Tiempo de Discusión (segundos)</div>
-                          <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de debate antes de la votación.</p>
-                          <input type="number" min="5" max="600" value={drafts.discussion_duration ?? 90} onChange={e => setDrafts(prev => ({ ...prev, discussion_duration: e.target.value }))}
-                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                        </div>
-                        <div style={{ marginTop: '12px' }}>
-                          <div className="admin-card-title">🗳️ Tiempo de Voto (segundos)</div>
-                          <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de votación.</p>
-                          <input type="number" min="5" max="300" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
-                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
-                        </div>
+                      {/* Prefijo */}
+                      <div className="admin-card" style={{ borderLeft: '4px solid #9b59b6' }}>
+                        <div className="admin-card-title">✏️ Prefijo para comandos de texto</div>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', margin: '4px 0 10px' }}>
+                          Prefijo para invocar comandos de texto (ej. cambiarás de `,ww` a `,lobos`). El prefijo global (ej. `,`) se mantiene.
+                        </p>
+                        <input type="text" value={drafts.prefix ?? 'ww'} onChange={e => setDrafts(prev => ({ ...prev, prefix: e.target.value }))} placeholder="ww" maxLength={10}
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.95rem' }} />
                       </div>
                     </div>
                   </div>
 
-                  {/* Tiempos y Timeouts */}
+                  {/* Tiempos y Duraciones */}
                   <div className="admin-card" style={{ borderLeft: '4px solid #f1c40f', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div className="admin-card-title">⏱️ Tiempos y Timeouts</div>
+                    <div className="admin-card-title">⏱️ Tiempos y Duraciones</div>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '-6px 0 6px' }}>
-                      Configura la duración (en segundos) de los diferentes turnos y esperas de la partida.
+                      Configura la duración (en segundos) de los diferentes turnos y esperas de la partida, así como el cooldown y rol de mención.
                     </p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '12px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)', background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#eee' }}>📡 Rol de Mención</div>
+                        <select value={drafts.mention_role_id ?? ''} onChange={e => setDrafts(prev => ({ ...prev, mention_role_id: e.target.value }))}
+                          style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px', fontSize: '0.85rem' }}>
+                          <option value="">— Sin configurar —</option>
+                          {(data.roles || []).map(r => (
+                            <option key={r.id} value={r.id}>@{r.name}</option>
+                          ))}
+                        </select>
+                      </div>
                       {[
+                        ['mention_cooldown', '⏳ Cooldown Mención (s)'],
+                        ['discussion_duration', '🗣️ Tiempo Discusión (s)'],
+                        ['vote_duration', '🗳️ Tiempo Voto (s)'],
                         ['night_action_timeout', 'Acción Noche DM (s)'],
                         ['wolf_vote_timeout', 'Discusión Lobos (s)'],
                         ['wolf_decision_timeout', 'Decisión Lobo Decisor (s)'],
@@ -1281,7 +1263,7 @@ export default function AdminPage() {
                       ].map(([field, label]) => (
                         <div key={field} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)', background: 'rgba(255,255,255,0.01)' }}>
                           <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#eee' }}>{label}</div>
-                          <input type="number" min="1" max="600" value={drafts[field] ?? ''} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.value }))}
+                          <input type="number" min="1" max="900" value={drafts[field] ?? ''} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.value }))}
                             style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px', fontSize: '0.85rem' }} />
                         </div>
                       ))}
