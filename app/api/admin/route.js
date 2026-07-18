@@ -123,6 +123,21 @@ export async function GET(request) {
         return item;
       });
 
+      // Migración al vuelo en la API Web
+      let vote_duration = ww.vote_duration;
+      let discussion_duration = ww.discussion_duration;
+      if (ww._id && vote_duration !== undefined && discussion_duration === undefined) {
+        discussion_duration = vote_duration;
+        vote_duration = 10;
+        await db.collection('ww_guilds').updateOne(
+          { _id: ww._id },
+          { $set: { discussion_duration, vote_duration } }
+        );
+      } else {
+        if (vote_duration === undefined) vote_duration = 10;
+        if (discussion_duration === undefined) discussion_duration = 90;
+      }
+
       return NextResponse.json({
         allowed_channels: Array.isArray(ww.allowed_channels) ? ww.allowed_channels.map(String) : [],
         mention_role_id: ww.mention_role_id ? String(ww.mention_role_id) : null,
@@ -138,6 +153,16 @@ export async function GET(request) {
         pts_survive_end: ww.pts_survive_end ?? 5,
         pts_enabled: ww.pts_enabled ?? true,
         mention_cooldown: ww.mention_cooldown ?? 900,
+        vote_duration,
+        discussion_duration,
+        night_action_timeout: ww.night_action_timeout ?? 60,
+        wolf_vote_timeout: ww.wolf_vote_timeout ?? 60,
+        wolf_decision_timeout: ww.wolf_decision_timeout ?? 30,
+        hunter_shot_timeout: ww.hunter_shot_timeout ?? 30,
+        night_countdown: ww.night_countdown ?? 5,
+        saquea_tumbas_decision: ww.saquea_tumbas_decision ?? 30,
+        judge_decision_timeout: ww.judge_decision_timeout ?? 30,
+        miron_read_timeout: ww.miron_read_timeout ?? 20,
         xp_vidente_ver_lobo: ww.xp_vidente_ver_lobo ?? 3,
         xp_vidente_ver_lycan: ww.xp_vidente_ver_lycan ?? -1,
         xp_bruja_matar_lobo: ww.xp_bruja_matar_lobo ?? 5,
@@ -328,6 +353,15 @@ export async function POST(request) {
         const pts_survive_end = werewolfConfig.pts_survive_end !== undefined ? (parseInt(werewolfConfig.pts_survive_end, 10) || 0) : 5;
         const mention_cooldown = parseInt(werewolfConfig.mention_cooldown, 10) || 900;
         const vote_duration = parseInt(werewolfConfig.vote_duration, 10) || 10;
+        const discussion_duration = parseInt(werewolfConfig.discussion_duration, 10) || 90;
+        const night_action_timeout = parseInt(werewolfConfig.night_action_timeout, 10) || 60;
+        const wolf_vote_timeout = parseInt(werewolfConfig.wolf_vote_timeout, 10) || 60;
+        const wolf_decision_timeout = parseInt(werewolfConfig.wolf_decision_timeout, 10) || 30;
+        const hunter_shot_timeout = parseInt(werewolfConfig.hunter_shot_timeout, 10) || 30;
+        const night_countdown = parseInt(werewolfConfig.night_countdown, 10) || 5;
+        const saquea_tumbas_decision = parseInt(werewolfConfig.saquea_tumbas_decision, 10) || 30;
+        const judge_decision_timeout = parseInt(werewolfConfig.judge_decision_timeout, 10) || 30;
+        const miron_read_timeout = parseInt(werewolfConfig.miron_read_timeout, 10) || 20;
 
         const xp_vidente_ver_lobo = werewolfConfig.xp_vidente_ver_lobo !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lobo, 10) : 3;
         const xp_vidente_ver_lycan = werewolfConfig.xp_vidente_ver_lycan !== undefined ? parseInt(werewolfConfig.xp_vidente_ver_lycan, 10) : -1;
@@ -369,6 +403,15 @@ export async function POST(request) {
               pts_enabled,
               mention_cooldown,
               vote_duration,
+              discussion_duration,
+              night_action_timeout,
+              wolf_vote_timeout,
+              wolf_decision_timeout,
+              hunter_shot_timeout,
+              night_countdown,
+              saquea_tumbas_decision,
+              judge_decision_timeout,
+              miron_read_timeout,
               xp_vidente_ver_lobo,
               xp_vidente_ver_lycan,
               xp_bruja_matar_lobo,

@@ -131,7 +131,16 @@ export default function AdminPage() {
         pts_survive_end: data.pts_survive_end ?? 5,
         pts_enabled: data.pts_enabled ?? true,
         mention_cooldown: data.mention_cooldown ?? 900,
+        discussion_duration: data.discussion_duration ?? 90,
         vote_duration: data.vote_duration ?? 10,
+        night_action_timeout: data.night_action_timeout ?? 60,
+        wolf_vote_timeout: data.wolf_vote_timeout ?? 60,
+        wolf_decision_timeout: data.wolf_decision_timeout ?? 30,
+        hunter_shot_timeout: data.hunter_shot_timeout ?? 30,
+        night_countdown: data.night_countdown ?? 5,
+        saquea_tumbas_decision: data.saquea_tumbas_decision ?? 30,
+        judge_decision_timeout: data.judge_decision_timeout ?? 30,
+        miron_read_timeout: data.miron_read_timeout ?? 20,
         xp_vidente_ver_lobo: data.xp_vidente_ver_lobo ?? 3,
         xp_vidente_ver_lycan: data.xp_vidente_ver_lycan ?? -1,
         xp_bruja_matar_lobo: data.xp_bruja_matar_lobo ?? 5,
@@ -229,7 +238,16 @@ export default function AdminPage() {
             pts_survive_end: Number(drafts.pts_survive_end) || 0,
             pts_enabled: drafts.pts_enabled === true,
             mention_cooldown: Number(drafts.mention_cooldown) || 900,
+            discussion_duration: Number(drafts.discussion_duration) || 90,
             vote_duration: Number(drafts.vote_duration) || 10,
+            night_action_timeout: Number(drafts.night_action_timeout) || 60,
+            wolf_vote_timeout: Number(drafts.wolf_vote_timeout) || 60,
+            wolf_decision_timeout: Number(drafts.wolf_decision_timeout) || 30,
+            hunter_shot_timeout: Number(drafts.hunter_shot_timeout) || 30,
+            night_countdown: Number(drafts.night_countdown) || 5,
+            saquea_tumbas_decision: Number(drafts.saquea_tumbas_decision) || 30,
+            judge_decision_timeout: Number(drafts.judge_decision_timeout) || 30,
+            miron_read_timeout: Number(drafts.miron_read_timeout) || 20,
             xp_vidente_ver_lobo: Number(drafts.xp_vidente_ver_lobo),
             xp_vidente_ver_lycan: Number(drafts.xp_vidente_ver_lycan),
             xp_bruja_matar_lobo: Number(drafts.xp_bruja_matar_lobo),
@@ -1231,10 +1249,42 @@ export default function AdminPage() {
                         <div>
                           <div className="admin-card-title">🗣️ Tiempo de Discusión (segundos)</div>
                           <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de debate antes de la votación.</p>
-                          <input type="number" min="5" max="600" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
+                          <input type="number" min="5" max="600" value={drafts.discussion_duration ?? 90} onChange={e => setDrafts(prev => ({ ...prev, discussion_duration: e.target.value }))}
+                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
+                        <div style={{ marginTop: '12px' }}>
+                          <div className="admin-card-title">🗳️ Tiempo de Voto (segundos)</div>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de votación.</p>
+                          <input type="number" min="5" max="300" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
                             style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Tiempos y Timeouts */}
+                  <div className="admin-card" style={{ borderLeft: '4px solid #f1c40f', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div className="admin-card-title">⏱️ Tiempos y Timeouts</div>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '-6px 0 6px' }}>
+                      Configura la duración (en segundos) de los diferentes turnos y esperas de la partida.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '12px' }}>
+                      {[
+                        ['night_action_timeout', 'Acción Noche DM (s)'],
+                        ['wolf_vote_timeout', 'Discusión Lobos (s)'],
+                        ['wolf_decision_timeout', 'Decisión Lobo Decisor (s)'],
+                        ['hunter_shot_timeout', 'Disparo Cazador (s)'],
+                        ['night_countdown', 'Cuenta atrás Noche (s)'],
+                        ['saquea_tumbas_decision', 'Decisión Saquea Tumbas (s)'],
+                        ['judge_decision_timeout', 'Decisión Juez (s)'],
+                        ['miron_read_timeout', 'Lectura Mirón (s)'],
+                      ].map(([field, label]) => (
+                        <div key={field} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)', background: 'rgba(255,255,255,0.01)' }}>
+                          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#eee' }}>{label}</div>
+                          <input type="number" min="1" max="600" value={drafts[field] ?? ''} onChange={e => setDrafts(prev => ({ ...prev, [field]: e.target.value }))}
+                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px', fontSize: '0.85rem' }} />
+                        </div>
+                      ))}
                     </div>
                   </div>
 
