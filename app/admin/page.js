@@ -1228,6 +1228,12 @@ export default function AdminPage() {
                           <input type="number" min="0" value={drafts.mention_cooldown ?? 900} onChange={e => setDrafts(prev => ({ ...prev, mention_cooldown: e.target.value }))}
                             style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', marginTop: '6px' }} />
                         </div>
+                        <div>
+                          <div className="admin-card-title">🗣️ Tiempo de Discusión (segundos)</div>
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de debate antes de la votación.</p>
+                          <input type="number" min="5" max="600" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
+                            style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1256,13 +1262,6 @@ export default function AdminPage() {
                           </label>
                         </div>
                       ))}
-                    </div>
-
-                    <div style={{ marginTop: '12px' }}>
-                      <div className="admin-card-title">🗣️ Tiempo de Discusión (segundos)</div>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.72rem', margin: '2px 0 6px' }}>Duración de la fase de debate antes de la votación del pueblo.</p>
-                      <input type="number" min="5" max="600" value={drafts.vote_duration ?? 10} onChange={e => setDrafts(prev => ({ ...prev, vote_duration: e.target.value }))}
-                        style={{ width: '100%', padding: '8px', borderRadius: '8px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }} />
                     </div>
                   </div>
 
