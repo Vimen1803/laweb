@@ -1279,6 +1279,7 @@ export default function AdminPage() {
                         ['mute_noche', 'Silenciar canal de Noche', 'Deshabilita la escritura al pueblo durante la noche.'],
                         ['mute_votacion', 'Silenciar canal en Votaciones', 'Deshabilita la escritura general durante la fase de votación.'],
                         ['mute_muertos', 'Silenciar a los Muertos', 'Silencia individualmente a los jugadores eliminados.'],
+                        ['pts_enabled', 'Habilitar Sistema de XP', 'Permite que los jugadores acumulen puntos de experiencia (XP) por acciones en el juego.'],
                       ].map(([field, label, desc]) => (
                         <div key={field} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
                           <div>
