@@ -11,3 +11,5 @@ DISCORD_BOT_TOKEN= token del bot <br>
 DISCORD_GUILD_ID= id del servidor <br><br>
 AUTH_SECRET= lo mismo que el NEXTAUTH_SECRET <br>
 AUTH_URL= url del hosting donde se despliegue <br>
+
+page: https://laweb-eta.vercel.app/
